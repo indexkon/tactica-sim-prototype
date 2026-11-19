@@ -60,7 +60,6 @@ cd tactica-sim-prototype
 ├── index.html      # Self-contained TRL 6 simulation & EdTech prototype
 ├── README.md       # Technical overview and live demo documentation
 ├── LICENSE         # Proprietary software copyright notice
-└── .gitignore      # Standard OS and editor ignore rules
 ```
 
 ---
