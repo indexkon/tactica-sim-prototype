@@ -16,7 +16,7 @@ Once uploaded to GitHub, enable **GitHub Pages** to generate a shareable live UR
 
 1. Open your repository **Settings → Pages**.
 2. Under **Build and deployment → Branch**, select **`main`** and folder **`/ (root)`**, then click **Save**.
-3. Wait 1–2 minutes for the live URL (`https://<your-username>.github.io/<your-repo-name>/`) to deploy.
+3. Wait 1–2 minutes for the live URL (`https://indexkon.github.io/tactica-sim-prototype/`) to deploy.
 
 ## Local Usage
 
