@@ -69,4 +69,4 @@ cd tactica-sim-prototype
 
 Copyright © 2026 **TACTICA.SIM S.r.l.** (in formation). All rights reserved.
 
-All source code, mathematical modeling implementations, and visual assets in this repository are proprietary and published strictly for technical evaluation and institutional review. See [LICENSE](https://www.google.com/search?q=./LICENSE) for full terms.
+All source code, mathematical modeling implementations, and visual assets in this repository are proprietary and published strictly for technical evaluation and institutional review. See [LICENSE](https://github.com/indexkon/tactica-sim-prototype/blob/main/LICENSE)) for full terms.
