@@ -1,40 +1,9 @@
-# TACTICA.SIM — Bivariate Poisson Football Simulation & Sports EdTech Engine (TRL 6 Prototype)
-
-Interactive web-based prototype of **TACTICA.SIM**, a 2D football tactical simulation and quantitative sports EdTech engine developed for **TACTICA.SIM S.r.l.** (Turin, Italy).
-
-## Overview
-
-This repository hosts the self-contained **TRL 6** interactive demonstration (`index.html`) combining:
-
-- **Stochastic Match Modeling**: Bivariate Poisson and Dixon-Coles low-score correlation adjustments for football match probability estimation and tactical sensitivity analysis.
-- **2D Tactical Simulation Canvas**: Real-time interactive pitch visualization allowing coaches, analysts, and students to test formations, pressing intensity, and tactical trade-offs.
-- **Sports EdTech & Telemetry Interface**: Client-side analytical dashboard displaying expected goals (xG), scoreline probability matrices, and scenario comparisons without requiring external backend infrastructure.
-
-## Live Demo (GitHub Pages)
-
-Once uploaded to GitHub, enable **GitHub Pages** to generate a shareable live URL for technical reviewers and institutional committees:
-
-1. Open your repository **Settings → Pages**.
-2. Under **Build and deployment → Branch**, select **`main`** and folder **`/ (root)`**, then click **Save**.
-3. Wait 1–2 minutes for the live URL (`https://indexkon.github.io/tactica-sim-prototype/`) to deploy.
-
-## Local Usage
-
-No build step or server installation is required:
-
-1. Download or clone this repository.
-2. Open `index.html` directly in any modern desktop or mobile browser (Chrome, Safari, Firefox, Edge).
-
-## Repository Structure
-
-```text
-.
-├── index.html      # Self-contained TRL 6 interactive simulation prototype
-├── README.md       # Project documentation and deployment guide
+TACTICA.SIM — Bivariate Poisson Football Simulation & Sports EdTech EngineLaunch Live TRL 6 Interactive Demo →TACTICA.SIM is a client-side 2D football tactical simulation and quantitative sports EdTech prototype developed for TACTICA.SIM S.r.l. (Turin, Italy). It translates econometric match-outcome modeling into an interactive coaching, analytics, and educational environment with zero real-money wagering.Live PrototypeInteractive Web App: https://indexkon.github.io/tactica-sim-prototype/Technology Readiness Level: TRL 6 (functional browser-based system demonstrated in a relevant operational environment)Languages: Bilingual interface (English / Italian) switchable in real timeRuntime: Zero-backend, self-contained HTML5 / Canvas / JavaScript (index.html), compatible with modern desktop and mobile browsersCore Modules1. Quantitative Match-Modeling EngineBivariate Poisson & Low-Score Adjustment: Computes expected goal intensities ($\lambda_H, \lambda_A$) dynamically from team ratings, tactical formations, and live match modifiers (computePoissonMatchModel, computeLivePoissonOutcome).11×11 Scoreline Probability Matrix: Generates and visualizes the full joint scoreline distribution ($0\text{–}10 \times 0\text{–}10$) alongside 1X2 win/draw/loss probabilities and Over/Under goal thresholds.2. Interactive 2D Tactical Pitch & Campaign ModesLive 2D Canvas Simulation: Real-time pitch rendering with customizable pitch skins and tactical player marker frames.Virtual League Campaign & Historical Replay: Includes an 8-team division standings engine (featuring Turin Mole Utd), historical matchday replay modes, and procedural league fixture generation.Club Creator Studio: Custom club identity editor supporting live crest, color palette, and squad parameter adjustments.3. Sports EdTech Curriculum & Sustainable Non-Gambling EconomyTactical & Quantitative Curriculum: Structured academy modules and leaderboards teaching probability modeling and tactical trade-offs.Ethical Monetization Prototype: Demonstrates a strictly non-gambling, EdTech/SaaS-compliant progression and cosmetic model (season pass, ad-skip utility, visual pitch skins, and academy check-ins) with no real-money betting mechanics.Regulatory & IP Alignment (Italy)This prototype serves as the technical demonstration baseline for TACTICA.SIM S.r.l. under Italy's Innovative Startup framework (D.L. 179/2012 and Legge 193/2024):Software Copyright: Prepared for original software deposit with the SIAE (Registro Pubblico Speciale per i Programmi per Elaboratore).R&D Roadmap: Designed for iterative extension into cloud-synced telemetry, multi-league historical datasets, and B2B youth-academy coaching dashboards in Piedmont / Turin.Local ExecutionNo build tools, package managers, or local servers are required:git clone https://github.com/indexkon/tactica-sim-prototype.git
+cd tactica-sim-prototype
+# Open index.html directly in Chrome, Safari, Firefox, or Edge
+Repository Structure.
+├── index.html      # Self-contained TRL 6 simulation & EdTech prototype
+├── README.md       # Technical overview and live demo documentation
 ├── LICENSE         # Proprietary software copyright notice
 └── .gitignore      # Standard OS and editor ignore rules
-```
-
-## Intellectual Property
-
-All source code, mathematical modeling implementations, and interface assets are proprietary to **TACTICA.SIM S.r.l.** (in formation) and intended for software copyright registration with the **SIAE** (*Registro Pubblico Speciale per i Programmi per Elaboratore*). See `LICENSE` for details.
+License & Intellectual PropertyCopyright © 2026 TACTICA.SIM S.r.l. (in formation). All rights reserved.All source code, mathematical modeling implementations, and visual assets in this repository are proprietary and published strictly for technical evaluation and institutional review. See LICENSE for full terms.
