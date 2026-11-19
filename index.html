@@ -1,0 +1,4122 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+ <meta charset="UTF-8" />
+ <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+ <title>TACTICA.SIM S.r.l. — Bivariate Poisson Football Simulation & EdTech Engine (MIMIT & L. 193/2024 Edition)</title>
+ <!-- Load Tailwind CSS -->
+ <script src="https://cdn.tailwindcss.com"></script>
+ <!-- Load Inter & JetBrains Mono Fonts -->
+ <link rel="preconnect" href="https://fonts.googleapis.com">
+ <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+ <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+ <script>
+ tailwind.config = {
+ darkMode: 'class',
+ theme: {
+ extend: {
+ fontFamily: {
+ sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+ mono: ['JetBrains Mono', 'monospace'],
+ },
+ colors: {
+ void: '#06080D',
+ appbg: '#0B0F17',
+ card: '#131A26',
+ cardhover: '#192232',
+ borderdim: '#222D40',
+ gold: '#F5B82E',
+ golddim: 'rgba(245, 184, 46, 0.14)',
+ emeraldai: '#10B981',
+ cyanai: '#38BDF8',
+ coralai: '#F43F5E',
+ }
+ }
+ }
+ }
+ </script>
+ <style>
+ * {
+ -webkit-tap-highlight-color: transparent;
+ box-sizing: border-box;
+ }
+ body {
+ background-color: #06080D;
+ background-image:
+ radial-gradient(circle at 18% 15%, rgba(245, 184, 46, 0.06) 0%, transparent 45%),
+ radial-gradient(circle at 82% 85%, rgba(16, 185, 129, 0.06) 0%, transparent 45%);
+ color: #F8FAFC;
+ margin: 0;
+ padding: 0;
+ overflow-x: hidden;
+ }
+ .no-scrollbar::-webkit-scrollbar {
+ display: none;
+ }
+ .no-scrollbar {
+ -ms-overflow-style: none;
+ scrollbar-width: none;
+ }
+ .custom-scroll::-webkit-scrollbar {
+ width: 4px;
+ height: 4px;
+ }
+ .custom-scroll::-webkit-scrollbar-track {
+ background: rgba(19, 26, 38, 0.5);
+ }
+ .custom-scroll::-webkit-scrollbar-thumb {
+ background: #2A364C;
+ border-radius: 9999px;
+ }
+ @keyframes pulseGold {
+ 0%, 100% { box-shadow: 0 0 0 0 rgba(245, 184, 46, 0.4); }
+ 50% { box-shadow: 0 0 16px 2px rgba(245, 184, 46, 0.22); }
+ }
+ .gold-pulse {
+ animation: pulseGold 2.4s infinite;
+ }
+ @keyframes slideUp {
+ from { transform: translateY(100%); opacity: 0.4; }
+ to { transform: translateY(0); opacity: 1; }
+ }
+ .animate-slide-up {
+ animation: slideUp 0.26s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+ }
+ @keyframes fadeIn {
+ from { opacity: 0; transform: scale(0.98); }
+ to { opacity: 1; transform: scale(1); }
+ }
+ .animate-fade-in {
+ animation: fadeIn 0.2s ease-out forwards;
+ }
+ </style>
+</head>
+<body class="min-h-screen flex items-center justify-center md:py-4">
+
+ <!-- Mobile App Shell (430px centered on desktop, full-screen on mobile) -->
+ <div id="app-shell" class="relative w-full min-h-screen md:min-h-[880px] md:h-[880px] md:max-w-[430px] bg-appbg md:rounded-[40px] md:border-[6px] md:border-[#1E2738] md:shadow-[0_25px_85px_rgba(0,0,0,0.92)] flex flex-col overflow-hidden">
+
+ <!-- Subtle Desktop Top Speaker Notch -->
+ <div class="hidden md:flex justify-center pt-2 pb-0.5 bg-appbg z-30 shrink-0">
+ <div class="w-24 h-1.5 rounded-full bg-[#1E2738]"></div>
+ </div>
+
+ <!-- =================================================================== -->
+ <!-- 1. STICKY TOP HEADER (Brand, MIMIT Specs, EN/CN, Live HUD Resources) -->
+ <!-- =================================================================== -->
+ <header class="sticky top-0 z-30 bg-appbg/95 backdrop-blur-md border-b border-borderdim px-3 pt-2.5 pb-2 shrink-0">
+ <!-- Top Row: Logo + Badge | MIMIT Specs + EN/CN Toggle -->
+ <div class="flex items-center justify-between gap-1.5">
+ <div class="flex items-center gap-2 min-w-0">
+ <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-gold to-amber-500 flex items-center justify-center text-appbg shadow-md shrink-0">
+ <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+ <rect x="2" y="4" width="20" height="16" rx="2.5" />
+ <line x1="12" y1="4" x2="12" y2="20" />
+ <circle cx="12" cy="12" r="3" />
+ <circle cx="6.5" cy="8.5" r="1.2" fill="currentColor" />
+ <circle cx="17.5" cy="15.5" r="1.2" fill="currentColor" />
+ <path d="M7.5 9.5L16.5 14.5" stroke-dasharray="2 2" />
+ </svg>
+ </div>
+ <div class="truncate">
+ <div class="flex items-center gap-1.5">
+ <span class="font-extrabold tracking-tight text-sm sm:text-base text-white">TACTICA<span class="text-gold">.SIM</span></span>
+ </div>
+ <span id="header-mvp-badge" class="inline-block text-[10px] font-mono text-emeraldai bg-emeraldai/10 border border-emeraldai/25 px-1.5 py-0.2 rounded leading-tight">
+ Poisson Sim & EdTech
+ </span>
+ </div>
+ </div>
+
+ <div class="flex items-center gap-1.5 shrink-0">
+ <!-- MIMIT / SIAE Specs Info Modal Trigger -->
+ <button onclick="openModal('modal-mimit-specs')" class="px-2.5 py-1.5 rounded-xl bg-card hover:bg-cardhover border border-cyanai/35 text-[11px] font-mono font-bold text-cyanai flex items-center gap-1 transition active:scale-95">
+ <span>ⓘ</span>
+ <span id="btn-mimit-label">MIMIT Specs</span>
+ </button>
+
+ <!-- Trilingual Toggle (EN / IT / 中文) -->
+ <button id="btn-lang-toggle" onclick="toggleLanguage()" class="px-2.5 py-1.5 rounded-xl bg-card hover:bg-cardhover border border-borderdim text-[11px] font-bold text-slate-200 transition active:scale-95">
+ EN / 中文
+ </button>
+ </div>
+ </div>
+
+ <!-- Second Row: Live Resource Pills (Coach Lv/XP, Coins, Ad-Skip Pass, League Stamina, Free/VIP) -->
+ <div class="mt-2 flex items-center justify-between gap-1 overflow-x-auto no-scrollbar">
+ <!-- Coach Level & XP -->
+ <div class="px-1.5 py-1 rounded-lg bg-card border border-borderdim flex items-center gap-1 shrink-0">
+ <span class="w-1.5 h-1.5 rounded-full bg-emeraldai"></span>
+ <span id="pill-coach-xp" class="font-mono text-[10px] font-bold text-slate-100">Lv.4 | 1,250 XP</span>
+ </div>
+
+ <!-- Tactical Coins Balance -->
+ <div class="px-1.5 py-1 rounded-lg bg-golddim border border-gold/30 flex items-center gap-1 shrink-0">
+ <span class="text-[10px] leading-none">🪙</span>
+ <span id="pill-coins" class="font-mono text-[10px] font-extrabold text-gold">320</span>
+ </div>
+
+ <!-- Ad-Skip Passes Count -->
+ <div class="px-1.5 py-1 rounded-lg bg-card border border-borderdim flex items-center gap-1 shrink-0">
+ <span class="text-[10px] leading-none">🎟️</span>
+ <span id="pill-passes" class="font-mono text-[10px] font-bold text-cyanai">1</span>
+ </div>
+
+ <!-- League Stamina Pill -->
+ <button onclick="switchMainTab('league')" class="px-1.5 py-1 rounded-lg bg-card hover:bg-cardhover border border-emeraldai/30 flex items-center gap-1 shrink-0 transition active:scale-95">
+ <span class="text-[10px] leading-none">⚡</span>
+ <span id="pill-stamina" class="font-mono text-[10px] font-bold text-emeraldai">3/3</span>
+ </button>
+
+ <!-- Clickable Free / VIP Pro Status Badge -->
+ <button id="pill-vip-status" onclick="switchMainTab('club')" class="px-2 py-1 rounded-lg bg-card hover:bg-cardhover border border-borderdim font-mono text-[10px] font-extrabold text-slate-300 shrink-0 transition active:scale-95">
+ Free
+ </button>
+ </div>
+ </header>
+
+ <!-- =================================================================== -->
+ <!-- MAIN VIEWPORT CONTENT AREA (Switches smoothly across 4 Main Tabs) -->
+ <!-- =================================================================== -->
+ <div class="flex-1 overflow-y-auto custom-scroll pb-24" id="main-scroll-area">
+
+ <!-- ================================================================= -->
+ <!-- TAB 1: MATCH SIM (对阵推演 — Dual-Mode & Poisson Expected Goals) -->
+ <!-- ================================================================= -->
+ <section id="view-match-sim" class="block">
+ 
+<!-- Prominent Dual-Mode Switch Header -->
+ <div class="bg-[#0E131D] border-b border-borderdim px-3 pt-2.5 pb-2.5 space-y-2.5">
+ <div class="grid grid-cols-2 gap-1.5 bg-appbg p-1 rounded-2xl border border-borderdim">
+ <button id="mode-btn-historical" onclick="switchSimMode('historical')" class="py-2 px-2 rounded-xl font-extrabold text-xs flex items-center justify-center gap-1.5 transition bg-gold text-appbg shadow">
+ <span>📅</span>
+ <span id="mode-label-historical">Historical Sync</span>
+ </button>
+ <button id="mode-btn-random" onclick="switchSimMode('random')" class="py-2 px-2 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition text-slate-400 hover:text-white">
+ <span>🎲</span>
+ <span id="mode-label-random">Random Matchups</span>
+ </button>
+ </div>
+
+ <!-- MODE A BAR: Historical Calendar Matchweek Sync (Locked Refresh + Unlimited Replays + Week Preview) -->
+ <div id="bar-historical-controls" class="bg-card border border-gold/30 rounded-2xl p-2.5 space-y-2">
+ <div class="flex items-center justify-between gap-2">
+ <div class="min-w-0">
+ <div class="flex items-center gap-1.5">
+ <span class="w-2 h-2 rounded-full bg-emeraldai animate-pulse"></span>
+ <span id="hist-week-title" class="text-xs font-extrabold text-white truncate">Nov 13 Classic Matchweek</span>
+ </div>
+ <p id="hist-week-sub" class="text-[10px] text-slate-400 mt-0.5 truncate">
+ Real calendar archive • Auto-rotates weekly • Unlimited replays
+ </p>
+ </div>
+
+ <!-- Explicitly Locked Refresh Button -->
+ <button onclick="handleLockedRefreshClick()" title="Locked to weekly real-calendar sync" class="px-2.5 py-1.5 rounded-xl bg-appbg/90 border border-borderdim text-slate-400 font-mono text-[10px] font-bold flex items-center gap-1 shrink-0 cursor-not-allowed opacity-85">
+ <span>🔒</span>
+ <span id="btn-locked-refresh-text">Sync Locked</span>
+ </button>
+ </div>
+
+ <!-- Calendar Week Time-Rotation Preview Switcher -->
+ <div class="flex items-center justify-between pt-1.5 border-t border-borderdim/70 text-[10px]">
+ <span id="lbl-week-rotation" class="font-mono text-slate-400">Calendar Rotation:</span>
+ <div class="flex items-center gap-1 bg-appbg p-0.5 rounded-lg border border-borderdim">
+ <button id="week-btn-current" onclick="selectHistoricalWeek('current')" class="px-2 py-0.5 rounded-md font-mono font-bold bg-emeraldai/20 text-emeraldai border border-emeraldai/30">
+ This Week (Nov 13)
+ </button>
+ <button id="week-btn-next" onclick="selectHistoricalWeek('next')" class="px-2 py-0.5 rounded-md font-mono font-semibold text-slate-400 hover:text-white">
+ Next Week (Nov 20)
+ </button>
+ </div>
+ </div>
+ </div>
+
+ <!-- MODE B BAR: Random Procedural Matchups (6 Leagues Carousel + Unlimited Reroll Button) -->
+ <div id="bar-random-controls" class="hidden space-y-2">
+ <div id="league-carousel" class="flex items-start gap-2.5 overflow-x-auto no-scrollbar px-1">
+ <!-- Populated via JS -->
+ </div>
+ <div class="flex items-center justify-between gap-2 bg-card border border-cyanai/30 rounded-2xl px-3 py-2">
+ <div class="min-w-0">
+ <div id="random-league-name" class="text-xs font-extrabold text-white truncate">Calcio Classic</div>
+ <div id="random-league-sub" class="text-[10px] text-slate-400">Poisson strength model • Free unlimited rerolls</div>
+ </div>
+ <button onclick="rerollRandomFixtures()" class="px-3 py-1.5 rounded-xl bg-gradient-to-r from-cyanai to-sky-400 text-appbg font-extrabold text-xs flex items-center gap-1 shadow shrink-0 transition active:scale-95">
+ <span>🔄</span>
+ <span id="btn-reroll-text">Reroll</span>
+ </button>
+ </div>
+ </div>
+ </div>
+
+ <!-- Quick-Access Banner to My Custom Club & Virtual League -->
+ <div class="mx-3 mt-2.5">
+ <button onclick="switchMainTab('league')" class="w-full px-3 py-2 rounded-xl bg-gradient-to-r from-card via-[#192438] to-golddim border border-gold/35 flex items-center justify-between gap-2 text-left transition hover:border-gold active:scale-99">
+ <div class="flex items-center gap-2 min-w-0">
+ <div id="banner-custom-crest" class="w-6 h-6 shrink-0"></div>
+ <div class="min-w-0">
+ <div id="banner-league-title" class="text-[11px] font-extrabold text-gold truncate">
+ Lead Turin Mole Utd (TMU) in Virtual League →
+ </div>
+ <div id="banner-league-sub" class="text-[10px] text-slate-300 truncate">
+ Div 3 Grassroots • Stamina 3/3 • Custom Club & Season Pass
+ </div>
+ </div>
+ </div>
+ <span class="px-2 py-0.5 rounded bg-gold text-appbg font-mono text-[10px] font-extrabold shrink-0">PLAY</span>
+ </button>
+ </div>
+
+ <!-- Match Cards Container (Dynamically computed via 11x11 Poisson Attack-Defense Model) -->
+ <div id="match-cards-list" class="px-3 pt-2.5 pb-4 space-y-2.5">
+ <!-- Populated via JS -->
+ </div>
+ </section>
+
+ <!-- ================================================================= -->
+ <!-- TAB 2: MY CLUB & VIRTUAL LEAGUE (自建联赛 — Club Progression) -->
+ <!-- ================================================================= -->
+ <section id="view-my-league" class="hidden px-3 pt-3 pb-4 space-y-3.5">
+
+ <!-- 1. Interactive Custom Club Creator Card -->
+ <div class="bg-card border border-borderdim rounded-2xl p-3.5 shadow-sm">
+ <div class="flex items-center justify-between mb-2.5">
+ <div class="flex items-center gap-2.5 min-w-0">
+ <div id="creator-live-crest" class="w-11 h-11 shrink-0"></div>
+ <div class="min-w-0">
+ <span class="text-[10px] font-mono uppercase tracking-wider text-gold" id="creator-eyebrow">Custom Club Identity</span>
+ <h2 id="creator-club-display" class="text-sm font-extrabold text-white truncate">Turin Mole Utd (TMU)</h2>
+ <div id="creator-club-meta" class="text-[10px] font-mono text-emeraldai">
+ Rating: 3.5★ • 4-3-3 Gegenpress
+ </div>
+ </div>
+ </div>
+ <button onclick="toggleCreatorEditor()" id="btn-toggle-creator" class="px-2.5 py-1.5 rounded-xl bg-appbg hover:bg-cardhover border border-borderdim text-[11px] font-bold text-slate-200 shrink-0 transition">
+ ✏️ Customize
+ </button>
+ </div>
+
+ <!-- Expandable Custom Club Editor Panel -->
+ <div id="creator-editor-panel" class="hidden pt-2.5 border-t border-borderdim space-y-2.5 animate-fade-in">
+ <div class="grid grid-cols-3 gap-2">
+ <div class="col-span-2">
+ <label id="lbl-club-name" class="block text-[10px] font-mono text-slate-400 mb-1">Club Name</label>
+ <input id="input-club-name" type="text" maxlength="22" value="Turin Mole Utd" oninput="updateCustomClubFromInputs()" class="w-full px-2.5 py-1.5 rounded-xl bg-appbg border border-borderdim text-xs font-bold text-white focus:outline-none focus:border-gold" />
+ </div>
+ <div>
+ <label id="lbl-club-code" class="block text-[10px] font-mono text-slate-400 mb-1">3-Letter Code</label>
+ <input id="input-club-code" type="text" maxlength="3" value="TMU" oninput="updateCustomClubFromInputs()" class="w-full px-2.5 py-1.5 rounded-xl bg-appbg border border-borderdim text-xs font-mono font-extrabold uppercase text-gold focus:outline-none focus:border-gold" />
+ </div>
+ </div>
+
+ <!-- Primary & Secondary Jersey Color Swatches -->
+ <div class="grid grid-cols-2 gap-2">
+ <div>
+ <label id="lbl-primary-color" class="block text-[10px] font-mono text-slate-400 mb-1">Primary Jersey Color</label>
+ <div id="swatches-primary" class="flex items-center gap-1.5 flex-wrap">
+ <!-- Populated via JS -->
+ </div>
+ </div>
+ <div>
+ <label id="lbl-secondary-color" class="block text-[10px] font-mono text-slate-400 mb-1">Secondary Trim Color</label>
+ <div id="swatches-secondary" class="flex items-center gap-1.5 flex-wrap">
+ <!-- Populated via JS -->
+ </div>
+ </div>
+ </div>
+
+ <!-- Geometric Emblem Shape Selector -->
+ <div>
+ <label id="lbl-emblem-shape" class="block text-[10px] font-mono text-slate-400 mb-1">Geometric Emblem Shape</label>
+ <div id="emblem-shape-selector" class="grid grid-cols-4 gap-1.5">
+ <!-- Populated via JS -->
+ </div>
+ </div>
+
+ <!-- Tactical Philosophy Selector -->
+ <div>
+ <label id="lbl-club-style" class="block text-[10px] font-mono text-slate-400 mb-1">Club Tactical Philosophy</label>
+ <div id="club-style-selector" class="grid grid-cols-2 gap-1.5">
+ <!-- Populated via JS -->
+ </div>
+ </div>
+ </div>
+ </div>
+
+ <!-- 2. Next Virtual League Fixture Card -->
+ <div class="bg-gradient-to-br from-[#162033] via-card to-[#181B24] border border-gold/40 rounded-2xl p-3.5 shadow-md">
+ <div class="flex items-center justify-between mb-2">
+ <div>
+ <span id="league-div-badge" class="px-2 py-0.5 rounded bg-golddim border border-gold/30 font-mono text-[10px] font-extrabold text-gold uppercase">
+ Division 3: Grassroots
+ </span>
+ <h3 id="next-fixture-heading" class="text-xs font-extrabold text-white mt-1">
+ Matchday 1 • Virtual League Campaign
+ </h3>
+ </div>
+ <div class="text-right">
+ <div class="text-[10px] font-mono text-slate-400" id="lbl-stamina-box">League Stamina</div>
+ <div id="league-stamina-display" class="font-mono text-xs font-extrabold text-emeraldai">⚡ 3 / 3</div>
+ </div>
+ </div>
+
+ <div id="next-league-fixture-box" class="bg-appbg/90 border border-borderdim rounded-2xl p-2.5 flex items-center justify-between gap-2 my-2">
+ <!-- Populated via JS -->
+ </div>
+
+ <button id="btn-play-league-match" onclick="startVirtualLeagueMatch()" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-gold via-amber-400 to-gold text-appbg font-extrabold text-xs shadow-md gold-pulse transition active:scale-95 flex items-center justify-center gap-1.5">
+ <span>⚔️</span>
+ <span id="btn-play-league-text">Command TMU to Win (-1 Stamina)</span>
+ </button>
+
+ <!-- Stamina Refill Bar -->
+ <div class="mt-2.5 pt-2 border-t border-borderdim/70 flex items-center justify-between gap-1.5">
+ <span id="lbl-refill-stamina" class="text-[10px] text-slate-400">Refill Stamina:</span>
+ <div class="flex items-center gap-1.5">
+ <button onclick="refillStaminaViaAd()" class="px-2 py-1 rounded-lg bg-cyanai/15 hover:bg-cyanai/25 border border-cyanai/40 text-cyanai font-mono text-[10px] font-bold transition active:scale-95">
+ 🎬 Sponsor (+2 ⚡)
+ </button>
+ <button onclick="refillStaminaViaCoins()" class="px-2 py-1 rounded-lg bg-golddim hover:bg-gold/25 border border-gold/40 text-gold font-mono text-[10px] font-bold transition active:scale-95">
+ 40 🪙 (Full)
+ </button>
+ </div>
+ </div>
+ </div>
+
+ <!-- 3. 8-Team Virtual Division Standings Table -->
+ <div class="bg-card border border-borderdim rounded-2xl p-3.5">
+ <div class="flex items-center justify-between mb-2">
+ <div>
+ <h3 id="standings-heading" class="text-xs font-extrabold uppercase tracking-wider text-white">
+ 8-Team Division Standings
+ </h3>
+ <p id="standings-sub" class="text-[10px] text-slate-400">Top 2 promote to higher division (+120 Coins bonus)</p>
+ </div>
+ <button id="btn-promote-division" onclick="promoteToNextDivision()" class="hidden px-2.5 py-1 rounded-lg bg-emeraldai text-appbg font-mono text-[10px] font-extrabold animate-bounce">
+ Promote ↑
+ </button>
+ </div>
+
+ <div class="overflow-x-auto">
+ <table class="w-full text-left border-collapse font-mono text-[10px]">
+ <thead>
+ <tr class="border-b border-borderdim text-slate-400">
+ <th class="py-1.5 pr-1">#</th>
+ <th class="py-1.5">Club</th>
+ <th class="py-1.5 text-center">P</th>
+ <th class="py-1.5 text-center">W</th>
+ <th class="py-1.5 text-center">D</th>
+ <th class="py-1.5 text-center">L</th>
+ <th class="py-1.5 text-center">GD</th>
+ <th class="py-1.5 text-right text-gold">PTS</th>
+ </tr>
+ </thead>
+ <tbody id="league-standings-tbody" class="divide-y divide-borderdim/50">
+ <!-- Populated via JS -->
+ </tbody>
+ </table>
+ </div>
+ </div>
+
+ <!-- 4. Club Facility Upgrades & Dual-Track Season Pass -->
+ <div class="bg-card border border-borderdim rounded-2xl p-3.5 space-y-3">
+ <div>
+ <span class="text-[10px] font-mono uppercase tracking-wider text-cyanai" id="monetization-eyebrow">Club Progression & Season Pass</span>
+ <h3 id="facilities-heading" class="text-sm font-extrabold text-white">Tactical Facilities & Season Pass</h3>
+ </div>
+
+ <!-- 2 Facility Upgrades -->
+ <div id="facility-upgrades-list" class="space-y-2">
+ <!-- Populated via JS -->
+ </div>
+
+ <!-- Dual-Track Season Pass (Free Track vs VIP Pro Track) -->
+ <div class="bg-appbg border border-borderdim rounded-xl p-3">
+ <div class="flex items-center justify-between text-xs mb-1.5">
+ <span id="season-pass-title" class="font-extrabold text-white">Season Pass Progress</span>
+ <span id="season-pass-pts" class="font-mono text-[11px] font-bold text-gold">0 / 15 PTS</span>
+ </div>
+ <div class="w-full h-2 rounded-full bg-slate-800 overflow-hidden mb-2.5">
+ <div id="season-pass-bar" class="h-full bg-gradient-to-r from-emeraldai to-gold transition-all duration-300" style="width: 15%"></div>
+ </div>
+ <div class="grid grid-cols-2 gap-2 text-[10px]">
+ <div class="p-2 rounded-lg bg-card border border-borderdim">
+ <div class="font-mono font-bold text-slate-300 mb-0.5" id="sp-free-label">FREE TRACK</div>
+ <div class="text-slate-400" id="sp-free-reward">• 5 PTS: +50 🪙<br>• 12 PTS: +100 🪙</div>
+ </div>
+ <div class="p-2 rounded-lg bg-golddim border border-gold/40">
+ <div class="font-mono font-extrabold text-gold mb-0.5" id="sp-vip-label">VIP PRO TRACK ★</div>
+ <div class="text-slate-200" id="sp-vip-reward">• 5 PTS: +150 🪙 & Pass<br>• 12 PTS: Gold Arena Skin</div>
+ </div>
+ </div>
+ </div>
+ </div>
+
+ </section>
+
+ <!-- ================================================================= -->
+ <!-- TAB 3: ACADEMY (知识学院 — Check-in, 5 Micro-Lessons, Leaderboard) -->
+ <!-- ================================================================= -->
+ <section id="view-academy" class="hidden px-3 pt-3 pb-4 space-y-3.5">
+ 
+<!-- 1. Daily Check-In Strip (Day 1 to Day 7) -->
+ <div class="bg-card border border-borderdim rounded-2xl p-3.5 shadow-sm">
+ <div class="flex items-center justify-between mb-2.5">
+ <div>
+ <span class="text-[10px] font-mono uppercase tracking-wider text-gold" id="academy-streak-sub">Daily Tactical Habit</span>
+ <h2 id="academy-checkin-title" class="text-sm font-extrabold text-white">7-Day Academy Check-In</h2>
+ </div>
+ <span id="checkin-streak-pill" class="px-2 py-0.5 rounded-full bg-emeraldai/15 border border-emeraldai/30 font-mono text-[10px] font-bold text-emeraldai">
+ 3-Day Streak
+ </span>
+ </div>
+
+ <div id="checkin-days-grid" class="grid grid-cols-7 gap-1 mb-3">
+ <!-- Populated via JS -->
+ </div>
+
+ <button id="btn-daily-checkin" onclick="claimDailyCheckIn()" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-gold via-amber-400 to-gold text-appbg font-extrabold text-xs shadow-md gold-pulse transition active:scale-95">
+ Check In Today (+40 Coins & +60 XP)
+ </button>
+ </div>
+
+ <!-- 2. Micro-Learning & Tactical Quiz Cards (5 Modules including Poisson xG) -->
+ <div>
+ <div class="flex items-center justify-between mb-2 px-0.5">
+ <h3 id="academy-modules-heading" class="text-xs font-extrabold uppercase tracking-wider text-slate-300">
+ Tactical & Quantitative Curriculum
+ </h3>
+ <span id="academy-mastered-count" class="font-mono text-[11px] font-bold text-emeraldai">0 / 5 Mastered</span>
+ </div>
+ <div id="academy-modules-list" class="space-y-2.5">
+ <!-- Populated via JS -->
+ </div>
+ </div>
+
+ <!-- 3. Academy Leaderboard -->
+ <div class="bg-card border border-borderdim rounded-2xl p-3.5">
+ <div class="flex items-center justify-between mb-2.5">
+ <div>
+ <span class="text-[10px] font-mono uppercase tracking-wider text-cyanai">Global Tactician Standings</span>
+ <h3 id="leaderboard-heading" class="text-sm font-extrabold text-white">Academy Leaderboard</h3>
+ </div>
+ <span class="text-base">🏆</span>
+ </div>
+ <div id="leaderboard-list" class="space-y-1.5">
+ <!-- Dynamically sorted via JS -->
+ </div>
+ </div>
+ </section>
+
+ <!-- ================================================================= -->
+ <!-- TAB 4: CLUB & DIY (DIY与订阅 — VIP Subscription & Pitch Skins) -->
+ <!-- ================================================================= -->
+ <section id="view-club-diy" class="hidden px-3 pt-3 pb-4 space-y-3.5">
+
+ <!-- 1. VIP Subscription Simulator Card ("Tactica Pro Pass") -->
+ <div id="vip-card-box" class="bg-gradient-to-br from-[#192234] via-card to-[#1C1A17] border border-gold/40 rounded-2xl p-3.5 shadow-lg relative overflow-hidden">
+ <div class="flex items-start justify-between gap-2">
+ <div>
+ <div class="flex items-center gap-1.5">
+ <span class="px-2 py-0.5 rounded bg-gold text-appbg font-mono text-[10px] font-extrabold uppercase">VIP PASS</span>
+ <span id="vip-auto-adfree-badge" class="hidden px-2 py-0.5 rounded bg-emeraldai/20 border border-emeraldai/40 text-emeraldai font-mono text-[10px] font-bold">
+ Auto Ad-Free Active
+ </span>
+ </div>
+ <h2 id="vip-card-title" class="text-base font-extrabold text-white mt-1.5">Tactica Pro Pass</h2>
+ <p id="vip-card-subtitle" class="text-[11px] text-slate-300 mt-0.5">
+ App Store 3.1.2 Compliant Ongoing Value Subscription
+ </p>
+ </div>
+
+ <button id="vip-toggle-btn" onclick="toggleVipPro()" class="px-3 py-1.5 rounded-xl font-bold text-xs border transition active:scale-95 shrink-0 bg-appbg border-gold text-gold">
+ Activate VIP
+ </button>
+ </div>
+
+ <div class="mt-3 pt-2.5 border-t border-borderdim/80 grid grid-cols-1 gap-1.5 text-[11px] text-slate-200">
+ <div class="flex items-center gap-2">
+ <span class="text-emeraldai font-bold">✓</span>
+ <span id="vip-perk-1">Automatic Ad-Free Scouting & Unlimited League Stamina</span>
+ </div>
+ <div class="flex items-center gap-2">
+ <span class="text-emeraldai font-bold">✓</span>
+ <span id="vip-perk-2">Daily VIP Login Drop (+80 Gold Coins every day)</span>
+ </div>
+ <div class="flex items-center gap-2">
+ <span class="text-emeraldai font-bold">✓</span>
+ <span id="vip-perk-3">2x Coach XP Progression + Masters Gold Arena Unlocked</span>
+ </div>
+ </div>
+
+ <div class="mt-3">
+ <button id="btn-vip-daily-drop" onclick="claimVipDailyDrop()" disabled class="w-full py-2.5 rounded-xl font-extrabold text-xs transition bg-appbg/70 border border-borderdim text-slate-500 cursor-not-allowed">
+ Activate VIP Pro to Claim Daily +80 Coins
+ </button>
+ </div>
+ </div>
+
+ <!-- 2. Coin Utility: Redeem Ad-Skip Pass -->
+ <div class="bg-card border border-borderdim rounded-2xl p-3.5 flex items-center justify-between gap-3">
+ <div class="flex items-center gap-2.5 min-w-0">
+ <div class="w-10 h-10 rounded-xl bg-cyanai/15 border border-cyanai/30 flex items-center justify-center text-lg shrink-0">
+ 🎟️
+ </div>
+ <div class="min-w-0">
+ <h3 id="utility-pass-title" class="text-xs font-extrabold text-white">Ad-Skip Scout Pass</h3>
+ <p id="utility-pass-desc" class="text-[11px] text-slate-400 leading-snug mt-0.5">
+ Bypass 1 post-match scout video instantly while keeping full +40 Coin bonus.
+ </p>
+ </div>
+ </div>
+ <button onclick="redeemAdSkipPass()" class="px-3 py-2 rounded-xl bg-cyanai/15 hover:bg-cyanai/25 border border-cyanai/40 text-cyanai font-mono font-extrabold text-xs shrink-0 transition active:scale-95">
+ 60 🪙
+ </button>
+ </div>
+
+ <!-- 3. DIY 2D Pitch Skins Store -->
+ <div>
+ <div class="flex items-center justify-between mb-2 px-0.5">
+ <h3 id="diy-skins-heading" class="text-xs font-extrabold uppercase tracking-wider text-slate-300">
+ DIY 2D Pitch Skins (Live Canvas)
+ </h3>
+ <span id="diy-skins-sub" class="text-[10px] font-mono text-gold">Instant Apply</span>
+ </div>
+ <div id="diy-skins-grid" class="grid grid-cols-2 gap-2.5">
+ <!-- Populated via JS -->
+ </div>
+ </div>
+
+ <!-- 4. DIY Tactical Dot & Crest Frames -->
+ <div>
+ <div class="flex items-center justify-between mb-2 px-0.5">
+ <h3 id="diy-frames-heading" class="text-xs font-extrabold uppercase tracking-wider text-slate-300">
+ DIY Tactical Player Marker Frames
+ </h3>
+ <span id="diy-frames-sub" class="text-[10px] font-mono text-emeraldai">22-Player Overlay</span>
+ </div>
+ <div id="diy-frames-list" class="space-y-2">
+ <!-- Populated via JS -->
+ </div>
+ </div>
+
+ </section>
+
+ </div>
+
+ <!-- =================================================================== -->
+ <!-- STICKY BOTTOM NAVIGATION BAR (4 Main Tabs) -->
+ <!-- =================================================================== -->
+ <nav class="sticky bottom-0 z-30 bg-[#0E131D]/95 backdrop-blur-xl border-t border-borderdim px-2 py-2 shrink-0">
+ <div class="grid grid-cols-4 gap-1.5">
+ <button onclick="switchMainTab('sim')" id="nav-tab-sim" class="py-1.5 px-1 rounded-2xl flex flex-col items-center justify-center gap-0.5 transition bg-golddim border border-gold/40 text-gold">
+ <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1">
+ <rect x="2" y="4" width="20" height="16" rx="2" />
+ <line x1="12" y1="4" x2="12" y2="20" />
+ <circle cx="12" cy="12" r="2.8" />
+ </svg>
+ <span id="nav-label-sim" class="text-[10px] font-extrabold truncate">Match Sim</span>
+ </button>
+
+ <button onclick="switchMainTab('league')" id="nav-tab-league" class="py-1.5 px-1 rounded-2xl flex flex-col items-center justify-center gap-0.5 transition bg-card border border-transparent text-slate-400 hover:text-slate-200">
+ <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1">
+ <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6" />
+ <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18" />
+ <path d="M4 22h16" />
+ <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22" />
+ <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22" />
+ <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z" />
+ </svg>
+ <span id="nav-label-league" class="text-[10px] font-bold truncate">My League</span>
+ </button>
+
+ <button onclick="switchMainTab('academy')" id="nav-tab-academy" class="py-1.5 px-1 rounded-2xl flex flex-col items-center justify-center gap-0.5 transition bg-card border border-transparent text-slate-400 hover:text-slate-200 relative">
+ <span id="academy-notif-dot" class="absolute top-1 right-3 w-2 h-2 rounded-full bg-gold animate-ping"></span>
+ <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1">
+ <path d="M22 10L12 5 2 10l10 5 10-5z" />
+ <path d="M6 12v5c3 3 9 3 12 0v-5" />
+ </svg>
+ <span id="nav-label-academy" class="text-[10px] font-bold truncate">Academy</span>
+ </button>
+
+ <button onclick="switchMainTab('club')" id="nav-tab-club" class="py-1.5 px-1 rounded-2xl flex flex-col items-center justify-center gap-0.5 transition bg-card border border-transparent text-slate-400 hover:text-slate-200">
+ <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1">
+ <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+ </svg>
+ <span id="nav-label-club" class="text-[10px] font-bold truncate">Club & DIY</span>
+ </button>
+ </div>
+ </nav>
+
+ <!-- NON-BLOCKING TOAST NOTIFICATION BANNER -->
+ <div id="toast-banner" class="hidden absolute top-20 inset-x-4 z-50 bg-[#182234] border border-gold/50 text-white text-xs font-semibold px-3.5 py-2.5 rounded-xl shadow-2xl flex items-center justify-between gap-2 animate-fade-in">
+ <span id="toast-message">Action completed</span>
+ <span class="w-2 h-2 rounded-full bg-gold shrink-0"></span>
+ </div>
+
+ <!-- =================================================================== -->
+ <!-- MODAL 1: MIMIT, SIAE & LEGGE 193/2024 COMPLIANCE SPECS -->
+ <!-- =================================================================== -->
+ <div id="modal-mimit-specs" class="hidden absolute inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-end sm:items-center justify-center p-3">
+ <div class="w-full max-h-[90%] bg-card border border-cyanai/40 rounded-3xl p-4 overflow-y-auto custom-scroll animate-slide-up shadow-2xl">
+ <div class="flex items-start justify-between gap-2 pb-2.5 border-b border-borderdim">
+ <div>
+ <span id="mimit-modal-eyebrow" class="text-[10px] font-mono uppercase tracking-wider text-cyanai">Italia Startup Visa • D.L. 179/2012 & L. 193/2024 Compliance</span>
+ <h3 id="mimit-modal-title" class="text-sm sm:text-base font-extrabold text-white mt-0.5">Poisson Simulation & Legge 193/2024 Compliance Architecture</h3>
+ </div>
+ <button onclick="closeModal('modal-mimit-specs')" class="w-8 h-8 rounded-full bg-appbg border border-borderdim flex items-center justify-center text-slate-400 hover:text-white shrink-0">✕</button>
+ </div>
+ <div class="pt-2.5 pb-2 border-b border-borderdim/70 flex items-center justify-between gap-2">
+ <span id="mimit-lang-label" class="text-[10px] font-mono text-slate-400">Lingua / Language:</span>
+ <div class="flex items-center gap-1 bg-appbg p-0.5 rounded-xl border border-borderdim">
+ <button id="mimit-lang-it" onclick="setLanguage('it')" class="px-2 py-1 rounded-lg font-mono text-[10px] font-bold transition">IT Italiano</button>
+ <button id="mimit-lang-en" onclick="setLanguage('en')" class="px-2 py-1 rounded-lg font-mono text-[10px] font-bold transition">EN English</button>
+ <button id="mimit-lang-cn" onclick="setLanguage('cn')" class="px-2 py-1 rounded-lg font-mono text-[10px] font-bold transition">中文</button>
+ </div>
+ </div>
+
+ <div id="mimit-modal-body" class="py-3.5 space-y-3 text-xs text-slate-300 leading-relaxed">
+ <!-- Populated dynamically in EN / CN -->
+ </div>
+
+ <button onclick="closeModal('modal-mimit-specs')" id="mimit-modal-close" class="w-full py-2.5 rounded-xl bg-gold text-appbg font-extrabold text-xs transition active:scale-95">
+ Close Technical Brief
+ </button>
+ </div>
+ </div>
+
+ <!-- =================================================================== -->
+ <!-- MODAL 2: POISSON EXPECTED GOALS & SCORELINE HEATMAP INSPECTOR -->
+ <!-- =================================================================== -->
+ <div id="modal-poisson-matrix" class="hidden absolute inset-0 z-50 bg-black/85 backdrop-blur-sm flex items-end sm:items-center justify-center p-3">
+ <div class="w-full max-h-[90%] bg-card border border-cyanai/40 rounded-3xl p-4 overflow-y-auto custom-scroll animate-slide-up shadow-2xl space-y-3">
+ <!-- Modal Header -->
+ <div class="flex items-center justify-between pb-2.5 border-b border-borderdim">
+ <div>
+ <span class="text-[10px] font-mono uppercase tracking-wider text-cyanai" id="pm-eyebrow">Tactical Expected Goals Distribution</span>
+ <h3 id="pm-modal-title" class="text-sm font-extrabold text-white">11×11 Poisson Scoreline Matrix</h3>
+ </div>
+ <button onclick="closeModal('modal-poisson-matrix')" class="w-8 h-8 rounded-full bg-appbg border border-borderdim flex items-center justify-center text-slate-400 hover:text-white">✕</button>
+ </div>
+
+ <!-- Dynamic Content Container -->
+ <div id="pm-modal-body" class="space-y-3 text-xs">
+ <!-- Populated dynamically when clicking Poisson Matrix on any fixture -->
+ </div>
+ </div>
+ </div>
+
+ <!-- =================================================================== -->
+ <!-- MODAL 3: INTERACTIVE 2D PROCEDURAL TACTICAL PITCH SIMULATOR -->
+ <!-- =================================================================== -->
+ <div id="modal-live-sim" class="hidden absolute inset-0 z-50 bg-appbg flex flex-col overflow-hidden animate-fade-in">
+
+ <!-- Target Objective Banner (Shows which side the user chose to command to WIN) -->
+ <div class="bg-gradient-to-r from-golddim via-[#1D2536] to-golddim border-b border-gold/40 px-3 py-1.5 flex items-center justify-between text-[11px] shrink-0">
+ <div class="flex items-center gap-1.5 min-w-0 font-extrabold text-gold truncate">
+ <span>🎯</span>
+ <span id="sim-objective-banner" class="truncate">OBJECTIVE: Command West London Blue (Home) to WIN</span>
+ </div>
+ <span id="sim-mode-pill" class="px-1.5 py-0.2 rounded bg-appbg border border-borderdim font-mono text-[9px] text-slate-300 shrink-0">
+ HISTORICAL
+ </span>
+ </div>
+
+ <!-- Top Live Scoreboard & Speed Controls -->
+ <div class="bg-[#101622] border-b border-borderdim px-3 py-2 shrink-0">
+ <div class="flex items-center justify-between mb-1.5">
+ <span id="sim-league-tag" class="text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 rounded bg-card text-cyanai border border-borderdim truncate max-w-[190px]">
+ ALBION LEAGUE
+ </span>
+ <div class="flex items-center gap-1.5">
+ <button id="sim-speed-btn" onclick="cycleSimSpeed()" class="px-2 py-1 rounded-lg bg-card border border-borderdim font-mono text-[11px] font-bold text-cyanai">
+ 1x
+ </button>
+ <button id="sim-pause-btn" onclick="toggleSimPause()" class="px-2.5 py-1 rounded-lg bg-card border border-borderdim text-xs font-bold text-white">
+ ❚❚
+ </button>
+ <button onclick="skipToFullTime()" class="px-2 py-1 rounded-lg bg-card border border-borderdim font-mono text-[10px] font-semibold text-slate-300 hover:text-gold">
+ 90' ⏭
+ </button>
+ <button onclick="closeLiveSim()" class="w-7 h-7 rounded-lg bg-card border border-borderdim flex items-center justify-center text-slate-400 hover:text-white text-xs">
+ ✕
+ </button>
+ </div>
+ </div>
+
+ <!-- Scoreboard -->
+ <div class="flex items-center justify-between bg-appbg/90 border border-borderdim rounded-2xl px-3 py-1.5">
+ <div id="sim-box-home" class="flex items-center gap-2 flex-1 min-w-0 p-1 rounded-xl">
+ <div id="sim-home-crest" class="w-8 h-8 shrink-0"></div>
+ <div class="truncate">
+ <div class="flex items-center gap-1">
+ <span id="sim-home-code" class="font-extrabold text-sm text-white leading-tight">WLB</span>
+ <span id="sim-home-you-tag" class="hidden px-1 py-0.2 rounded bg-gold text-appbg font-mono text-[8px] font-extrabold">YOU</span>
+ </div>
+ <div id="sim-home-formation" class="text-[10px] font-mono text-slate-300 truncate">4-3-3 High Press</div>
+ </div>
+ </div>
+
+ <div class="flex flex-col items-center px-2.5">
+ <div class="flex items-center gap-2 font-mono text-xl font-extrabold text-white">
+ <span id="sim-home-score">0</span>
+ <span class="text-slate-600 text-base">:</span>
+ <span id="sim-away-score">0</span>
+ </div>
+ <div class="flex items-center gap-1 mt-0.5">
+ <span class="w-1.5 h-1.5 rounded-full bg-emeraldai animate-ping"></span>
+ <span id="sim-clock" class="font-mono text-xs font-bold text-gold">00'</span>
+ </div>
+ </div>
+
+ <div id="sim-box-away" class="flex items-center justify-end gap-2 flex-1 min-w-0 text-right p-1 rounded-xl">
+ <div class="truncate">
+ <div class="flex items-center justify-end gap-1">
+ <span id="sim-away-you-tag" class="hidden px-1 py-0.2 rounded bg-gold text-appbg font-mono text-[8px] font-extrabold">YOU</span>
+ <span id="sim-away-code" class="font-extrabold text-sm text-white leading-tight">MCR</span>
+ </div>
+ <div id="sim-away-formation" class="text-[10px] font-mono text-slate-300 truncate">4-2-3-1 Transition</div>
+ </div>
+ <div id="sim-away-crest" class="w-8 h-8 shrink-0"></div>
+ </div>
+ </div>
+
+ <!-- Real-Time Poisson Outcome Distribution Bar & Stamina Telemetry -->
+ <div class="mt-1.5 space-y-1">
+ <div class="flex justify-between items-center font-mono text-[10px]">
+ <span class="text-emeraldai font-bold"><span id="sim-prob-h">44%</span> H</span>
+ <span class="text-slate-300">λ / xG <strong id="sim-xg-h" class="text-white">0.00</strong> - <strong id="sim-xg-a" class="text-white">0.00</strong></span>
+ <span class="text-cyanai font-bold">A <span id="sim-prob-a">30%</span></span>
+ </div>
+ <div class="w-full h-1.5 rounded-full bg-slate-800 overflow-hidden flex">
+ <div id="sim-bar-h" class="bg-emeraldai transition-all duration-300" style="width: 44%"></div>
+ <div id="sim-bar-d" class="bg-slate-500 transition-all duration-300" style="width: 26%"></div>
+ <div id="sim-bar-a" class="bg-cyanai transition-all duration-300" style="width: 30%"></div>
+ </div>
+ <div class="flex justify-between items-center font-mono text-[10px] text-slate-400">
+ <span><span id="lbl-user-stam">Your Stam</span>: <strong id="sim-stam-user" class="text-emeraldai">100%</strong></span>
+ <span id="sim-diversity-tracker" class="text-gold font-bold">Diversity: 0/2 Cmds</span>
+ <span><span id="lbl-opp-stam">Opp Stam</span>: <strong id="sim-stam-opp" class="text-cyanai">100%</strong></span>
+ </div>
+ </div>
+ </div>
+
+ <!-- HTML5 Canvas 2D Procedural Football Pitch (Team Jersey Colors + DIY Pitch Skin) -->
+ <div id="pitch-canvas-wrapper" class="relative w-full h-[205px] sm:h-[225px] bg-[#0B1F16] border-b border-borderdim shrink-0 overflow-hidden">
+ <canvas id="tactical-pitch-canvas" class="w-full h-full block"></canvas>
+ <!-- Goal / Tactical Intervention Flash Banner -->
+ <div id="pitch-event-banner" class="hidden absolute inset-x-6 top-2.5 bg-appbg/90 border border-gold text-center py-1 px-3 rounded-xl shadow-xl pointer-events-none">
+ <span id="pitch-event-banner-text" class="font-mono text-xs font-extrabold text-gold tracking-wide">GOAL! 0.38 xG CONVERTED</span>
+ </div>
+ </div>
+
+ <!-- 4 Interactive Real-Time Tactical Command Buttons (Applied to User's Chosen Team) -->
+ <div class="bg-[#0F1520] border-b border-borderdim px-3 py-2 shrink-0">
+ <div class="flex items-center justify-between mb-1.5">
+ <span id="lbl-tactical-cmds" class="text-[10px] font-mono uppercase tracking-wider text-slate-400">Manager Tactical Interventions</span>
+ <span id="sim-bonus-target-hint" class="text-[10px] font-mono text-gold truncate max-w-[165px]">Bonus: Catenaccio / Wing</span>
+ </div>
+ <div class="grid grid-cols-2 gap-1.5">
+ <button onclick="triggerTacticalCommand('highPress')" id="cmd-btn-highPress" class="cmd-card p-2 rounded-xl bg-card hover:bg-cardhover border border-borderdim text-left transition active:scale-95 flex items-center justify-between">
+ <div>
+ <div id="cmd-title-highPress" class="text-xs font-bold text-emeraldai">High Press</div>
+ <div id="cmd-sub-highPress" class="text-[10px] text-slate-400">+30% Poisson Attack λ</div>
+ </div>
+ <span class="text-sm">⚡</span>
+ </button>
+
+ <button onclick="triggerTacticalCommand('catenaccio')" id="cmd-btn-catenaccio" class="cmd-card p-2 rounded-xl bg-card hover:bg-cardhover border border-borderdim text-left transition active:scale-95 flex items-center justify-between">
+ <div>
+ <div id="cmd-title-catenaccio" class="text-xs font-bold text-cyanai">Catenaccio Block</div>
+ <div id="cmd-sub-catenaccio" class="text-[10px] text-slate-400">-38% Opp λ + Counter</div>
+ </div>
+ <span class="text-sm">🛡️</span>
+ </button>
+
+ <button onclick="triggerTacticalCommand('wingOverload')" id="cmd-btn-wingOverload" class="cmd-card p-2 rounded-xl bg-card hover:bg-cardhover border border-borderdim text-left transition active:scale-95 flex items-center justify-between">
+ <div>
+ <div id="cmd-title-wingOverload" class="text-xs font-bold text-gold">Wing Overload</div>
+ <div id="cmd-sub-wingOverload" class="text-[10px] text-slate-400">+26% Flank xG Rate</div>
+ </div>
+ <span class="text-sm">🏹</span>
+ </button>
+
+ <button onclick="triggerTacticalCommand('superSub')" id="cmd-btn-superSub" class="cmd-card p-2 rounded-xl bg-card hover:bg-cardhover border border-borderdim text-left transition active:scale-95 flex items-center justify-between">
+ <div>
+ <div id="cmd-title-superSub" class="text-xs font-bold text-coralai">Super Sub</div>
+ <div id="cmd-sub-superSub" class="text-[10px] text-slate-400">+18% Stamina & Clutch</div>
+ </div>
+ <span class="text-sm">🔄</span>
+ </button>
+ </div>
+ </div>
+
+ <!-- Scrolling Live Poisson & Markov Event Log -->
+ <div class="flex-1 bg-appbg px-3 py-2 overflow-y-auto custom-scroll flex flex-col">
+ <div class="text-[10px] font-mono uppercase tracking-wider text-slate-500 mb-1.5 flex justify-between">
+ <span id="lbl-event-stream">Poisson & Markov State-Machine Stream</span>
+ <span class="text-emeraldai">● TELEMETRY ACTIVE</span>
+ </div>
+ <div id="sim-event-log" class="space-y-1.5 text-xs font-mono">
+ <!-- Events prepended here -->
+ </div>
+ </div>
+
+ <!-- ================================================================= -->
+ <!-- POST-MATCH EVALUATION OVERLAY (Victory Rewards vs. Tactical Debrief) -->
+ <!-- ================================================================= -->
+ <div id="post-match-overlay" class="hidden absolute inset-0 z-50 bg-appbg/95 backdrop-blur-md p-4 flex flex-col justify-between overflow-y-auto custom-scroll animate-fade-in">
+ <div>
+ <!-- Outcome Header Banner (VICTORY vs. DRAW / DEFEAT) -->
+ <div id="summary-outcome-header" class="text-center pt-1 pb-2.5 border-b border-borderdim">
+ <span id="summary-outcome-pill" class="inline-block px-2.5 py-0.5 rounded-full bg-emeraldai/20 border border-emeraldai/40 font-mono text-[10px] font-extrabold text-emeraldai uppercase">
+ OBJECTIVE COMPLETE • VICTORY!
+ </span>
+ <h3 id="summary-heading" class="text-lg font-extrabold text-white mt-1">Commanded West London Blue to Win!</h3>
+ </div>
+
+ <!-- Final Score Card -->
+ <div class="bg-card border border-borderdim rounded-2xl p-3 mt-2.5 flex items-center justify-between">
+ <div class="flex items-center gap-2 min-w-0 flex-1">
+ <div id="sum-home-crest" class="w-8 h-8 shrink-0"></div>
+ <div class="truncate">
+ <div id="sum-home-name" class="text-xs font-bold text-white truncate">West London Blue</div>
+ <div id="sum-home-arch" class="text-[10px] text-slate-400 truncate">4-3-3 High Press</div>
+ </div>
+ </div>
+ <div class="font-mono text-xl font-extrabold text-gold px-2 shrink-0">
+ <span id="sum-score-h">2</span> - <span id="sum-score-a">1</span>
+ </div>
+ <div class="flex items-center justify-end gap-2 text-right min-w-0 flex-1">
+ <div class="truncate">
+ <div id="sum-away-name" class="text-xs font-bold text-white truncate">Manchester Red</div>
+ <div id="sum-away-arch" class="text-[10px] text-slate-400 truncate">4-2-3-1 Transition</div>
+ </div>
+ <div id="sum-away-crest" class="w-8 h-8 shrink-0"></div>
+ </div>
+ </div>
+
+ <!-- Match Telemetry Stats -->
+ <div class="bg-card border border-borderdim rounded-2xl p-2.5 mt-2 space-y-1 text-xs">
+ <div class="flex justify-between items-center">
+ <span id="sum-xg-h" class="font-mono font-bold text-emeraldai">1.86</span>
+ <span id="lbl-sum-xg" class="text-slate-400">Expected Goals (xG)</span>
+ <span id="sum-xg-a" class="font-mono font-bold text-cyanai">1.14</span>
+ </div>
+ <div class="flex justify-between items-center">
+ <span id="sum-poss-h" class="font-mono font-bold text-white">56%</span>
+ <span id="lbl-sum-poss" class="text-slate-400">Possession Share</span>
+ <span id="sum-poss-a" class="font-mono font-bold text-white">44%</span>
+ </div>
+ </div>
+
+ <!-- Dynamic Outcome Evaluation Box (Victory Rewards OR Tactical Debrief + Academy Link) -->
+ <div id="summary-dynamic-outcome-box" class="mt-2">
+ <!-- Populated dynamically in finishSimulation() -->
+ </div>
+
+ <!-- Scout Bonus Section (Free Video / Ad-Skip Pass vs VIP Auto-Claim) -->
+ <div id="scout-bonus-box" class="bg-[#161F30] border border-cyanai/35 rounded-2xl p-3 mt-2">
+ <!-- Populated dynamically based on VIP Pro status -->
+ </div>
+ </div>
+
+ <div id="summary-footer-actions" class="pt-2.5 flex gap-2">
+ <!-- Populated dynamically (1-Click Rematch + Return) -->
+ </div>
+ </div>
+
+ </div>
+
+
+
+ </div>
+
+ <!-- ===================================================================== -->
+ <!-- JAVASCRIPT LOGIC (Bivariate Poisson Engine, Custom Club, 2D Pitch) -->
+ <!-- ===================================================================== -->
+ <script>
+ // -----------------------------------------------------------------------
+ // 1. TRILINGUAL DICTIONARY (EN / IT / 中文 — Zero Gambling & Legge 193/2024)
+ // -----------------------------------------------------------------------
+ function tr(enText, cnText, itText) {
+ if (state.lang === 'it') return itText !== undefined ? itText : enText;
+ if (state.lang === 'cn') return cnText;
+ return enText;
+ }
+
+ function pickLang(obj, baseKey) {
+ if (!obj) return '';
+ if (state.lang === 'it' && obj[baseKey + 'It']) return obj[baseKey + 'It'];
+ if (state.lang === 'cn' && obj[baseKey + 'Cn']) return obj[baseKey + 'Cn'];
+ return obj[baseKey + 'En'] || '';
+ }
+
+ const I18N = {
+ en: {
+ mvpBadge: "EdTech & Poisson Sim",
+ mimitSpecs: "MIMIT & L.193/24",
+ navSim: "Match Sim",
+ navLeague: "My League",
+ navAcademy: "Academy",
+ navClub: "Club & DIY",
+ modeHistorical: "Historical Sync",
+ modeRandom: "Random Matchups",
+ histWeekThisTitle: "Nov 13 Classic Matchweek",
+ histWeekNextTitle: "Nov 20 Derby Matchweek",
+ histWeekSub: "Real calendar archive • Auto-rotates weekly • Unlimited replays",
+ syncLocked: "Sync Locked",
+ lblWeekRotation: "Calendar Rotation:",
+ btnThisWeek: "This Week (Nov 13)",
+ btnNextWeek: "Next Week (Nov 20)",
+ randomLeagueSub: "Poisson strength model • Free unlimited rerolls",
+ btnReroll: "Reroll",
+ homeWin: "HOME",
+ draw: "DRAW",
+ awayWin: "AWAY",
+ pickHomeWin: "Pick Home Win",
+ pickAwayWin: "Pick Away Win",
+ replayedLabel: "Replayed",
+ poissonBtnLabel: "Poisson Matrix",
+ academyStreakSub: "Daily Tactical Habit",
+ academyCheckinTitle: "7-Day Academy Check-In",
+ streakDays: "Day Streak",
+ btnCheckedIn: "✓ Checked In Today — Come Back Tomorrow!",
+ academyModulesHeading: "Tactical & Quantitative Curriculum",
+ masteredLabel: "Mastered",
+ leaderboardHeading: "Academy Leaderboard",
+ youLabel: "You (Coach)",
+ vipCardTitle: "Tactica Pro Pass",
+ vipCardSub: "App Store 3.1.2 Compliant Ongoing Value Subscription",
+ vipAutoAdFree: "Auto Ad-Free Active",
+ btnActivateVip: "Activate VIP",
+ btnDeactivateVip: "VIP Active ✓",
+ vipPerk1: "Automatic Ad-Free Scouting & Unlimited League Stamina",
+ vipPerk2: "Daily VIP Login Drop (+80 Gold Coins every day)",
+ vipPerk3: "2x Coach XP Progression + Masters Gold Arena Unlocked",
+ btnVipDropLocked: "Activate VIP Pro to Claim Daily +80 Coins",
+ btnVipDropClaim: "Claim Daily VIP Drop (+80 Gold Coins)",
+ btnVipDropClaimed: "✓ Today's +80 VIP Coins Claimed",
+ utilityPassTitle: "Ad-Skip Scout Pass",
+ utilityPassDesc: "Bypass 1 post-match scout video instantly while keeping full +40 Coin bonus.",
+ diySkinsHeading: "DIY 2D Pitch Skins (Live Canvas)",
+ diySkinsSub: "Instant Apply",
+ diyFramesHeading: "DIY Tactical Player Marker Frames",
+ diyFramesSub: "22-Player Overlay",
+ equipped: "Equipped",
+ equip: "Equip",
+ vipIncluded: "VIP Included",
+ lblUserStam: "Your Stam",
+ lblOppStam: "Opp Stam",
+ lblTacticalCmds: "Manager Tactical Interventions",
+ lblEventStream: "Poisson & Markov State-Machine Stream",
+ cmdTitleHighPress: "High Press",
+ cmdSubHighPress: "+30% Poisson Attack λ",
+ cmdTitleCatenaccio: "Catenaccio Block",
+ cmdSubCatenaccio: "-38% Opp λ + Counter",
+ cmdTitleWing: "Wing Overload",
+ cmdSubWing: "+26% Flank xG Rate",
+ cmdTitleSub: "Super Sub",
+ cmdSubSub: "+18% Stamina & Clutch",
+ lblSumXg: "Expected Goals (xG)",
+ lblSumPoss: "Possession Share",
+ btnReturnHub: "Return to Hub",
+ btnRematch: "1-Click Rematch",
+ mimitModalTitle: "D.L. 179/2012 & Legge 193/2024 Compliance Architecture",
+ mimitModalClose: "Close MIMIT Compliance Brief",
+ mimitModalHtml: `
+ <div class="bg-appbg p-3 rounded-2xl border border-gold/40">
+ <div class="flex items-center justify-between mb-1">
+ <h4 class="font-bold text-gold">1. Bivariate Poisson & Dixon-Coles Engine (TRL 6 Prototype)</h4>
+ <span class="px-1.5 py-0.2 rounded bg-golddim text-gold font-mono text-[9px] font-bold">1,500+ LOC</span>
+ </div>
+ <p class="text-slate-300 text-[11px] leading-relaxed">Computes pre-match Expected Goals via <span class="font-mono text-white">λ_H = (HomeGF × AwayGA) / LeagueHomeAvg</span> and <span class="font-mono text-white">λ_A = (AwayGF × HomeGA) / LeagueAwayAvg</span>, generating an 11×11 joint probability matrix with Dixon-Coles low-score correlation (<span class="font-mono text-cyanai">ρ = -0.08</span>) and real-time Markov arrival rate (<span class="font-mono text-emeraldai">λ_rem</span>) recalibration.</p>
+ </div>
+ <div class="bg-appbg p-3 rounded-2xl border border-emeraldai/40">
+ <div class="flex items-center justify-between mb-1">
+ <h4 class="font-bold text-emeraldai">2. D.L. 179/2012 Art. 25 — Fase 1 (Years 0–3, Opzione A)</h4>
+ <span class="px-1.5 py-0.2 rounded bg-emeraldai/15 text-emeraldai font-mono text-[9px] font-bold">Codice 066 + 068</span>
+ </div>
+ <p class="text-slate-300 text-[11px] leading-relaxed"><strong>• Primary Qualifying Criterion (Codice 066 — R&D ≥ 15%):</strong> R&D expenditure reaches <strong>67.3% (Y1)</strong>, <strong>68.0% (Y2)</strong>, and <strong>60.2% of Total Cost / 48.1% of Production Value (Y3)</strong> — over 4× the statutory 15% floor.<br><strong>• Secondary IP Protection (Codice 068 — SIAE Software):</strong> Clean-room software registered with the <em>Registro Pubblico Speciale per i Programmi per Elaboratore</em> (SIAE) upon incorporation in Turin.<br><strong>• Academic Governance & Talent Pipeline:</strong> Sole Director holds a Master's degree (Waseda University) & Economics B.A. (University of Toronto), backed by Politecnico di Torino <em>Tirocinio Curriculare</em> internships in Y2–Y3.</p>
+ </div>
+ <div class="bg-appbg p-3 rounded-2xl border border-cyanai/40">
+ <div class="flex items-center justify-between mb-1">
+ <h4 class="font-bold text-cyanai">3. Legge 193/2024 Art. 28 (Comma 2-bis) — Fase 2 (Years 3–5, Opzione B)</h4>
+ <span class="px-1.5 py-0.2 rounded bg-cyanai/15 text-cyanai font-mono text-[9px] font-bold">2025/2026 Reform</span>
+ </div>
+ <p class="text-slate-300 text-[11px] leading-relaxed">Fully aligned with <strong>Legge 16 dicembre 2024, n. 193</strong> and <strong>MIMIT Circular 29 July 2025</strong>:<br><strong>• Enhanced Continuation Criteria (Opzione B):</strong> Without relying on industrial patents, TACTICA.SIM S.r.l. satisfies two independent Comma 2-bis requirements at Year 3: (1) <strong>R&D ≥ 25%</strong> (actual Y3 = <strong>48.1%</strong> of production value / <strong>60.2%</strong> of cost), and (2) <strong>Revenue Growth > 50%</strong> between Y2 (€12,600) and Y3 (€41,800, <strong>+231.7%</strong>).<br><strong>• Mandatory SME & Non-Consulting Declarations:</strong> Qualifies as an EU Micro-Enterprise (<em>Raccomandazione 2003/361/CE</em>), 100% proprietary product revenue with <strong>0% prevalent consulting/agency activity</strong> (ATECO 62.01.00), and zero profit distribution.</p>
+ </div>
+ <div class="bg-appbg p-3 rounded-2xl border border-borderdim">
+ <div class="flex items-center justify-between mb-1">
+ <h4 class="font-bold text-white">4. €50,000 Equity Capital, Art. 2482-ter Stress Test & INPS</h4>
+ <span class="px-1.5 py-0.2 rounded bg-card border border-borderdim text-slate-300 font-mono text-[9px] font-bold">≥ €10,000 Floor</span>
+ </div>
+ <p class="text-slate-300 text-[11px] leading-relaxed">100% self-funded <strong>€50,000.00</strong> paid-in capital. Sole Director compensation (€15,000/yr) enrolled in <em>INPS Gestione Separata</em> (33.72% total rate; 22.48% = €3,372/yr company share). Under an extreme <strong>24-month zero-revenue stress test</strong>, Year 2 net equity remains <strong>€11,366.00</strong>, strictly above the €10,000 statutory threshold under <em>Art. 2482-ter Codice Civile</em>.</p>
+ </div>
+ <div class="bg-appbg p-3 rounded-2xl border border-borderdim">
+ <div class="flex items-center justify-between mb-1">
+ <h4 class="font-bold text-coralai">5. "Three-Zero" Compliance Firewall (ADM, Clean-Room IP, GDPR)</h4>
+ <span class="px-1.5 py-0.2 rounded bg-coralai/15 text-coralai font-mono text-[9px] font-bold">Zero Wagering</span>
+ </div>
+ <p class="text-slate-300 text-[11px] leading-relaxed"><strong>• Zero Gambling Risk (ADM):</strong> All Tactical Coins & XP are closed-loop educational tokens with zero cash-out, zero P2P trading, and zero real-money wagering — completely outside <em>Agenzia delle Dogane e dei Monopoli (ADM)</em> gambling regulations.<br><strong>• Clean-Room IP & App Store 3.1.2:</strong> 100% fictional geographic clubs (e.g., TOR - Turin Zebras), custom geometric SVG crests, StatsBomb Open Data calibration, and Apple App Store 3.1.2 subscription compliance.</p>
+ </div>
+ `
+ },
+ it: {
+ mvpBadge: "EdTech & Sim Poisson",
+ mimitSpecs: "MIMIT & L.193/24",
+ navSim: "Simulazione",
+ navLeague: "La Mia Lega",
+ navAcademy: "Accademia",
+ navClub: "Club & VIP",
+ modeHistorical: "Archivio Storico",
+ modeRandom: "Sfide Casuali",
+ histWeekThisTitle: "13 Nov • Giornata Storica Classica",
+ histWeekNextTitle: "20 Nov • Giornata Storica Derby",
+ histWeekSub: "Archivio calendario reale • Rotazione settimanale • Replay illimitati",
+ syncLocked: "Sync Bloccato",
+ lblWeekRotation: "Rotazione Calendario:",
+ btnThisWeek: "Questa Sett. (13 Nov)",
+ btnNextWeek: "Prossima Sett. (20 Nov)",
+ randomLeagueSub: "Modello di Poisson • Ricariche gratuite illimitate",
+ btnReroll: "Ricarica",
+ homeWin: "CASA",
+ draw: "PARI",
+ awayWin: "OSPITI",
+ pickHomeWin: "Guida Casa",
+ pickAwayWin: "Guida Ospiti",
+ replayedLabel: "Giocate",
+ poissonBtnLabel: "Matrice Poisson",
+ academyStreakSub: "Abitudine Tattica Quotidiana",
+ academyCheckinTitle: "Check-In Accademia 7 Giorni",
+ streakDays: "Giorni di Fila",
+ btnCheckedIn: "✓ Check-In Completato Oggi — Torna Domani!",
+ academyModulesHeading: "Programma Tattico e Quantitativo",
+ masteredLabel: "Completati",
+ leaderboardHeading: "Classifica Allenatori Accademia",
+ youLabel: "Tu (Mister)",
+ vipCardTitle: "Tactica Pro Pass",
+ vipCardSub: "Abbonamento conforme alle linee guida App Store 3.1.2",
+ vipAutoAdFree: "Zero Spot Attivo",
+ btnActivateVip: "Attiva VIP",
+ btnDeactivateVip: "VIP Attivo ✓",
+ vipPerk1: "Scouting senza spot automatico & Energia Lega illimitata",
+ vipPerk2: "Bonus accesso giornaliero VIP (+80 Monete Tattiche/giorno)",
+ vipPerk3: "Esperienza Mister 2x XP + Stadio Masters Oro sbloccato",
+ btnVipDropLocked: "Attiva VIP Pro per riscattare +80 Monete al giorno",
+ btnVipDropClaim: "Riscatta Bonus Giornaliero VIP (+80 Monete)",
+ btnVipDropClaimed: "✓ Bonus VIP di oggi (+80 Monete) riscattato",
+ utilityPassTitle: "Pass Scouting Senza Spot",
+ utilityPassDesc: "Salta istantaneamente 1 video post-partita mantenendo il bonus completo di +40 Monete.",
+ diySkinsHeading: "Temi Campo 2D (Canvas Live)",
+ diySkinsSub: "Applicazione Istantanea",
+ diyFramesHeading: "Cornici Tattiche Giocatori",
+ diyFramesSub: "Overlay 22 Giocatori",
+ equipped: "In Uso",
+ equip: "Usa",
+ vipIncluded: "Incluso nel VIP",
+ lblUserStam: "Tenuta Tua",
+ lblOppStam: "Tenuta Avv.",
+ lblTacticalCmds: "Interventi Tattici in Tempo Reale (Ricalcolo λ)",
+ lblEventStream: "Telemetria Stato-Macchina di Poisson & Markov",
+ cmdTitleHighPress: "Pressing Alto",
+ cmdSubHighPress: "+30% λ Attacco Poisson",
+ cmdTitleCatenaccio: "Blocco Catenaccio",
+ cmdSubCatenaccio: "-38% λ Avv. + Contropiede",
+ cmdTitleWing: "Sovraccarico Fasce",
+ cmdSubWing: "+26% Tasso xG Esterno",
+ cmdTitleSub: "Cambio Decisivo",
+ cmdSubSub: "+18% Tenuta & Finale",
+ lblSumXg: "Gol Attesi (xG)",
+ lblSumPoss: "Possesso Palla",
+ btnReturnHub: "Torna alla Home",
+ btnRematch: "Rivincita Rapida",
+ mimitModalTitle: "Architettura di Conformità D.L. 179/2012 & Legge 193/2024",
+ mimitModalClose: "Chiudi Nota Tecnica MIMIT",
+ mimitModalHtml: `
+ <div class="bg-appbg p-3 rounded-2xl border border-gold/40">
+ <div class="flex items-center justify-between mb-1">
+ <h4 class="font-bold text-gold">1. Motore Bivariato di Poisson & Dixon-Coles (Prototipo TRL 6)</h4>
+ <span class="px-1.5 py-0.2 rounded bg-golddim text-gold font-mono text-[9px] font-bold">1.500+ Righe Codice</span>
+ </div>
+ <p class="text-slate-300 text-[11px] leading-relaxed">Calcola i Gol Attesi (xG) pre-gara tramite <span class="font-mono text-white">λ_H = (HomeGF × AwayGA) / LeagueHomeAvg</span> e <span class="font-mono text-white">λ_A = (AwayGF × HomeGA) / LeagueAwayAvg</span>, generando una matrice di probabilità congiunta 11×11 con correzione di correlazione di Dixon-Coles (<span class="font-mono text-cyanai">ρ = -0.08</span>) e ricalcolo dinamico del tasso di arrivo (<span class="font-mono text-emeraldai">λ_rem</span>).</p>
+ </div>
+ <div class="bg-appbg p-3 rounded-2xl border border-emeraldai/40">
+ <div class="flex items-center justify-between mb-1">
+ <h4 class="font-bold text-emeraldai">2. D.L. 179/2012 Art. 25 — Fase 1 (Anni 0–3, Opzione A)</h4>
+ <span class="px-1.5 py-0.2 rounded bg-emeraldai/15 text-emeraldai font-mono text-[9px] font-bold">Codici 066 + 068</span>
+ </div>
+ <p class="text-slate-300 text-[11px] leading-relaxed"><strong>• Requisito Principale (Codice 066 — Spese R&S ≥ 15%):</strong> L'incidenza R&S raggiunge il <strong>67,3% (Anno 1)</strong>, <strong>68,0% (Anno 2)</strong> e il <strong>60,2% dei costi / 48,1% del valore della produzione (Anno 3)</strong> — oltre 4 volte la soglia di legge del 15%.<br><strong>• Tutela IP Software (Codice 068 — Registro SIAE):</strong> Programma per elaboratore originario registrato presso il <em>Registro Pubblico Speciale per i Programmi per Elaboratore</em> della SIAE dopo la costituzione a Torino.<br><strong>• Governance & Sinergia Accademica:</strong> Amministratore Unico con Laurea Magistrale (Waseda University) e Laurea in Economia (University of Toronto), con attivazione di <em>Tirocini Curriculari</em> con il Politecnico di Torino negli Anni 2–3.</p>
+ </div>
+ <div class="bg-appbg p-3 rounded-2xl border border-cyanai/40">
+ <div class="flex items-center justify-between mb-1">
+ <h4 class="font-bold text-cyanai">3. Legge 193/2024 Art. 28 (Comma 2-bis) — Fase 2 (Anni 3–5, Opzione B)</h4>
+ <span class="px-1.5 py-0.2 rounded bg-cyanai/15 text-cyanai font-mono text-[9px] font-bold">Riforma 2025/2026</span>
+ </div>
+ <p class="text-slate-300 text-[11px] leading-relaxed">Pienamente conforme alla <strong>Legge 16 dicembre 2024, n. 193</strong> e alla <strong>Circolare MIMIT 29 luglio 2025</strong>:<br><strong>• Requisiti Rafforzati (Opzione B):</strong> Senza dipendere da brevetti industriali, al termine del 3° anno TACTICA.SIM S.r.l. soddisfa due criteri autonomi del comma 2-bis: (1) <strong>Spese R&S ≥ 25%</strong> (effettivo Anno 3 = <strong>48,1%</strong> sul valore della produzione / <strong>60,2%</strong> sui costi), e (2) <strong>Incremento dei ricavi > 50%</strong> tra Anno 2 (€12.600) e Anno 3 (€41.800, <strong>+231,7%</strong>).<br><strong>• Qualifica PMI & Esclusione Consulenza:</strong> Qualifica di micro-impresa UE (<em>Raccomandazione 2003/361/CE</em>), 100% ricavi da prodotti software proprietari con <strong>0% attività prevalente di consulenza o agenzia</strong> (ATECO 62.01.00) e divieto di distribuzione utili.</p>
+ </div>
+ <div class="bg-appbg p-3 rounded-2xl border border-borderdim">
+ <div class="flex items-center justify-between mb-1">
+ <h4 class="font-bold text-white">4. Capitale €50.000, Stress Test Art. 2482-ter c.c. & INPS</h4>
+ <span class="px-1.5 py-0.2 rounded bg-card border border-borderdim text-slate-300 font-mono text-[9px] font-bold">Soglia ≥ €10.000</span>
+ </div>
+ <p class="text-slate-300 text-[11px] leading-relaxed">Capitale sociale di <strong>€50.000,00</strong> interamente versato con mezzi propri. Compenso Amministratore Unico (€15.000/anno) iscritto alla <em>Gestione Separata INPS</em> (aliquota 33,72%; quota 2/3 a carico azienda pari al 22,48% = €3.372/anno). Nello <strong>stress test estremo a zero ricavi per 24 mesi</strong>, il patrimonio netto a fine Anno 2 si attesta a <strong>€11.366,00</strong>, sempre sopra la soglia legale di €10.000 ex <em>Art. 2482-ter Codice Civile</em>.</p>
+ </div>
+ <div class="bg-appbg p-3 rounded-2xl border border-borderdim">
+ <div class="flex items-center justify-between mb-1">
+ <h4 class="font-bold text-coralai">5. Firewall "Triplo Zero" (Conformità ADM, Clean-Room IP, GDPR)</h4>
+ <span class="px-1.5 py-0.2 rounded bg-coralai/15 text-coralai font-mono text-[9px] font-bold">Zero Scommesse</span>
+ </div>
+ <p class="text-slate-300 text-[11px] leading-relaxed"><strong>• Zero Rischio Gioco d'Azzardo (ADM):</strong> Monete Tattiche e XP sono gettoni didattici a circuito chiuso senza prelievo in denaro, scambio tra utenti o scommesse, totalmente esclusi dal perimetro dell'<em>Agenzia delle Dogane e dei Monopoli (ADM)</em>.<br><strong>• Clean-Room IP & App Store 3.1.2:</strong> 100% club geografici fittizi (es. TOR - Turin Zebras), stemmi vettoriali originali, parametri estratti da StatsBomb Open Data e piena conformità GDPR / Apple App Store 3.1.2.</p>
+ </div>
+ `
+ },
+ cn: {
+ mvpBadge: "体育教育与泊松仿真",
+ mimitSpecs: "MIMIT 与新法合规",
+ navSim: "对阵推演",
+ navLeague: "自建联赛",
+ navAcademy: "知识学院",
+ navClub: "DIY与订阅",
+ modeHistorical: "历史同期对阵",
+ modeRandom: "纯随机对阵",
+ histWeekThisTitle: "11月13日 经典历史同期比赛周",
+ histWeekNextTitle: "11月20日 德比焦点历史比赛周",
+ histWeekSub: "锚定真实日历周期 • 随时间自动轮换 • 不可刷新但可无限重玩",
+ syncLocked: "同期锁定",
+ lblWeekRotation: "时间推移轮换预览：",
+ btnThisWeek: "本周 (11月13日)",
+ btnNextWeek: "下周 (11月20日)",
+ randomLeagueSub: "泊松攻防强度模型 • 玩家可无限次免费刷新",
+ btnReroll: "无限刷新",
+ homeWin: "主胜",
+ draw: "平局",
+ awayWin: "客胜",
+ pickHomeWin: "执教主队胜",
+ pickAwayWin: "执教客队胜",
+ replayedLabel: "已重玩",
+ poissonBtnLabel: "泊松矩阵",
+ academyStreakSub: "每日战术学习打卡",
+ academyCheckinTitle: "知识学院 7 日连续打卡",
+ streakDays: "天连胜",
+ btnCheckedIn: "✓ 今日已完成打卡 — 明日继续保持！",
+ academyModulesHeading: "足球战术、规则与泊松定量微课程",
+ masteredLabel: "已掌握",
+ leaderboardHeading: "学院战术家排行榜",
+ youLabel: "我 (主教练)",
+ vipCardTitle: "Tactica Pro 战术大师订阅",
+ vipCardSub: "符合苹果 App Store 3.1.2 持续性增值服务规范",
+ vipAutoAdFree: "全站自动免广告已生效",
+ btnActivateVip: "开启 VIP 体验",
+ btnDeactivateVip: "VIP 已激活 ✓",
+ vipPerk1: "全站自动免广告 + 自建联赛体力无限畅玩",
+ vipPerk2: "每日登录自动领取 +80 战术金币补给",
+ vipPerk3: "全场与学院双倍教练经验 (2x XP) + 解锁大师黄金球场",
+ btnVipDropLocked: "激活 VIP Pro 后可每日领取 +80 金币",
+ btnVipDropClaim: "领取今日 VIP 登录补给 (+80 金币)",
+ btnVipDropClaimed: "✓ 今日 +80 VIP 金币已入账",
+ utilityPassTitle: "单次免广告球探券",
+ utilityPassDesc: "免费用户消耗 60 金币兑换，可直接跳过赛后球探短片并领满 +40 金币。",
+ diySkinsHeading: "DIY 2D 战术板球场皮肤（实时换肤）",
+ diySkinsSub: "点击即刻生效",
+ diyFramesHeading: "DIY 战术棋子光环与队徽框",
+ diyFramesSub: "22人沙盘实时渲染",
+ equipped: "使用中",
+ equip: "装备",
+ vipIncluded: "VIP 专属免费",
+ lblUserStam: "我方体能",
+ lblOppStam: "对手体能",
+ lblTacticalCmds: "主教练临场战术干预（动态重算泊松到达率 λ）",
+ lblEventStream: "泊松与马尔可夫状态机实时事件流",
+ cmdTitleHighPress: "高位逼抢",
+ cmdSubHighPress: "+30% 我方泊松进攻 λ",
+ cmdTitleCatenaccio: "意式链式防反",
+ cmdSubCatenaccio: "-38% 对手 λ + 反击",
+ cmdTitleWing: "两翼超载突击",
+ cmdSubWing: "+26% 边路期望进球率",
+ cmdTitleSub: "奇兵换人调整",
+ cmdSubSub: "+18% 末段体能与绝杀率",
+ lblSumXg: "全场期望进球 (xG)",
+ lblSumPoss: "控球率分布",
+ btnReturnHub: "返回大厅",
+ btnRematch: "一键重赛",
+ mimitModalTitle: "D.L. 179/2012 与第 193/2024 号法律全周期合规架构",
+ mimitModalClose: "关闭 MIMIT 合规技术说明",
+ mimitModalHtml: `
+ <div class="bg-appbg p-3 rounded-2xl border border-gold/40">
+ <div class="flex items-center justify-between mb-1">
+ <h4 class="font-bold text-gold">1. 双变量泊松与 Dixon-Coles 推演引擎（TRL 6 工程原型）</h4>
+ <span class="px-1.5 py-0.2 rounded bg-golddim text-gold font-mono text-[9px] font-bold">1,500+ 行净室代码</span>
+ </div>
+ <p class="text-slate-300 text-[11px] leading-relaxed">基于主客场攻防强度参数动态计算期望进球 <span class="font-mono text-white">λ_H = (HomeGF × AwayGA) / LeagueHomeAvg</span> 与 <span class="font-mono text-white">λ_A = (AwayGF × HomeGA) / LeagueAwayAvg</span>，构建带 Dixon-Coles 低比分相关性校准（<span class="font-mono text-cyanai">ρ = -0.08</span>）的 11×11 联合比分概率矩阵，并在 90 分钟仿真中随临场战术指令实时重算剩余进球到达率（<span class="font-mono text-emeraldai">λ_rem</span>）。</p>
+ </div>
+ <div class="bg-appbg p-3 rounded-2xl border border-emeraldai/40">
+ <div class="flex items-center justify-between mb-1">
+ <h4 class="font-bold text-emeraldai">2. D.L. 179/2012 第 25 条 — 第一阶段（第 0–3 年，Opzione A）双保险达标</h4>
+ <span class="px-1.5 py-0.2 rounded bg-emeraldai/15 text-emeraldai font-mono text-[9px] font-bold">代码 066 + 068</span>
+ </div>
+ <p class="text-slate-300 text-[11px] leading-relaxed"><strong>• 首期主申报指标（Codice 066 — 研发支出占比 ≥ 15%）：</strong>三年期研发占比分别达 <strong>67.3%（第 1 年）</strong>、<strong>68.0%（第 2 年）</strong>及 <strong>60.2%（第 3 年按总支出）/ 48.1%（第 3 年按较高之总产值 €41,800）</strong>，连续超法定 15% 红线 3 至 4.5 倍。<br><strong>• 次期知识产权双保险（Codice 068 — SIAE 软著登记）：</strong>公司于都灵设立后即刻向意大利版权与软件保护局（SIAE）<em>计算机程序特别公共登记簿</em>提交原创源码登记。<br><strong>• 创始团队学术与产学研支撑：</strong>唯一执行董事持早稻田大学硕士及多伦多大学经济学学士学位，第 2–3 年接入都灵理工大学（Politecnico di Torino）<em>Tirocinio Curriculare</em> 硕士课程学分实习机制。</p>
+ </div>
+ <div class="bg-appbg p-3 rounded-2xl border border-cyanai/40">
+ <div class="flex items-center justify-between mb-1">
+ <h4 class="font-bold text-cyanai">3. Legge 193/2024 第 28 条（Comma 2-bis）— 第二阶段（第 3–5 年，Opzione B）</h4>
+ <span class="px-1.5 py-0.2 rounded bg-cyanai/15 text-cyanai font-mono text-[9px] font-bold">2025/2026 新规衔接</span>
+ </div>
+ <p class="text-slate-300 text-[11px] leading-relaxed">全面响应 <strong>第 193/2024 号法律（年度竞争法）</strong>及 <strong>MIMIT 2025 年 7 月 29 日官方通告</strong>：<br><strong>• 阶段二强化延续双达标（Opzione B）：</strong>针对新法规定第 3 年末起 SIAE 软著不再作为延续依据，TACTICA.SIM S.r.l. 在第 3 年末同时满足两项独立强化指标：（1）<strong>研发占比 ≥ 25%</strong>（实际按总产值计达 <strong>48.1%</strong> / 按总成本计达 <strong>60.2%</strong>）；（2）<strong>第 2 至第 3 年营收增长 > 50%</strong>（从 €12,600 增至 €41,800，实际增幅达 <strong>+231.7%</strong>）。<br><strong>• 欧盟微型企业与非咨询主业声明：</strong>明确符合欧盟 <em>2003/361/CE</em> 微型企业（PMI）标准，100% 营业收入源自专有软件产品订阅与标准化许可，<strong>零外部咨询或代理业务</strong>（ATECO 62.01.00），存续期内不分配利润。</p>
+ </div>
+ <div class="bg-appbg p-3 rounded-2xl border border-borderdim">
+ <div class="flex items-center justify-between mb-1">
+ <h4 class="font-bold text-white">4. €50,000 全额实缴、《民法典》第 2482-ter 条压力测试与 INPS 合规</h4>
+ <span class="px-1.5 py-0.2 rounded bg-card border border-borderdim text-slate-300 font-mono text-[9px] font-bold">净资产 ≥ €10,000</span>
+ </div>
+ <p class="text-slate-300 text-[11px] leading-relaxed">主申请人自有流动资金 100% 全额实缴 <strong>€50,000.00</strong> 注册资本。唯一执行董事津贴（税前 €15,000/年）依法登记于 <em>INPS Gestione Separata</em>（总费率 33.72%，公司承担 2/3 法定份额即 22.48% = €3,372/年）。在长达 <strong>24 个月零营收极端压力测试</strong>下，第 2 年末净资产仍稳居 <strong>€11,366.00</strong>，严格高于意大利《民法典》第 2482-ter 条规定的 €10,000 法定底线。</p>
+ </div>
+ <div class="bg-appbg p-3 rounded-2xl border border-borderdim">
+ <div class="flex items-center justify-between mb-1">
+ <h4 class="font-bold text-coralai">5. “三零”合规防火墙（零博彩属性、零第三方 IP 侵权、GDPR 合规）</h4>
+ <span class="px-1.5 py-0.2 rounded bg-coralai/15 text-coralai font-mono text-[9px] font-bold">ADM 非博彩合规</span>
+ </div>
+ <p class="text-slate-300 text-[11px] leading-relaxed"><strong>• 零博彩监管风险（ADM）：</strong>系统内所有战术金币与教练经验均为封闭式虚拟教学道具，严禁法定货币提现、玩家间交易或现金竞猜，完全脱离意大利海关与垄断局（ADM）博彩法管辖。<br><strong>• 100% 净室原创 IP 与商店合规：</strong>内置架空地理俱乐部（如 TOR - Turin Zebras）与原创几何矢量队徽，依托 StatsBomb Open Data 开源赛事参数，符合欧盟 GDPR 与 Apple App Store 第 3.1.2 条订阅规范。</p>
+ </div>
+ `
+ }
+ };
+
+ // -----------------------------------------------------------------------
+ // 2. CLEAN-ROOM LEAGUES & EMPIRICAL ATTACK/DEFENSE TEAM PARAMETERS
+ // -----------------------------------------------------------------------
+ const LEAGUES = [
+ { id: 'calcio', nameEn: 'Calcio Classic', nameIt: 'Classico Serie A', nameCn: '经典亚平宁', homeAvg: 1.56, awayAvg: 1.24, colors: ['#10B981', '#3B82F6'], badgeType: 'tricolor' },
+ { id: 'albion', nameEn: 'Albion League', nameIt: 'Lega Albion', nameCn: '阿尔比恩联赛', homeAvg: 1.80, awayAvg: 1.48, colors: ['#F43F5E', '#FFFFFF'], badgeType: 'cross' },
+ { id: 'iberia', nameEn: 'Iberia Cup', nameIt: 'Coppa Iberia', nameCn: '伊比利亚杯', homeAvg: 1.64, awayAvg: 1.28, colors: ['#F59E0B', '#DC2626'], badgeType: 'stripes' },
+ { id: 'rheinland', nameEn: 'Rheinland', nameIt: 'Lega Renania', nameCn: '莱茵兰联赛', homeAvg: 1.88, awayAvg: 1.46, colors: ['#FACC15', '#1E293B'], badgeType: 'chevron' },
+ { id: 'gallia', nameEn: 'Gallia Pro', nameIt: 'Gallia Pro', nameCn: '高卢职业联', homeAvg: 1.58, awayAvg: 1.32, colors: ['#38BDF8', '#6366F1'], badgeType: 'diamond' },
+ { id: 'global', nameEn: 'Global Nations', nameIt: 'Coppa Nazioni', nameCn: '洲际国家杯', homeAvg: 1.52, awayAvg: 1.28, colors: ['#F5B82E', '#10B981'], badgeType: 'globe' }
+ ];
+
+ const TEAM_POOLS = {
+ albion: [
+ { code: 'MCB', name: 'Manchester Sky', c1: '#38BDF8', c2: '#0F172A', homeGF: 2.68, homeGA: 0.84, awayGF: 2.37, awayGA: 0.95, emblemShape: 'shield', form: '3-2-4-1', styleEn: 'Positional Box', styleIt: 'Possesso Posizionale', styleCn: '肋部传控', counterLesson: 'mod-3' },
+ { code: 'NLR', name: 'North London Red', c1: '#EF4444', c2: '#FDE047', homeGF: 2.53, homeGA: 0.84, awayGF: 2.26, awayGA: 0.68, emblemShape: 'stripes', form: '4-3-3', styleEn: 'Wing Overload', styleIt: 'Sovraccarico Fasce', styleCn: '双翼超载', counterLesson: 'mod-4' },
+ { code: 'MRY', name: 'Mersey Red', c1: '#B91C1C', c2: '#FBBF24', homeGF: 2.58, homeGA: 0.89, awayGF: 1.95, awayGA: 1.26, emblemShape: 'crown', form: '4-3-3', styleEn: 'Gegenpress', styleIt: 'Gegenpressing', styleCn: '重金属反抢', counterLesson: 'mod-1' },
+ { code: 'WLB', name: 'West London Blue', c1: '#2563EB', c2: '#F8FAFC', homeGF: 2.32, homeGA: 1.37, awayGF: 1.74, awayGA: 1.95, emblemShape: 'shield', form: '4-3-3', styleEn: 'High Press', styleIt: 'Pressing Alto', styleCn: '高位逼抢', counterLesson: 'mod-1' },
+ { code: 'NLW', name: 'North London White', c1: '#F8FAFC', c2: '#1E3A8A', homeGF: 2.00, homeGA: 1.42, awayGF: 1.89, awayGA: 1.79, emblemShape: 'star', form: '4-2-3-1', styleEn: 'High Line', styleIt: 'Linea Alta Offside', styleCn: '造越位压迫', counterLesson: 'mod-2' },
+ { code: 'MCR', name: 'Manchester Red', c1: '#DC2626', c2: '#111827', homeGF: 1.63, homeGA: 1.47, awayGF: 1.37, awayGA: 1.58, emblemShape: 'crown', form: '4-2-3-1', styleEn: 'Transition', styleIt: 'Transizione Rapida', styleCn: '快速转换', counterLesson: 'mod-3' }
+ ],
+ calcio: [
+ { code: 'TOR', name: 'Turin Zebras', c1: '#F8FAFC', c2: '#09090B', homeGF: 1.89, homeGA: 0.74, awayGF: 1.47, awayGA: 0.95, emblemShape: 'stripes', form: '3-5-2', styleEn: 'Catenaccio', styleIt: 'Catenaccio & Contropiede', styleCn: '链式防守', counterLesson: 'mod-4' },
+ { code: 'MIL', name: 'Milan Rossoneri', c1: '#DC2626', c2: '#09090B', homeGF: 2.05, homeGA: 0.95, awayGF: 1.84, awayGA: 1.26, emblemShape: 'stripes', form: '4-2-3-1', styleEn: 'Zonal Press', styleIt: 'Pressing Zonale', styleCn: '区域压迫', counterLesson: 'mod-3' },
+ { code: 'AMB', name: 'Ambrosiana Blue-Black', c1: '#1D4ED8', c2: '#09090B', homeGF: 2.37, homeGA: 0.68, awayGF: 2.11, awayGA: 0.79, emblemShape: 'star', form: '3-5-2', styleEn: 'Wingback Counter', styleIt: 'Quinti a Tutta Fascia', styleCn: '翼卫反击', counterLesson: 'mod-4' },
+ { code: 'PRT', name: 'Partenope Azure', c1: '#38BDF8', c2: '#F8FAFC', homeGF: 1.95, homeGA: 1.16, awayGF: 1.68, awayGA: 1.11, emblemShape: 'shield', form: '4-3-3', styleEn: 'Fluid Triangles', styleIt: 'Triangoli Fluidi', styleCn: '流动三角', counterLesson: 'mod-1' },
+ { code: 'TRG', name: 'Turin Granata', c1: '#881337', c2: '#F8FAFC', homeGF: 1.42, homeGA: 0.89, awayGF: 1.11, awayGA: 1.16, emblemShape: 'shield', form: '3-4-2-1', styleEn: 'Man-Marking', styleIt: 'Marcatura a Uomo', styleCn: '铁血盯人', counterLesson: 'mod-4' },
+ { code: 'CAP', name: 'Capitoline Wolves', c1: '#991B1B', c2: '#F59E0B', homeGF: 1.84, homeGA: 1.05, awayGF: 1.37, awayGA: 1.32, emblemShape: 'crown', form: '3-4-1-2', styleEn: 'Trequartista', styleIt: 'Trequartista Classico', styleCn: '古典前腰', counterLesson: 'mod-3' }
+ ],
+ iberia: [
+ { code: 'MAD', name: 'Castilla Royal White', c1: '#F8FAFC', c2: '#F5B82E', homeGF: 2.42, homeGA: 0.63, awayGF: 2.05, awayGA: 0.84, emblemShape: 'crown', form: '4-3-3', styleEn: 'Vertical Counter', styleIt: 'Contropiede Verticale', styleCn: '纵向闪电反击', counterLesson: 'mod-1' },
+ { code: 'CAT', name: 'Condal Blaugrana', c1: '#1D4ED8', c2: '#DC2626', homeGF: 2.26, homeGA: 0.95, awayGF: 1.95, awayGA: 1.16, emblemShape: 'stripes', form: '4-3-3', styleEn: 'Tiki-Taka', styleIt: 'Tiki-Taka', styleCn: '极致传控', counterLesson: 'mod-3' },
+ { code: 'MTR', name: 'Metropolitano Shield', c1: '#DC2626', c2: '#F8FAFC', homeGF: 2.11, homeGA: 0.84, awayGF: 1.53, awayGA: 1.21, emblemShape: 'shield', form: '5-3-2', styleEn: 'Low Block', styleIt: 'Blocco Basso Compatto', styleCn: '双层铁桶', counterLesson: 'mod-4' },
+ { code: 'BSQ', name: 'Biscay Lions', c1: '#EF4444', c2: '#111827', homeGF: 1.89, homeGA: 0.89, awayGF: 1.37, awayGA: 1.11, emblemShape: 'stripes', form: '4-2-3-1', styleEn: 'Relentless Press', styleIt: 'Pressing Continuo', styleCn: '持续压迫', counterLesson: 'mod-1' }
+ ],
+ rheinland: [
+ { code: 'ISR', name: 'Isar Bavaria', c1: '#DC2626', c2: '#F8FAFC', homeGF: 2.74, homeGA: 0.95, awayGF: 2.21, awayGA: 1.32, emblemShape: 'star', form: '4-2-3-1', styleEn: 'Total Dominance', styleIt: 'Dominio Totale', styleCn: '全员压上', counterLesson: 'mod-1' },
+ { code: 'RHR', name: 'Ruhr Black-Yellow', c1: '#FACC15', c2: '#09090B', homeGF: 2.26, homeGA: 1.11, awayGF: 1.89, awayGA: 1.26, emblemShape: 'shield', form: '4-3-3', styleEn: 'Gegenpress Blitz', styleIt: 'Blitz Gegenpressing', styleCn: '反抢闪电战', counterLesson: 'mod-1' },
+ { code: 'RHW', name: 'Rheinwerk 04', c1: '#111827', c2: '#EF4444', homeGF: 2.47, homeGA: 0.74, awayGF: 2.16, awayGA: 0.84, emblemShape: 'shield', form: '3-4-2-1', styleEn: 'Fluid Overload', styleIt: 'Sovraccarico Fluido', styleCn: '流动性超载', counterLesson: 'mod-4' },
+ { code: 'SXY', name: 'Saxony Red Bulls', c1: '#F8FAFC', c2: '#E11D48', homeGF: 2.16, homeGA: 1.05, awayGF: 1.79, awayGA: 1.37, emblemShape: 'stripes', form: '4-2-2-2', styleEn: 'Vertical Trap', styleIt: 'Trappola Verticale', styleCn: '纵向陷阱', counterLesson: 'mod-2' }
+ ],
+ gallia: [
+ { code: 'LUT', name: 'Lutetia Blue-Red', c1: '#1E3A8A', c2: '#EF4444', homeGF: 2.37, homeGA: 0.95, awayGF: 2.16, awayGA: 0.89, emblemShape: 'crown', form: '4-3-3', styleEn: 'Explosive Wingers', styleIt: 'Ali Esplosive', styleCn: '爆破边锋群', counterLesson: 'mod-4' },
+ { code: 'PHO', name: 'Phocaea White-Blue', c1: '#F8FAFC', c2: '#38BDF8', homeGF: 1.84, homeGA: 1.05, awayGF: 1.42, awayGA: 1.47, emblemShape: 'star', form: '3-4-3', styleEn: 'High Duel', styleIt: 'Duelli ad Alta Intensità', styleCn: '高强度对抗', counterLesson: 'mod-3' },
+ { code: 'RHO', name: 'Rhone Academy', c1: '#F8FAFC', c2: '#2563EB', homeGF: 1.68, homeGA: 1.21, awayGF: 1.47, awayGA: 1.32, emblemShape: 'shield', form: '4-3-3', styleEn: 'Fluid Passing', styleIt: 'Palleggio Fluido', styleCn: '流畅传切', counterLesson: 'mod-3' },
+ { code: 'MNC', name: 'Principality Red-White', c1: '#EF4444', c2: '#F8FAFC', homeGF: 1.95, homeGA: 1.11, awayGF: 1.84, awayGA: 1.37, emblemShape: 'crown', form: '4-4-2', styleEn: 'Dual-Striker Press', styleIt: 'Pressing Doppia Punta', styleCn: '双前锋压迫', counterLesson: 'mod-1' }
+ ],
+ global: [
+ { code: 'ORA', name: 'Oranje 1974 Total', c1: '#F97316', c2: '#F8FAFC', homeGF: 2.15, homeGA: 0.95, awayGF: 1.92, awayGA: 1.05, emblemShape: 'shield', form: '4-3-3', styleEn: 'Total Football', styleIt: 'Calcio Totale', styleCn: '全攻全守', counterLesson: 'mod-1' },
+ { code: 'AZZ', name: 'Azzurri 1994 Block', c1: '#2563EB', c2: '#F8FAFC', homeGF: 1.75, homeGA: 0.72, awayGF: 1.54, awayGA: 0.84, emblemShape: 'star', form: '4-4-2', styleEn: 'Catenaccio', styleIt: 'Catenaccio Classico', styleCn: '经典链式防反', counterLesson: 'mod-4' },
+ { code: 'ROJ', name: 'Roja 2010 Tiki-Taka', c1: '#DC2626', c2: '#FACC15', homeGF: 2.05, homeGA: 0.78, awayGF: 1.88, awayGA: 0.88, emblemShape: 'crown', form: '4-3-3', styleEn: 'Positional Web', styleIt: 'Ragnatela di Possesso', styleCn: '传控蜘蛛网', counterLesson: 'mod-3' },
+ { code: 'MAN', name: 'Mannschaft 2014 Press', c1: '#F8FAFC', c2: '#111827', homeGF: 2.24, homeGA: 0.88, awayGF: 2.02, awayGA: 0.96, emblemShape: 'star', form: '4-2-3-1', styleEn: 'Gegenpress', styleIt: 'Pressing Collettivo', styleCn: '整体压迫', counterLesson: 'mod-1' }
+ ]
+ };
+
+ // -----------------------------------------------------------------------
+ // 3. BIVARIATE POISSON + DIXON-COLES MATHEMATICAL ENGINE
+ // -----------------------------------------------------------------------
+ function factorial(n) {
+ let res = 1;
+ for (let i = 2; i <= n; i++) res *= i;
+ return res;
+ }
+
+ function poissonPMF(lambda, k) {
+ if (lambda <= 0) return k === 0 ? 1 : 0;
+ return (Math.exp(-lambda) * Math.pow(lambda, k)) / factorial(k);
+ }
+
+ function computePoissonMatchModel(home, away, leagueId) {
+ const league = LEAGUES.find(l => l.id === leagueId) || LEAGUES[0];
+ const homeAvg = league.homeAvg || 1.80;
+ const awayAvg = league.awayAvg || 1.48;
+
+ const lambdaH = Number(Math.max(0.25, Math.min(4.5, (home.homeGF * away.awayGA) / homeAvg)).toFixed(4));
+ const lambdaA = Number(Math.max(0.25, Math.min(4.5, (away.awayGF * home.homeGA) / awayAvg)).toFixed(4));
+
+ const maxGoals = 10; // 11x11 matrix (0..10)
+ const rho = -0.08;
+ const matrix = [];
+ let totalMass = 0;
+
+ for (let h = 0; h <= maxGoals; h++) {
+ const pH = poissonPMF(lambdaH, h);
+ const row = [];
+ for (let a = 0; a <= maxGoals; a++) {
+ const pA = poissonPMF(lambdaA, a);
+ let tau = 1.0;
+ if (h === 0 && a === 0) tau = 1 - lambdaH * lambdaA * rho;
+ else if (h === 1 && a === 0) tau = 1 + lambdaA * rho;
+ else if (h === 0 && a === 1) tau = 1 + lambdaH * rho;
+ else if (h === 1 && a === 1) tau = 1 - rho;
+
+ const joint = Math.max(0, pH * pA * tau);
+ row.push(joint);
+ totalMass += joint;
+ }
+ matrix.push(row);
+ }
+
+ let sumHomeWin = 0;
+ let sumDraw = 0;
+ let sumAwayWin = 0;
+ let modalScore = { h: 1, a: 1, prob: 0 };
+
+ for (let h = 0; h <= maxGoals; h++) {
+ for (let a = 0; a <= maxGoals; a++) {
+ matrix[h][a] = totalMass > 0 ? matrix[h][a] / totalMass : 0;
+ const p = matrix[h][a];
+ if (h > a) sumHomeWin += p;
+ else if (h === a) sumDraw += p;
+ else sumAwayWin += p;
+
+ if (h <= 5 && a <= 5 && p > modalScore.prob) {
+ modalScore = { h, a, prob: p };
+ }
+ }
+ }
+
+ const exactH = sumHomeWin * 100;
+ const exactD = sumDraw * 100;
+ const exactA = sumAwayWin * 100;
+
+ let pH = Math.max(2, Math.round(exactH));
+ let pD = Math.max(2, Math.round(exactD));
+ let pA = Math.max(2, Math.round(exactA));
+ if (pH + pD + pA !== 100) {
+ pH += 100 - (pH + pD + pA);
+ }
+
+ return {
+ league,
+ lambdaH,
+ lambdaA,
+ matrix,
+ modalScore,
+ exactProbs: [exactH, exactD, exactA],
+ prob: [pH, pD, pA],
+ xg: [Number(lambdaH.toFixed(2)), Number(lambdaA.toFixed(2))]
+ };
+ }
+
+ function computeLivePoissonOutcome(scoreH, scoreA, remLambdaH, remLambdaA) {
+ let winH = 0;
+ let draw = 0;
+ let winA = 0;
+ for (let dh = 0; dh <= 6; dh++) {
+ const ph = poissonPMF(remLambdaH, dh);
+ for (let da = 0; da <= 6; da++) {
+ const p = ph * poissonPMF(remLambdaA, da);
+ const finalH = scoreH + dh;
+ const finalA = scoreA + da;
+ if (finalH > finalA) winH += p;
+ else if (finalH === finalA) draw += p;
+ else winA += p;
+ }
+ }
+ const tot = winH + draw + winA || 1;
+ let rH = Math.max(2, Math.min(96, Math.round((winH / tot) * 100)));
+ let rA = Math.max(2, Math.min(96, Math.round((winA / tot) * 100)));
+ let rD = Math.max(2, 100 - rH - rA);
+ if (rH + rD + rA !== 100) rH += 100 - (rH + rD + rA);
+ return [rH, rD, rA];
+ }
+
+ // Historical Calendar-Synced Fixtures (Locked against refresh, unlimited replays)
+ const HISTORICAL_WEEKS = {
+ current: [
+ {
+ id: 'hist-nov13-4',
+ league: 'calcio',
+ eraTagEn: 'Nov Classic • Sweeper & Zone 14 Duel',
+ eraTagIt: 'Classico Nov • Duello Libero & Zona 14',
+ eraTagCn: '11月经典同期 • 拖后自由人与14区攻防博弈',
+ home: TEAM_POOLS.calcio[0], // TOR
+ away: TEAM_POOLS.calcio[1], // MIL
+ bonusCmds: ['wingOverload', 'highPress'],
+ bonusLabelEn: 'Wing Overload / High Press',
+ bonusLabelIt: 'Sovraccarico Fasce / Pressing Alto',
+ bonusLabelCn: '两翼超载 / 高位逼抢'
+ },
+ {
+ id: 'hist-nov13-1',
+ league: 'albion',
+ eraTagEn: 'Nov Classic • Tactical Title Showdown',
+ eraTagIt: 'Classico Nov • Sfida Scudetto Tattica',
+ eraTagCn: '11月经典同期 • 传控体系巅峰对决',
+ home: TEAM_POOLS.albion[0], // MCB
+ away: TEAM_POOLS.albion[1], // NLR
+ bonusCmds: ['catenaccio', 'wingOverload'],
+ bonusLabelEn: 'Catenaccio / Wing Overload',
+ bonusLabelIt: 'Catenaccio / Sovraccarico Fasce',
+ bonusLabelCn: '链式防反 / 两翼超载'
+ },
+ {
+ id: 'hist-nov13-2',
+ league: 'iberia',
+ eraTagEn: 'Nov Classic • Positional Possession Era',
+ eraTagIt: 'Classico Nov • Era Possesso Posizionale',
+ eraTagCn: '11月经典同期 • 肋部传控大师 vs 闪电反击',
+ home: TEAM_POOLS.iberia[0], // MAD
+ away: TEAM_POOLS.iberia[1], // CAT
+ bonusCmds: ['highPress', 'catenaccio'],
+ bonusLabelEn: 'High Press / Catenaccio',
+ bonusLabelIt: 'Pressing Alto / Catenaccio',
+ bonusLabelCn: '高位逼抢 / 链式防反'
+ },
+ {
+ id: 'hist-nov13-3',
+ league: 'rheinland',
+ eraTagEn: 'Nov Classic • Gegenpress Blitz Archive',
+ eraTagIt: 'Classico Nov • Archivio Gegenpressing',
+ eraTagCn: '11月经典同期 • 重金属反抢闪电战档案',
+ home: TEAM_POOLS.rheinland[0], // ISR
+ away: TEAM_POOLS.rheinland[1], // RHR
+ bonusCmds: ['catenaccio', 'wingOverload'],
+ bonusLabelEn: 'Catenaccio / Wing Overload',
+ bonusLabelIt: 'Catenaccio / Sovraccarico Fasce',
+ bonusLabelCn: '链式防反 / 两翼超载'
+ }
+ ],
+ next: [
+ {
+ id: 'hist-nov20-1',
+ league: 'albion',
+ eraTagEn: 'Nov 20 Preview • North London High-Line Classic',
+ eraTagIt: 'Anteprima 20 Nov • Linea Alta Nord Londra',
+ eraTagCn: '11月20日同期预告 • 北伦敦造越位与边路风暴',
+ home: TEAM_POOLS.albion[1], // NLR
+ away: TEAM_POOLS.albion[4], // NLW
+ bonusCmds: ['wingOverload', 'superSub'],
+ bonusLabelEn: 'Wing Overload / Super Sub',
+ bonusLabelIt: 'Sovraccarico Fasce / Cambio Decisivo',
+ bonusLabelCn: '两翼超载 / 奇兵换人'
+ },
+ {
+ id: 'hist-nov20-2',
+ league: 'calcio',
+ eraTagEn: 'Nov 20 Preview • Derby della Madonnina 3-5-2',
+ eraTagIt: 'Anteprima 20 Nov • Derby 3-5-2 Quinti di Fascia',
+ eraTagCn: '11月20日同期预告 • 双翼卫反击档案',
+ home: TEAM_POOLS.calcio[2], // AMB
+ away: TEAM_POOLS.calcio[1], // MIL
+ bonusCmds: ['catenaccio', 'superSub'],
+ bonusLabelEn: 'Catenaccio / Super Sub',
+ bonusLabelIt: 'Catenaccio / Cambio Decisivo',
+ bonusLabelCn: '链式防反 / 奇兵换人'
+ },
+ {
+ id: 'hist-nov20-3',
+ league: 'global',
+ eraTagEn: 'Nov 20 Preview • Total Football Tactical Shift',
+ eraTagIt: 'Anteprima 20 Nov • Rivoluzione Calcio Totale',
+ eraTagCn: '11月20日同期预告 • 全攻全守无位置足球革命',
+ home: TEAM_POOLS.global[0], // ORA
+ away: TEAM_POOLS.global[1], // AZZ
+ bonusCmds: ['wingOverload', 'catenaccio'],
+ bonusLabelEn: 'Wing Overload / Catenaccio',
+ bonusLabelIt: 'Sovraccarico Fasce / Catenaccio',
+ bonusLabelCn: '两翼超载 / 链式防反'
+ }
+ ]
+ };
+
+ // -----------------------------------------------------------------------
+ // 4. ACADEMY MICRO-LEARNING MODULES & QUIZZES (5 Rich Lessons in EN/IT/CN)
+ // -----------------------------------------------------------------------
+ const ACADEMY_MODULES = [
+ {
+ id: 'mod-1',
+ tagEn: 'Tactical History',
+ tagIt: 'Storia Tattica',
+ tagCn: '战术历史',
+ tagColor: 'text-gold bg-golddim border-gold/30',
+ titleEn: '1990s Italian Catenaccio & Sweeper Geometry',
+ titleIt: 'Il Catenaccio Italiano Anni \'90 e la Geometria del Libero',
+ titleCn: '90年代意式链式防守与自由人（Libero）几何站位',
+ summaryEn: 'Originating in classic Italian football, Catenaccio pairs strict man-marking with a deep Sweeper (Libero) behind the defensive line to absorb central breakthroughs and launch vertical counter-attacks.',
+ summaryIt: 'Nato nella tradizione calcistica italiana, il Catenaccio abbina la marcatura a uomo a un Libero staccato dietro la linea difensiva per assorbire le imbucate centrali e innescare il contropiede verticale.',
+ summaryCn: '起源于经典意大利足坛的链式防守（Catenaccio），通过人盯人防线与拖后自由人（Libero）的纵深保护，封锁中路渗透并在抢断瞬间发动纵向闪电反击。',
+ diagramSvg: `
+ <svg class="w-full h-24 rounded-xl bg-[#0A1E15] border border-borderdim" viewBox="0 0 280 90">
+ <rect x="8" y="8" width="264" height="74" rx="6" fill="none" stroke="rgba(255,255,255,0.2)" />
+ <line x1="140" y1="8" x2="140" y2="82" stroke="rgba(255,255,255,0.18)" />
+ <circle cx="38" cy="45" r="7" fill="#F5B82E" /><text x="38" y="48" font-size="7" font-weight="bold" text-anchor="middle" fill="#0B0F17">LIB</text>
+ <circle cx="72" cy="22" r="6" fill="#10B981" /><circle cx="72" cy="45" r="6" fill="#10B981" /><circle cx="72" cy="68" r="6" fill="#10B981" />
+ <path d="M45 45 L72 22 M45 45 L72 45 M45 45 L72 68" stroke="#F5B82E" stroke-dasharray="3 2" stroke-width="1.2" />
+ <path d="M78 45 L210 26" stroke="#38BDF8" stroke-width="2" />
+ <text x="195" y="20" font-size="8" font-family="monospace" fill="#38BDF8">COUNTER VECTOR</text>
+ </svg>
+ `,
+ qEn: 'What is the primary tactical role of the Sweeper (Libero) in classic Catenaccio?',
+ qIt: 'Qual è la funzione tattica principale del Libero nel Catenaccio classico?',
+ qCn: '在经典意式链式防守中，拖后自由人（Libero）的核心战术职责是什么？',
+ optionsEn: [
+ 'Stay permanently inside the opponent penalty box',
+ 'Cover loose balls behind the defensive line & initiate counters',
+ 'Take all corner kicks and throw-ins on the left wing'
+ ],
+ optionsIt: [
+ 'Restare stabilmente nell\'area di rigore avversaria',
+ 'Coprire la profondità dietro la linea difensiva e impostare il contropiede',
+ 'Battere tutti i calci d\'angolo e le rimesse laterali a sinistra'
+ ],
+ optionsCn: [
+ '常驻对方禁区内等待高空头球争顶',
+ '保护防线身后空当、清理漏球并策动纵向反击',
+ '专门负责主罚左侧角球与界外球'
+ ],
+ correctIdx: 1
+ },
+ {
+ id: 'mod-2',
+ tagEn: 'Match Rules',
+ tagIt: 'Regolamento IFAB',
+ tagCn: '竞赛规则',
+ tagColor: 'text-cyanai bg-cyanai/10 border-cyanai/30',
+ titleEn: 'Modern Offside Line & VAR Deflection Logic',
+ titleIt: 'Linea del Fuorigioco Moderno e Logica VAR sulle Deviazioni',
+ titleCn: '现代越位线判定与 VAR 折射/主动触球规则',
+ summaryEn: 'Under modern IFAB & VAR protocols, an attacker in an offside position is NOT reset by an involuntary deflection off a defender—only a deliberate defensive play resets the phase.',
+ summaryIt: 'Secondo il protocollo IFAB e VAR, un attaccante in posizione di fuorigioco NON viene rimesso in gioco da una deviazione involontaria del difensore: solo una giocata volontaria rimette in gioco l\'avversario.',
+ summaryCn: '根据现代 IFAB 与 VAR 判罚逻辑，处于越位位置的进攻球员若接到防守球员“非故意折射”的来球，依然判罚越位；唯有防守方“主动且可控的解围/传球失误”才会重置越位状态。',
+ diagramSvg: `
+ <svg class="w-full h-24 rounded-xl bg-[#0A1E15] border border-borderdim" viewBox="0 0 280 90">
+ <rect x="8" y="8" width="264" height="74" rx="6" fill="none" stroke="rgba(255,255,255,0.2)" />
+ <line x1="196" y1="8" x2="196" y2="82" stroke="#F43F5E" stroke-dasharray="4 3" stroke-width="1.6" />
+ <circle cx="196" cy="32" r="6" fill="#38BDF8" />
+ <circle cx="212" cy="54" r="6" fill="#F43F5E" />
+ <circle cx="132" cy="45" r="4" fill="#FFFFFF" />
+ <path d="M136 45 L193 33 L210 52" stroke="#F5B82E" stroke-width="1.5" fill="none" />
+ <text x="196" y="18" font-size="7.5" font-family="monospace" text-anchor="middle" fill="#F43F5E">VAR OFFSIDE LINE</text>
+ </svg>
+ `,
+ qEn: 'If a shot accidentally deflects off a defender to an attacker in an offside position, what is the VAR ruling?',
+ qIt: 'Se un tiro viene deviato involontariamente da un difensore verso un attaccante in fuorigioco, cosa decide il VAR?',
+ qCn: '若射门意外折射在防守球员身上并弹向处于越位位置的攻方前锋，VAR 应如何判罚？',
+ optionsEn: [
+ 'Goal stands because a defender touched the ball last',
+ 'Offside — an accidental deflection does not reset offside',
+ 'Play continues with a dropped ball at the penalty spot'
+ ],
+ optionsIt: [
+ 'Gol valido perché l\'ultimo tocco è del difensore',
+ 'Fuorigioco — una deviazione accidentale non rimette in gioco l\'attaccante',
+ 'Si riprende con una rimessa da parte dell\'arbitro sul dischetto'
+ ],
+ optionsCn: [
+ '进球有效，因为最后触球的是防守球员',
+ '判罚越位——非主动可控的意外折射不会重置越位状态',
+ '比赛中断并在点球点执行坠球'
+ ],
+ correctIdx: 1
+ },
+ {
+ id: 'mod-3',
+ tagEn: 'Pitch Geography',
+ tagIt: 'Geometria Campo',
+ tagCn: '球场空间学',
+ tagColor: 'text-emeraldai bg-emeraldai/10 border-emeraldai/30',
+ titleEn: 'Controlling Zone 14 & Half-Spaces',
+ titleIt: 'Dominare la "Zona 14" e i Mezzi Spazi (Half-Spaces)',
+ titleCn: '统治“14区（Zone 14）”与肋部半空间（Half-Spaces）',
+ summaryEn: 'Zone 14 is the central rectangle directly in front of the opponent penalty box. Dominating Zone 14 and the adjacent Half-Spaces unlocks high-xG through-balls and cut-backs.',
+ summaryIt: 'La Zona 14 è il rettangolo centrale davanti al limite dell\'area avversaria. Presidiare la Zona 14 e i Mezzi Spazi (Half-Spaces) laterali moltiplica i filtranti ad alto indice di Gol Attesi (xG).',
+ summaryCn: '“14区”是指对方大禁区弧顶正前方的核心矩形区域。掌控14区及两侧的“肋部半空间（Half-Spaces）”，能够最大化制造高期望进球（xG）的直塞与倒三角机会。',
+ diagramSvg: `
+ <svg class="w-full h-24 rounded-xl bg-[#0A1E15] border border-borderdim" viewBox="0 0 280 90">
+ <rect x="8" y="8" width="264" height="74" rx="6" fill="none" stroke="rgba(255,255,255,0.2)" />
+ <rect x="228" y="24" width="44" height="42" fill="none" stroke="rgba(255,255,255,0.3)" />
+ <rect x="184" y="30" width="44" height="30" fill="rgba(245,184,46,0.22)" stroke="#F5B82E" stroke-width="1.4" />
+ <text x="206" y="48" font-size="8" font-family="monospace" font-weight="bold" text-anchor="middle" fill="#F5B82E">ZONE 14</text>
+ <rect x="184" y="12" width="44" height="16" fill="rgba(16,185,129,0.15)" stroke="#10B981" stroke-dasharray="2 2" />
+ <rect x="184" y="62" width="44" height="16" fill="rgba(16,185,129,0.15)" stroke="#10B981" stroke-dasharray="2 2" />
+ </svg>
+ `,
+ qEn: 'Where on the football pitch is the high-value "Zone 14" located?',
+ qIt: 'Dove si trova sul terreno di gioco la decisiva "Zona 14"?',
+ qCn: '足球战术分析中极具杀伤力的“14区（Zone 14）”位于球场的哪个位置？',
+ optionsEn: [
+ 'Inside your own six-yard goalkeeper box',
+ 'Directly in front of the opponent penalty box in the central lane',
+ 'At the corner flag junction on the touchline'
+ ],
+ optionsIt: [
+ 'All\'interno della propria area piccola del portiere',
+ 'Centralmente, subito fuori dal limite dell\'area di rigore avversaria',
+ 'Vicino alla bandierina del calcio d\'angolo'
+ ],
+ optionsCn: [
+ '本方门将小禁区正中央',
+ '对方大禁区正前方的中路核心区域',
+ '边线与底线交汇的角球区'
+ ],
+ correctIdx: 1
+ },
+ {
+ id: 'mod-4',
+ tagEn: 'Counter-Tactics',
+ tagIt: 'Contromisure Tattiche',
+ tagCn: '战术克制论',
+ tagColor: 'text-coralai bg-coralai/10 border-coralai/30',
+ titleEn: 'Breaking a Low Block with Wing Overloads',
+ titleIt: 'Scardinare il Blocco Basso con il Sovraccarico sulle Fasce',
+ titleCn: '用“两翼超载（Wing Overload）”破解低位密集铁桶',
+ summaryEn: 'When an opponent parks a compact 5-3-2 Low Block centrally, creating 2v1 or 3v2 numerical superiorities on the flanks stretches their backline horizontally and opens cut-back lanes.',
+ summaryIt: 'Contro un 5-3-2 chiuso centralmente, creare superiorità numerica 2 contro 1 sulle corsie esterne costringe la difesa ad allargarsi, aprendo corridoi per lo scarico a rimorchio (cut-back).',
+ summaryCn: '当对手摆出紧凑的 5-3-2 低位密集防线封锁中路时，通过边锋+边后卫+中前卫在边路制造 2打1 或 3打2 的局部人数超载，可横向拉扯防线并创造倒三角射门空当。',
+ diagramSvg: `
+ <svg class="w-full h-24 rounded-xl bg-[#0A1E15] border border-borderdim" viewBox="0 0 280 90">
+ <rect x="8" y="8" width="264" height="74" rx="6" fill="none" stroke="rgba(255,255,255,0.2)" />
+ <circle cx="215" cy="16" r="5.5" fill="#10B981" />
+ <circle cx="238" cy="22" r="5.5" fill="#10B981" />
+ <circle cx="226" cy="24" r="5.5" fill="#38BDF8" />
+ <polygon points="215,16 238,22 225,36" fill="rgba(245,184,46,0.22)" stroke="#F5B82E" stroke-width="1.2" />
+ <path d="M238 24 L228 45" stroke="#F5B82E" stroke-width="1.8" />
+ <text x="152" y="22" font-size="8" font-family="monospace" fill="#F5B82E">2v1 FLANK OVERLOAD</text>
+ </svg>
+ `,
+ qEn: 'Which tactical adjustment is most effective at stretching a compact 5-3-2 Low Block?',
+ qIt: 'Quale intervento tattico è più efficace per allargare un 5-3-2 chiuso a blocco basso?',
+ qCn: '面对对手紧凑的 5-3-2 低位密集防守，哪种战术调整最能有效拉扯防线？',
+ optionsEn: [
+ 'Wing Overload to create 2v1 flank triangles and cut-backs',
+ 'Pulling all midfielders behind your own penalty spot',
+ 'Eliminating all wide players and only shooting from 45 meters'
+ ],
+ optionsIt: [
+ 'Sovraccarico sulle fasce (Wing Overload) per creare superiorità 2v1 sugli esterni',
+ 'Arretrare tutti i centrocampisti dietro il proprio dischetto del rigore',
+ 'Rinunciare agli esterni e calciare solo da 45 metri'
+ ],
+ optionsCn: [
+ '两翼超载（Wing Overload），在边路制造 2打1 三角配合与倒三角传中',
+ '将所有中场球员撤回到本方点球点后方',
+ '取消所有边路球员，仅在 45 米外远射'
+ ],
+ correctIdx: 0
+ },
+ {
+ id: 'mod-5',
+ tagEn: 'Quant Analytics',
+ tagIt: 'Analisi Quantitativa',
+ tagCn: '定量概率分析',
+ tagColor: 'text-cyanai bg-cyanai/10 border-cyanai/30',
+ titleEn: 'Poisson Expected Goals (xG) & Scoreline Matrix Modeling',
+ titleIt: 'Modello di Poisson per i Gol Attesi (xG) e Matrice dei Risultati',
+ titleCn: '泊松期望进球（xG）与联合比分概率矩阵建模',
+ summaryEn: 'In quantitative football analytics, Expected Goals (λ) is modeled via λ_H = (HomeGF × AwayGA) / LeagueHomeAvg. Applying P(X=k) = (e^-λ · λ^k) / k! produces the joint scoreline probability matrix.',
+ summaryIt: 'Nell\'analisi calcistica quantitativa, i Gol Attesi (λ) si calcolano con λ_H = (HomeGF × AwayGA) / LeagueHomeAvg. La distribuzione di Poisson P(X=k) = (e^-λ · λ^k) / k! genera la matrice delle probabilità.',
+ summaryCn: '在足球定量分析中，主队期望进球由 λ_H = (主场均进 × 客场均失) / 联赛主场均进 计算得出，再代入泊松分布公式 P(X=k) = (e^-λ · λ^k) / k! 即可生成双方各比分的联合概率矩阵。',
+ diagramSvg: `
+ <svg class="w-full h-24 rounded-xl bg-[#0A1E15] border border-borderdim" viewBox="0 0 280 90">
+ <rect x="8" y="8" width="264" height="74" rx="6" fill="none" stroke="rgba(255,255,255,0.2)" />
+ <text x="20" y="26" font-size="8.5" font-family="monospace" fill="#38BDF8">λ_H = (HomeGF × AwayGA) / LeagueHomeAvg</text>
+ <text x="20" y="44" font-size="8.5" font-family="monospace" fill="#F5B82E">P(X = k) = (e^-λ · λ^k) / k!</text>
+ <rect x="20" y="54" width="44" height="18" rx="3" fill="rgba(16,185,129,0.25)" stroke="#10B981" />
+ <text x="42" y="66" font-size="7.5" font-family="monospace" text-anchor="middle" fill="#10B981">1-0: 10.2%</text>
+ <rect x="70" y="54" width="44" height="18" rx="3" fill="rgba(245,184,46,0.25)" stroke="#F5B82E" />
+ <text x="92" y="66" font-size="7.5" font-family="monospace" text-anchor="middle" fill="#F5B82E">1-1: 13.1%</text>
+ <rect x="120" y="54" width="44" height="18" rx="3" fill="rgba(56,189,248,0.25)" stroke="#38BDF8" />
+ <text x="142" y="66" font-size="7.5" font-family="monospace" text-anchor="middle" fill="#38BDF8">0-1: 12.9%</text>
+ </svg>
+ `,
+ qEn: 'In the Poisson attack-defense model, how is the Home team Expected Goals (λ_H) computed?',
+ qIt: 'Nel modello attacco-difesa di Poisson, come si calcola il parametro λ_H della squadra di casa?',
+ qCn: '在泊松攻防强度模型中，主队的期望进球数（λ_H）是如何计算得出的？',
+ optionsEn: [
+ 'Home Avg Goals Scored × Away Avg Goals Conceded ÷ League Home Avg Goals',
+ 'Total yellow cards divided by stadium seating capacity',
+ 'Adding home goalkeeper height to away corner kick count'
+ ],
+ optionsIt: [
+ 'Media Gol Fatti in Casa × Media Gol Subiti Fuori ÷ Media Gol Casa della Lega',
+ 'Totale cartellini gialli diviso per la capienza dello stadio',
+ 'Somma dell\'altezza del portiere e del numero di calci d\'angolo'
+ ],
+ optionsCn: [
+ '主队主场平均进球数 × 客队客场平均失球数 ÷ 联赛主场平均进球数',
+ '全场黄牌总数除以球场观众席容量',
+ '主队门将身高加上客队角球总数'
+ ],
+ correctIdx: 0
+ }
+ ];
+
+ // -----------------------------------------------------------------------
+ // 5. DIY STORE ITEMS & VIRTUAL LEAGUE DATA
+ // -----------------------------------------------------------------------
+ const PITCH_SKINS = [
+ { id: 'emerald', nameEn: 'Classic Emerald', nameIt: 'Smeraldo Classico', nameCn: '经典翡翠绿茵', cost: 0, vipFree: false, turfA: '#0D261B', turfB: '#0A2016', lines: 'rgba(255, 255, 255, 0.28)', grid: 'rgba(245, 184, 46, 0.16)' },
+ { id: 'turin', nameEn: 'Turin Night Slate', nameIt: 'Notte Sabauda Torino', nameCn: '都灵夜幕黑曜', cost: 120, vipFree: false, turfA: '#131926', turfB: '#0F141F', lines: 'rgba(56, 189, 248, 0.36)', grid: 'rgba(56, 189, 248, 0.14)' },
+ { id: 'blueprint', nameEn: 'Tactical Blueprint', nameIt: 'Blueprint Ingegneria', nameCn: '工程蓝图沙盘', cost: 180, vipFree: false, turfA: '#0B2545', turfB: '#091E3A', lines: 'rgba(224, 242, 254, 0.45)', grid: 'rgba(125, 211, 252, 0.24)' },
+ { id: 'gold', nameEn: 'Masters Gold Arena', nameIt: 'Arena Maestro Oro', nameCn: '大师黄金殿堂', cost: 300, vipFree: true, turfA: '#1C170D', turfB: '#16120A', lines: 'rgba(245, 184, 46, 0.45)', grid: 'rgba(245, 184, 46, 0.18)' }
+ ];
+
+ const MARKER_FRAMES = [
+ { id: 'standard', nameEn: 'Standard Tactical Ring', nameIt: 'Anello Tattico Standard', nameCn: '标准战术圆环', descEn: 'Clean white & navy tactical dot outlines.', descIt: 'Profilo classico ad alto contrasto bianco e blu.', descCn: '经典高对比度纯白与深蓝棋子描边。', cost: 0 },
+ { id: 'neon', nameEn: 'Neon Telemetry Halo', nameIt: 'Alone Telemetria Neon', nameCn: '霓虹遥测脉冲光环', descEn: 'Glowing cyber-emerald & cyan kinetic rings on pitch.', descIt: 'Anelli cinetici luminosi smeraldo e ciano sul campo 2D.', descCn: '在 2D 球场上为22名球员渲染发光动态追踪光环。', cost: 90 },
+ { id: 'scudetto', nameEn: 'Golden Scudetto Frame', nameIt: 'Cornice Oro Scudetto', nameCn: '冠军金盾荣誉边框', descEn: 'Championship gold double-ring framing for all active units.', descIt: 'Doppia cornice dorata da campionato per tutti i giocatori.', descCn: '全队配备锦标赛级双层鎏金战术棋子外框。', cost: 160 }
+ ];
+
+ const COLOR_SWATCHES = ['#881337', '#2563EB', '#DC2626', '#10B981', '#F5B82E', '#F8FAFC', '#0F172A', '#F97316'];
+ const EMBLEM_SHAPES = [
+ { id: 'shield', labelEn: 'Shield', labelIt: 'Scudo', labelCn: '经典盾牌' },
+ { id: 'stripes', labelEn: 'Stripes', labelIt: 'Strisce', labelCn: '剑条竖纹' },
+ { id: 'crown', labelEn: 'Crown', labelIt: 'Corona', labelCn: '皇冠徽记' },
+ { id: 'star', labelEn: 'Star', labelIt: 'Stella', labelCn: '冠军星徽' }
+ ];
+ const CLUB_PHILOSOPHIES = [
+ { id: 'gegenpress', form: '4-3-3', en: 'Gegenpress', it: 'Gegenpressing', cn: '重金属反抢' },
+ { id: 'catenaccio', form: '3-5-2', en: 'Catenaccio', it: 'Catenaccio', cn: '意式链式防反' },
+ { id: 'tikitaka', form: '4-3-3', en: 'Tiki-Taka', it: 'Tiki-Taka', cn: '极致传控' },
+ { id: 'counter', form: '4-2-3-1', en: 'Direct Counter', it: 'Contropiede Diretto', cn: '纵向闪电反击' }
+ ];
+
+ const DIVISIONS = [
+ { level: 3, nameEn: 'Division 3: Grassroots', nameIt: 'Divisione 3: Cadetti Piemonte', nameCn: '第3级别：草根新锐联赛' },
+ { level: 2, nameEn: 'Division 2: Challenger', nameIt: 'Divisione 2: Sfidanti Pro', nameCn: '第2级别：挑战者职业联赛' },
+ { level: 1, nameEn: 'Division 1: Tactical Masters', nameIt: 'Divisione 1: Maestri di Tattica', nameCn: '第1级别：战术大师超级联赛' }
+ ];
+
+ const AI_LEAGUE_RIVALS = [
+ { id: 'riv-1', code: 'PIA', name: 'Piedmont Hills FC', homeGF: 1.48, homeGA: 1.25, awayGF: 1.22, awayGA: 1.45, c1: '#10B981', c2: '#0F172A', emblemShape: 'shield', form: '4-4-2', styleEn: 'Low Block', styleIt: 'Blocco Basso', styleCn: '低位防守', counterLesson: 'mod-4' },
+ { id: 'riv-2', code: 'LIG', name: 'Liguria Port Utd', homeGF: 1.62, homeGA: 1.30, awayGF: 1.35, awayGA: 1.48, c1: '#1D4ED8', c2: '#EF4444', emblemShape: 'stripes', form: '4-3-3', styleEn: 'Wing Overload', styleIt: 'Sovraccarico Fasce', styleCn: '两翼超载', counterLesson: 'mod-4' },
+ { id: 'riv-3', code: 'LOM', name: 'Lombardy Crown', homeGF: 1.75, homeGA: 1.05, awayGF: 1.44, awayGA: 1.28, c1: '#F59E0B', c2: '#111827', emblemShape: 'crown', form: '3-5-2', styleEn: 'Catenaccio', styleIt: 'Catenaccio', styleCn: '链式防反', counterLesson: 'mod-4' },
+ { id: 'riv-4', code: 'VEN', name: 'Veneto Lagoon', homeGF: 1.68, homeGA: 1.28, awayGF: 1.38, awayGA: 1.42, c1: '#F97316', c2: '#064E3B', emblemShape: 'star', form: '4-2-3-1', styleEn: 'High Press', styleIt: 'Pressing Alto', styleCn: '高位逼抢', counterLesson: 'mod-1' },
+ { id: 'riv-5', code: 'EMI', name: 'Emilia Rossoblu', homeGF: 1.56, homeGA: 1.22, awayGF: 1.28, awayGA: 1.36, c1: '#B91C1C', c2: '#1E3A8A', emblemShape: 'stripes', form: '4-3-3', styleEn: 'Positional Play', styleIt: 'Gioco di Posizione', styleCn: '位置传控', counterLesson: 'mod-3' },
+ { id: 'riv-6', code: 'TUS', name: 'Tuscan Viola', homeGF: 1.72, homeGA: 1.18, awayGF: 1.42, awayGA: 1.34, c1: '#7C3AED', c2: '#F8FAFC', emblemShape: 'shield', form: '4-3-3', styleEn: 'Zone 14 Attack', styleIt: 'Attacco Zona 14', styleCn: '14区渗透', counterLesson: 'mod-3' },
+ { id: 'riv-7', code: 'SIC', name: 'Sicily Eagles', homeGF: 1.52, homeGA: 1.34, awayGF: 1.24, awayGA: 1.52, c1: '#F472B6', c2: '#09090B', emblemShape: 'star', form: '3-4-2-1', styleEn: 'Offside Trap', styleIt: 'Trappola Fuorigioco', styleCn: '造越位陷阱', counterLesson: 'mod-2' }
+ ];
+
+ // -----------------------------------------------------------------------
+ // 6. GLOBAL APPLICATION STATE
+ // -----------------------------------------------------------------------
+ const state = {
+ lang: 'it',
+ mainTab: 'sim',
+ simMode: 'historical',
+ histWeek: 'current',
+ activeLeague: 'calcio',
+ replayCounts: {},
+ randomFixturesCache: {},
+
+ coachLevel: 4,
+ coachXp: 1250,
+ coins: 320,
+ adSkipPasses: 1,
+ leagueStamina: 3,
+ maxStamina: 3,
+
+ isVipPro: false,
+ vipDailyClaimed: false,
+ checkedInToday: false,
+ streakDays: 3,
+ expandedModuleId: 'mod-1',
+ masteredModules: [],
+
+ ownedSkins: ['emerald'],
+ equippedSkin: 'emerald',
+ ownedFrames: ['standard'],
+ equippedFrame: 'standard',
+
+ creatorOpen: false,
+ customClub: {
+ name: 'Turin Mole Utd',
+ code: 'TMU',
+ c1: '#881337',
+ c2: '#F8FAFC',
+ emblemShape: 'shield',
+ philosophyId: 'gegenpress'
+ },
+ divisionIdx: 0,
+ leagueMatchday: 1,
+ leagueStandings: [],
+ upgrades: {
+ analystSlot: false,
+ youthScout: false
+ },
+
+ peers: [
+ { name: 'Marco_Torino', lv: 6, mastered: 5, xp: 1840 },
+ { name: 'Elena_FCO', lv: 5, mastered: 4, xp: 1520 },
+ { name: 'Kenji_Tactics', lv: 4, mastered: 3, xp: 1310 },
+ { name: 'Sofia_Calcio', lv: 4, mastered: 2, xp: 1120 },
+ { name: 'Matteo_PoliTo', lv: 3, mastered: 2, xp: 940 }
+ ],
+
+ sim: {
+ active: false,
+ paused: false,
+ speed: 1,
+ match: null,
+ poissonModel: null,
+ userSide: 'H',
+ sourceType: 'historical',
+ minute: 0,
+ accumulator: 0,
+ scoreH: 0,
+ scoreA: 0,
+ xgH: 0,
+ xgA: 0,
+ probH: 42,
+ probD: 26,
+ probA: 32,
+ staminaUser: 100,
+ staminaOpp: 100,
+ possTicksH: 50,
+ possTicksA: 50,
+ distinctCmds: new Set(),
+ activeCommand: null,
+ commandTimer: 0,
+ subUsed: false,
+ scoutBonusClaimed: false,
+ ball: { x: 0.5, y: 0.5, tx: 0.5, ty: 0.5, ownerTeam: 'H', flash: 0 },
+ playersH: [],
+ playersA: [],
+ lastFrameTime: 0
+ }
+ };
+
+ function initLeagueStandings() {
+ const rows = [
+ { id: 'user', isUser: true, p: 0, w: 0, d: 0, l: 0, gf: 0, ga: 0, pts: 0 },
+ ...AI_LEAGUE_RIVALS.map(r => ({ id: r.id, isUser: false, p: 0, w: 0, d: 0, l: 0, gf: 0, ga: 0, pts: 0 }))
+ ];
+ state.leagueStandings = rows;
+ state.leagueMatchday = 1;
+ }
+
+ function generateRandomFixturesForLeague(leagueId) {
+ const pool = TEAM_POOLS[leagueId] || TEAM_POOLS.albion;
+ const shuffled = [...pool].sort(() => Math.random() - 0.5);
+ const bonusOptions = [
+ { cmds: ['catenaccio', 'wingOverload'], en: 'Catenaccio / Wing Overload', it: 'Catenaccio / Sovraccarico Fasce', cn: '链式防反 / 两翼超载' },
+ { cmds: ['highPress', 'catenaccio'], en: 'High Press / Catenaccio', it: 'Pressing Alto / Catenaccio', cn: '高位逼抢 / 链式防反' },
+ { cmds: ['wingOverload', 'superSub'], en: 'Wing Overload / Super Sub', it: 'Sovraccarico Fasce / Cambio Decisivo', cn: '两翼超载 / 奇兵换人' }
+ ];
+
+ const list = [];
+ const pairCount = Math.floor(shuffled.length / 2);
+ for (let i = 0; i < pairCount; i++) {
+ const home = shuffled[i * 2];
+ const away = shuffled[i * 2 + 1];
+ const bOpt = bonusOptions[(i + Math.floor(Math.random() * 3)) % bonusOptions.length];
+
+ list.push({
+ id: `rnd-${leagueId}-${Date.now()}-${i}`,
+ league: leagueId,
+ home,
+ away,
+ bonusCmds: bOpt.cmds,
+ bonusLabelEn: bOpt.en,
+ bonusLabelIt: bOpt.it,
+ bonusLabelCn: bOpt.cn
+ });
+ }
+ state.randomFixturesCache[leagueId] = list;
+ }
+
+ // -----------------------------------------------------------------------
+ // 7. HELPER FUNCTIONS (Toast, XP/Coins, Language Switch, SVG Crests)
+ // -----------------------------------------------------------------------
+ function showToast(msg) {
+ const banner = document.getElementById('toast-banner');
+ document.getElementById('toast-message').textContent = msg;
+ banner.classList.remove('hidden');
+ clearTimeout(window._toastTimer);
+ window._toastTimer = setTimeout(() => banner.classList.add('hidden'), 2600);
+ }
+
+ function addXpAndCoins(coinsDelta, baseXpDelta) {
+ const actualXp = state.isVipPro ? baseXpDelta * 2 : baseXpDelta;
+ state.coins += coinsDelta;
+ state.coachXp += actualXp;
+ const computedLv = Math.max(1, Math.floor(state.coachXp / 350) + 1);
+ if (computedLv > state.coachLevel) {
+ state.coachLevel = computedLv;
+ }
+ renderHeaderResources();
+ return actualXp;
+ }
+
+ function setLanguage(langCode) {
+ if (!['it', 'en', 'cn'].includes(langCode)) return;
+ state.lang = langCode;
+ renderAll();
+ showToast(
+ tr(
+ 'Language switched to English (EN)',
+ '界面语言已切换为中文',
+ 'Lingua impostata su Italiano (IT)'
+ )
+ );
+ }
+
+ function toggleLanguage() {
+ const order = ['it', 'en', 'cn'];
+ const nextIdx = (order.indexOf(state.lang) + 1) % order.length;
+ setLanguage(order[nextIdx]);
+ }
+
+ function switchMainTab(tabId) {
+ state.mainTab = tabId;
+ document.getElementById('view-match-sim').classList.toggle('hidden', tabId !== 'sim');
+ document.getElementById('view-my-league').classList.toggle('hidden', tabId !== 'league');
+ document.getElementById('view-academy').classList.toggle('hidden', tabId !== 'academy');
+ document.getElementById('view-club-diy').classList.toggle('hidden', tabId !== 'club');
+
+ const tabButtons = {
+ sim: document.getElementById('nav-tab-sim'),
+ league: document.getElementById('nav-tab-league'),
+ academy: document.getElementById('nav-tab-academy'),
+ club: document.getElementById('nav-tab-club')
+ };
+ Object.entries(tabButtons).forEach(([key, btn]) => {
+ if (key === tabId) {
+ btn.className = 'py-1.5 px-1 rounded-2xl flex flex-col items-center justify-center gap-0.5 transition bg-golddim border border-gold/40 text-gold relative';
+ } else {
+ btn.className = 'py-1.5 px-1 rounded-2xl flex flex-col items-center justify-center gap-0.5 transition bg-card border border-transparent text-slate-400 hover:text-slate-200 relative';
+ }
+ });
+
+ document.getElementById('main-scroll-area').scrollTop = 0;
+ renderAll();
+ }
+
+ function openModal(id) {
+ document.getElementById(id).classList.remove('hidden');
+ }
+
+ function closeModal(id) {
+ document.getElementById(id).classList.add('hidden');
+ }
+
+ function findFixtureById(fixtureId) {
+ const histCur = (HISTORICAL_WEEKS.current || []).find(f => f.id === fixtureId);
+ if (histCur) return histCur;
+ const histNext = (HISTORICAL_WEEKS.next || []).find(f => f.id === fixtureId);
+ if (histNext) return histNext;
+ for (const lgId of Object.keys(state.randomFixturesCache)) {
+ const found = (state.randomFixturesCache[lgId] || []).find(f => f.id === fixtureId);
+ if (found) return found;
+ }
+ return null;
+ }
+
+ function renderLeagueIconSVG(league, isActive) {
+ const [c1, c2] = league.colors;
+ let inner = '';
+ if (league.badgeType === 'cross') {
+ inner = `<rect x="21" y="8" width="6" height="32" fill="${c1}"/><rect x="8" y="21" width="32" height="6" fill="${c1}"/>`;
+ } else if (league.badgeType === 'stripes') {
+ inner = `<rect x="8" y="8" width="32" height="10" fill="${c2}"/><rect x="8" y="18" width="32" height="12" fill="${c1}"/><rect x="8" y="30" width="32" height="10" fill="${c2}"/>`;
+ } else if (league.badgeType === 'chevron') {
+ inner = `<polygon points="8,14 24,26 40,14 40,24 24,36 8,24" fill="${c1}"/>`;
+ } else if (league.badgeType === 'tricolor') {
+ inner = `<rect x="8" y="8" width="10.6" height="32" fill="${c1}"/><rect x="18.6" y="8" width="10.8" height="32" fill="#F8FAFC"/><rect x="29.4" y="8" width="10.6" height="32" fill="${c2}"/>`;
+ } else if (league.badgeType === 'diamond') {
+ inner = `<polygon points="24,9 39,24 24,39 9,24" fill="${c1}"/><circle cx="24" cy="24" r="5" fill="${c2}"/>`;
+ } else {
+ inner = `<circle cx="24" cy="24" r="13" fill="none" stroke="${c1}" stroke-width="2.5"/><ellipse cx="24" cy="24" rx="6" ry="13" fill="none" stroke="${c2}" stroke-width="2"/><line x1="11" y1="24" x2="37" y2="24" stroke="${c1}" stroke-width="2"/>`;
+ }
+ return `
+ <svg class="w-10 h-10 rounded-full bg-[#172030]" viewBox="0 0 48 48">
+ <defs><clipPath id="clip-${league.id}"><circle cx="24" cy="24" r="16" /></clipPath></defs>
+ <circle cx="24" cy="24" r="16" fill="#0B0F17" />
+ <g clip-path="url(#clip-${league.id})">${inner}</g>
+ <circle cx="24" cy="24" r="16" fill="none" stroke="${isActive ? '#F5B82E' : 'rgba(255,255,255,0.16)'}" stroke-width="2" />
+ </svg>
+ `;
+ }
+
+ function renderClubCrestSVG(team, sizeClass = "w-7 h-7") {
+ const shape = team.emblemShape || 'shield';
+ let motif = `<circle cx="18" cy="17" r="5.2" fill="none" stroke="${team.c2}" stroke-width="1.8"/>`;
+ if (shape === 'stripes') {
+ motif = `
+ <rect x="12" y="7" width="3" height="21" fill="${team.c2}" fill-opacity="0.75"/>
+ <rect x="21" y="7" width="3" height="21" fill="${team.c2}" fill-opacity="0.75"/>
+ `;
+ } else if (shape === 'crown') {
+ motif = `<polygon points="11,21 12,13 15.5,17 18,11 20.5,17 24,13 25,21" fill="${team.c2}"/>`;
+ } else if (shape === 'star') {
+ motif = `<polygon points="18,10 20,15 25,15.5 21,19 22.3,24 18,21.2 13.7,24 15,19 11,15.5 16,15" fill="${team.c2}"/>`;
+ }
+
+ return `
+ <svg class="${sizeClass}" viewBox="0 0 36 36">
+ <path d="M18 2 L32 7 V17 C32 25.5 25.8 31.5 18 34 C10.2 31.5 4 25.5 4 17 V7 Z" fill="${team.c1}" stroke="rgba(255,255,255,0.35)" stroke-width="1.5"/>
+ <path d="M18 4.5 L29.5 8.8 V17 C29.5 24 24.3 29.2 18 31.4 Z" fill="${team.c2}" fill-opacity="0.24"/>
+ ${motif}
+ </svg>
+ `;
+ }
+
+ // -----------------------------------------------------------------------
+ // 8. POISSON MATRIX INSPECTOR MODAL (6x6 Joint Scoreline Heatmap)
+ // -----------------------------------------------------------------------
+ function openPoissonMatrixModal(fixtureId) {
+ const fixture = findFixtureById(fixtureId);
+ if (!fixture) return;
+
+ const t = I18N[state.lang];
+ const model = computePoissonMatchModel(fixture.home, fixture.away, fixture.league);
+
+ document.getElementById('pm-eyebrow').textContent = tr(
+ 'Tactical Expected Goals Distribution (Zero Wagering)',
+ '战术期望进球概率分布（纯数学推演引擎）',
+ 'Distribuzione Probabilistica Gol Attesi (Zero Scommesse)'
+ );
+ document.getElementById('pm-modal-title').textContent = tr(
+ `${fixture.home.code} vs ${fixture.away.code} • Poisson Scoreline Matrix`,
+ `${fixture.home.code} vs ${fixture.away.code} • 泊松联合比分概率矩阵`,
+ `${fixture.home.code} vs ${fixture.away.code} • Matrice Risultati di Poisson`
+ );
+
+ let maxCellProb = 0;
+ for (let h = 0; h <= 5; h++) {
+ for (let a = 0; a <= 5; a++) {
+ if (model.matrix[h][a] > maxCellProb) maxCellProb = model.matrix[h][a];
+ }
+ }
+
+ let gridHtml = `
+ <div class="overflow-x-auto">
+ <table class="w-full border-collapse font-mono text-[10px] text-center">
+ <thead>
+ <tr class="text-slate-400 border-b border-borderdim">
+ <th class="py-1.5 px-1 text-left text-[9px] text-gold">${fixture.away.code} \\ ${fixture.home.code}</th>
+ ${[0, 1, 2, 3, 4, 5].map(h => `<th class="py-1.5 px-1 font-extrabold text-emeraldai">${h}</th>`).join('')}
+ </tr>
+ </thead>
+ <tbody class="divide-y divide-borderdim/40">
+ `;
+
+ for (let a = 0; a <= 5; a++) {
+ gridHtml += `<tr><td class="py-1.5 px-1.5 text-left font-extrabold text-cyanai bg-appbg/60">${a}</td>`;
+ for (let h = 0; h <= 5; h++) {
+ const p = model.matrix[h][a];
+ const pct = (p * 100).toFixed(1);
+ const intensity = maxCellProb > 0 ? p / maxCellProb : 0;
+ const isPeak = Math.abs(p - maxCellProb) < 1e-9;
+
+ let bgStyle = `rgba(16, 185, 129, ${(0.06 + intensity * 0.28).toFixed(2)})`;
+ if (h === a) bgStyle = `rgba(245, 184, 46, ${(0.08 + intensity * 0.30).toFixed(2)})`;
+ if (h < a) bgStyle = `rgba(56, 189, 248, ${(0.06 + intensity * 0.28).toFixed(2)})`;
+
+ gridHtml += `
+ <td class="py-1.5 px-1 border border-borderdim/30 ${isPeak ? 'ring-1 ring-gold font-extrabold text-white' : 'text-slate-200'}" style="background:${bgStyle}">
+ ${pct}%
+ </td>
+ `;
+ }
+ gridHtml += `</tr>`;
+ }
+ gridHtml += `</tbody></table></div>`;
+
+ document.getElementById('pm-modal-body').innerHTML = `
+ <div class="bg-appbg border border-borderdim rounded-2xl p-3 space-y-2">
+ <div class="flex items-center justify-between">
+ <div class="flex items-center gap-2">
+ ${renderClubCrestSVG(fixture.home, 'w-7 h-7')}
+ <div>
+ <div class="font-extrabold text-white">${fixture.home.name}</div>
+ <div class="font-mono text-[10px] text-slate-400">HomeGF: ${fixture.home.homeGF.toFixed(2)} | HomeGA: ${fixture.home.homeGA.toFixed(2)}</div>
+ </div>
+ </div>
+ <div class="text-right font-mono">
+ <div class="text-[10px] text-slate-400">λ_H (${tr('Expected', '期望值', 'Atteso')})</div>
+ <div class="text-sm font-extrabold text-emeraldai">${model.lambdaH.toFixed(3)}</div>
+ </div>
+ </div>
+
+ <div class="flex items-center justify-between pt-2 border-t border-borderdim/60">
+ <div class="flex items-center gap-2">
+ ${renderClubCrestSVG(fixture.away, 'w-7 h-7')}
+ <div>
+ <div class="font-extrabold text-white">${fixture.away.name}</div>
+ <div class="font-mono text-[10px] text-slate-400">AwayGF: ${fixture.away.awayGF.toFixed(2)} | AwayGA: ${fixture.away.awayGA.toFixed(2)}</div>
+ </div>
+ </div>
+ <div class="text-right font-mono">
+ <div class="text-[10px] text-slate-400">λ_A (${tr('Expected', '期望值', 'Atteso')})</div>
+ <div class="text-sm font-extrabold text-cyanai">${model.lambdaA.toFixed(3)}</div>
+ </div>
+ </div>
+
+ <div class="mt-2 pt-2 border-t border-borderdim/60 font-mono text-[10px] text-slate-300 space-y-1 bg-card/70 p-2 rounded-xl">
+ <div class="text-gold font-bold">${tr('Attack-Defense Strength Derivation:', '攻防强度期望进球计算公式：', 'Derivazione Forza Attacco-Difesa:')}</div>
+ <div>λ_H = (${fixture.home.homeGF.toFixed(2)} × ${fixture.away.awayGA.toFixed(2)}) / ${model.league.homeAvg.toFixed(2)} = <span class="text-emeraldai font-bold">${model.lambdaH.toFixed(3)}</span></div>
+ <div>λ_A = (${fixture.away.awayGF.toFixed(2)} × ${fixture.home.homeGA.toFixed(2)}) / ${model.league.awayAvg.toFixed(2)} = <span class="text-cyanai font-bold">${model.lambdaA.toFixed(3)}</span></div>
+ </div>
+ </div>
+
+ <div class="bg-appbg border border-borderdim rounded-2xl p-2.5">
+ <div class="flex items-center justify-between mb-1.5">
+ <span class="font-bold text-white text-[11px]">${tr('Joint Scoreline Probability (0–5 Goals)', '双方联合比分概率热力矩阵 (0–5球)', 'Probabilità Congiunta Risultati (0–5 Gol)')}</span>
+ <span class="font-mono text-[9px] text-gold">Dixon-Coles ρ = -0.08</span>
+ </div>
+ ${gridHtml}
+ </div>
+
+ <div class="grid grid-cols-3 gap-2 font-mono text-center">
+ <div class="bg-emeraldai/10 border border-emeraldai/30 rounded-xl p-2">
+ <div class="text-[9px] text-slate-400">${tr('Home Win (H>A)', '主队胜率 (H>A)', 'Vittoria Casa (H>A)')}</div>
+ <div class="text-xs font-extrabold text-emeraldai mt-0.5">${model.exactProbs[0].toFixed(1)}%</div>
+ </div>
+ <div class="bg-appbg border border-borderdim rounded-xl p-2">
+ <div class="text-[9px] text-slate-400">${tr('Draw (H=A)', '平局概率 (H=A)', 'Pareggio (H=A)')}</div>
+ <div class="text-xs font-extrabold text-slate-200 mt-0.5">${model.exactProbs[1].toFixed(1)}%</div>
+ </div>
+ <div class="bg-cyanai/10 border border-cyanai/30 rounded-xl p-2">
+ <div class="text-[9px] text-slate-400">${tr('Away Win (H<A)', '客队胜率 (H<A)', 'Vittoria Ospiti (H<A)')}</div>
+ <div class="text-xs font-extrabold text-cyanai mt-0.5">${model.exactProbs[2].toFixed(1)}%</div>
+ </div>
+ </div>
+
+ <div class="grid grid-cols-2 gap-2 pt-1">
+ <button onclick="closeModal('modal-poisson-matrix'); startFixtureSimulation('${fixture.id}', 'H')" class="py-2.5 px-2 rounded-xl bg-emeraldai text-appbg font-extrabold text-xs transition active:scale-95">
+ 🛡️ ${t.pickHomeWin} (${fixture.home.code})
+ </button>
+ <button onclick="closeModal('modal-poisson-matrix'); startFixtureSimulation('${fixture.id}', 'A')" class="py-2.5 px-2 rounded-xl bg-cyanai text-appbg font-extrabold text-xs transition active:scale-95">
+ ⚔️ ${t.pickAwayWin} (${fixture.away.code})
+ </button>
+ </div>
+ `;
+
+ openModal('modal-poisson-matrix');
+ }
+
+ // -----------------------------------------------------------------------
+ // 9. RENDER HEADER & ALL 4 TABS
+ // -----------------------------------------------------------------------
+ function renderHeaderResources() {
+ const t = I18N[state.lang];
+ document.getElementById('header-mvp-badge').textContent = t.mvpBadge;
+ document.getElementById('btn-mimit-label').textContent = t.mimitSpecs;
+ document.getElementById('nav-label-sim').textContent = t.navSim;
+ document.getElementById('nav-label-league').textContent = t.navLeague;
+ document.getElementById('nav-label-academy').textContent = t.navAcademy;
+ document.getElementById('nav-label-club').textContent = t.navClub;
+
+ const langBtn = document.getElementById('btn-lang-toggle');
+ if (langBtn) {
+ langBtn.innerHTML = ['it', 'en', 'cn'].map(code => {
+ const label = code === 'it' ? 'IT' : code === 'en' ? 'EN' : '中文';
+ return state.lang === code
+ ? `<span class="text-gold font-extrabold underline underline-offset-2">${label}</span>`
+ : `<span class="text-slate-400">${label}</span>`;
+ }).join(' <span class="text-slate-600">/</span> ');
+ }
+
+ ['it', 'en', 'cn'].forEach(code => {
+ const pill = document.getElementById(`mimit-lang-${code}`);
+ if (pill) {
+ pill.className = state.lang === code
+ ? 'px-2 py-1 rounded-lg font-mono text-[10px] font-extrabold bg-gold text-appbg shadow transition'
+ : 'px-2 py-1 rounded-lg font-mono text-[10px] font-bold text-slate-400 hover:text-white transition';
+ }
+ });
+
+ document.getElementById('pill-coach-xp').textContent = `Lv.${state.coachLevel} | ${state.coachXp.toLocaleString()} XP`;
+ document.getElementById('pill-coins').textContent = state.coins;
+ document.getElementById('pill-passes').textContent = state.adSkipPasses;
+ document.getElementById('pill-stamina').textContent = state.isVipPro ? '∞' : `${state.leagueStamina}/${state.maxStamina}`;
+
+ const vipPill = document.getElementById('pill-vip-status');
+ if (state.isVipPro) {
+ vipPill.textContent = 'VIP Pro ★';
+ vipPill.className = 'px-2 py-1 rounded-lg bg-gradient-to-r from-gold to-amber-400 text-appbg font-mono text-[10px] font-extrabold shrink-0 transition active:scale-95 shadow-sm';
+ } else {
+ vipPill.textContent = tr('Free', '免费版', 'Base');
+ vipPill.className = 'px-2 py-1 rounded-lg bg-card hover:bg-cardhover border border-borderdim font-mono text-[10px] font-extrabold text-slate-300 shrink-0 transition active:scale-95';
+ }
+
+ document.getElementById('academy-notif-dot').classList.toggle('hidden', state.checkedInToday);
+ }
+
+ function renderAll() {
+ const t = I18N[state.lang];
+ renderHeaderResources();
+
+ document.getElementById('mimit-modal-title').textContent = t.mimitModalTitle;
+ document.getElementById('mimit-modal-body').innerHTML = t.mimitModalHtml;
+ document.getElementById('mimit-modal-close').textContent = t.mimitModalClose;
+
+ renderMatchSimTab();
+ renderMyLeagueTab();
+ renderAcademyTab();
+ renderClubDiyTab();
+ }
+
+ // -----------------------------------------------------------------------
+ // 10. TAB 1: MATCH SIM (Historical Sync vs. Random Matchups + Poisson Model)
+ // -----------------------------------------------------------------------
+ function switchSimMode(mode) {
+ state.simMode = mode;
+ renderMatchSimTab();
+ }
+
+ function selectHistoricalWeek(weekKey) {
+ state.histWeek = weekKey;
+ renderMatchSimTab();
+ }
+
+ function handleLockedRefreshClick() {
+ showToast(
+ tr(
+ 'Locked: Historical Sync follows real-calendar matchweeks. Unlimited replays enabled!',
+ '已锁定：历史同期对阵随真实日历周期自动轮换，不可手动刷新，支持无限次重玩！',
+ 'Bloccato: l\'Archivio Storico segue il calendario reale. Replay illimitati attivi!'
+ )
+ );
+ }
+
+ function selectRandomLeague(leagueId) {
+ state.activeLeague = leagueId;
+ if (!state.randomFixturesCache[leagueId]) {
+ generateRandomFixturesForLeague(leagueId);
+ }
+ renderMatchSimTab();
+ }
+
+ function rerollRandomFixtures() {
+ generateRandomFixturesForLeague(state.activeLeague);
+ renderMatchSimTab();
+ showToast(
+ tr(
+ 'Fresh Poisson-calibrated matchups generated!',
+ '已为您生成全新泊松攻防对阵组合！',
+ 'Nuove sfide calibrate col modello di Poisson generate!'
+ )
+ );
+ }
+
+ function renderMatchSimTab() {
+ const t = I18N[state.lang];
+ const isHist = state.simMode === 'historical';
+
+ document.getElementById('mode-label-historical').textContent = t.modeHistorical;
+ document.getElementById('mode-label-random').textContent = t.modeRandom;
+
+ const btnHist = document.getElementById('mode-btn-historical');
+ const btnRand = document.getElementById('mode-btn-random');
+ if (isHist) {
+ btnHist.className = 'py-2 px-2 rounded-xl font-extrabold text-xs flex items-center justify-center gap-1.5 transition bg-gold text-appbg shadow';
+ btnRand.className = 'py-2 px-2 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition text-slate-400 hover:text-white';
+ } else {
+ btnRand.className = 'py-2 px-2 rounded-xl font-extrabold text-xs flex items-center justify-center gap-1.5 transition bg-cyanai text-appbg shadow';
+ btnHist.className = 'py-2 px-2 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition text-slate-400 hover:text-white';
+ }
+
+ document.getElementById('bar-historical-controls').classList.toggle('hidden', !isHist);
+ document.getElementById('bar-random-controls').classList.toggle('hidden', isHist);
+
+ const club = state.customClub;
+ document.getElementById('banner-custom-crest').innerHTML = renderClubCrestSVG(club, 'w-6 h-6');
+ const divObj = DIVISIONS[state.divisionIdx];
+ const stamStr = state.isVipPro ? '∞' : `${state.leagueStamina}/${state.maxStamina}`;
+ document.getElementById('banner-league-title').textContent = tr(
+ `Lead ${club.name} (${club.code}) in Virtual League →`,
+ `带领 ${club.name} (${club.code}) 征战自建联赛 →`,
+ `Guida ${club.name} (${club.code}) nella Lega Virtuale →`
+ );
+ document.getElementById('banner-league-sub').textContent = tr(
+ `${divObj.nameEn} • Stamina ${stamStr}`,
+ `${divObj.nameCn} • 当前体力 ${stamStr}`,
+ `${divObj.nameIt} • Energia ${stamStr}`
+ );
+
+ let activeFixtures = [];
+
+ if (isHist) {
+ document.getElementById('hist-week-title').textContent = state.histWeek === 'current' ? t.histWeekThisTitle : t.histWeekNextTitle;
+ document.getElementById('hist-week-sub').textContent = t.histWeekSub;
+ document.getElementById('btn-locked-refresh-text').textContent = t.syncLocked;
+ document.getElementById('lbl-week-rotation').textContent = t.lblWeekRotation;
+
+ const btnCur = document.getElementById('week-btn-current');
+ const btnNxt = document.getElementById('week-btn-next');
+ btnCur.textContent = t.btnThisWeek;
+ btnNxt.textContent = t.btnNextWeek;
+
+ if (state.histWeek === 'current') {
+ btnCur.className = 'px-2 py-0.5 rounded-md font-mono font-bold bg-emeraldai/20 text-emeraldai border border-emeraldai/30';
+ btnNxt.className = 'px-2 py-0.5 rounded-md font-mono font-semibold text-slate-400 hover:text-white';
+ } else {
+ btnNxt.className = 'px-2 py-0.5 rounded-md font-mono font-bold bg-emeraldai/20 text-emeraldai border border-emeraldai/30';
+ btnCur.className = 'px-2 py-0.5 rounded-md font-mono font-semibold text-slate-400 hover:text-white';
+ }
+
+ activeFixtures = HISTORICAL_WEEKS[state.histWeek] || HISTORICAL_WEEKS.current;
+ } else {
+ document.getElementById('league-carousel').innerHTML = LEAGUES.map(lg => {
+ const isActive = lg.id === state.activeLeague;
+ return `
+ <button onclick="selectRandomLeague('${lg.id}')" class="flex flex-col items-center w-[64px] shrink-0 group focus:outline-none">
+ <div class="p-0.5 rounded-full transition-all ${isActive ? 'ring-2 ring-cyanai shadow-[0_0_12px_rgba(56,189,248,0.35)] scale-105' : 'opacity-75 group-hover:opacity-100'}">
+ ${renderLeagueIconSVG(lg, isActive)}
+ </div>
+ <span class="mt-1 text-[10px] leading-tight text-center font-semibold line-clamp-2 ${isActive ? 'text-cyanai' : 'text-slate-300'}">
+ ${pickLang(lg, 'name')}
+ </span>
+ </button>
+ `;
+ }).join('');
+
+ const activeLgObj = LEAGUES.find(l => l.id === state.activeLeague);
+ document.getElementById('random-league-name').textContent = pickLang(activeLgObj, 'name');
+ document.getElementById('random-league-sub').textContent = t.randomLeagueSub;
+ document.getElementById('btn-reroll-text').textContent = t.btnReroll;
+
+ if (!state.randomFixturesCache[state.activeLeague]) {
+ generateRandomFixturesForLeague(state.activeLeague);
+ }
+ activeFixtures = state.randomFixturesCache[state.activeLeague];
+ }
+
+ document.getElementById('match-cards-list').innerHTML = activeFixtures.map(m => {
+ const model = computePoissonMatchModel(m.home, m.away, m.league);
+ const [pH, pD, pA] = model.prob;
+ const modalStr = `${model.modalScore.h}-${model.modalScore.a} (${(model.modalScore.prob * 100).toFixed(1)}%)`;
+ const replays = state.replayCounts[m.id] || 0;
+
+ const contextBadge = isHist
+ ? `<span class="px-2 py-0.5 rounded bg-golddim border border-gold/30 font-mono text-[10px] font-bold text-gold truncate">${pickLang(m, 'eraTag')}</span>`
+ : `<span class="px-2 py-0.5 rounded bg-cyanai/10 border border-cyanai/30 font-mono text-[10px] font-bold text-cyanai truncate">⚡ ${pickLang(m, 'bonusLabel')}</span>`;
+
+ return `
+ <article class="bg-card hover:bg-cardhover border border-borderdim rounded-2xl p-3 transition shadow-sm animate-fade-in">
+ <div class="flex items-center justify-between gap-1.5 pb-2 mb-2 border-b border-borderdim/60">
+ <div class="min-w-0 flex-1">${contextBadge}</div>
+ <button onclick="openPoissonMatrixModal('${m.id}')" class="px-2 py-0.5 rounded-lg bg-appbg hover:bg-[#1E293B] border border-cyanai/40 font-mono text-[10px] font-bold text-cyanai flex items-center gap-1 shrink-0 transition active:scale-95">
+ <span>∑</span>
+ <span>${t.poissonBtnLabel}</span>
+ </button>
+ </div>
+
+ <div class="flex items-center justify-between gap-2">
+ <div class="flex items-center gap-2 flex-1 min-w-0">
+ ${renderClubCrestSVG(m.home, "w-7 h-7 shrink-0")}
+ <div class="min-w-0">
+ <div class="font-extrabold text-xs text-white tracking-wide">${m.home.code}</div>
+ <div class="text-[11px] text-slate-300 truncate">${m.home.name}</div>
+ <span class="inline-block mt-0.5 px-1.5 py-0.2 rounded bg-emeraldai/10 text-emeraldai font-mono text-[9px] font-semibold">
+ ${m.home.form} ${pickLang(m.home, 'style')}
+ </span>
+ </div>
+ </div>
+
+ <div class="flex flex-col items-center shrink-0 px-1">
+ <span class="text-[10px] font-mono font-bold text-slate-500">VS</span>
+ <span class="mt-1 px-1.5 py-0.5 rounded bg-appbg border border-borderdim font-mono text-[10px] text-slate-200">
+ λ ${model.xg[0].toFixed(2)} : ${model.xg[1].toFixed(2)}
+ </span>
+ <span class="mt-0.5 font-mono text-[9px] text-gold">
+ ${tr('Modal', '众数', 'Modale')} ${modalStr}
+ </span>
+ ${isHist ? `<span class="font-mono text-[9px] text-slate-400">↻ ${replays}x</span>` : ''}
+ </div>
+
+ <div class="flex items-center justify-end gap-2 flex-1 min-w-0 text-right">
+ <div class="min-w-0">
+ <div class="font-extrabold text-xs text-white tracking-wide">${m.away.code}</div>
+ <div class="text-[11px] text-slate-300 truncate">${m.away.name}</div>
+ <span class="inline-block mt-0.5 px-1.5 py-0.2 rounded bg-cyanai/10 text-cyanai font-mono text-[9px] font-semibold">
+ ${m.away.form} ${pickLang(m.away, 'style')}
+ </span>
+ </div>
+ ${renderClubCrestSVG(m.away, "w-7 h-7 shrink-0")}
+ </div>
+ </div>
+
+ <div class="mt-2.5">
+ <div class="flex justify-between font-mono text-[10px] mb-1">
+ <span class="text-emeraldai font-bold">${t.homeWin} ${pH}%</span>
+ <span class="text-slate-400">${t.draw} ${pD}%</span>
+ <span class="text-cyanai font-bold">${t.awayWin} ${pA}%</span>
+ </div>
+ <div class="w-full h-1.5 rounded-full bg-slate-800 overflow-hidden flex">
+ <div class="bg-emeraldai" style="width: ${pH}%"></div>
+ <div class="bg-slate-500" style="width: ${pD}%"></div>
+ <div class="bg-cyanai" style="width: ${pA}%"></div>
+ </div>
+ </div>
+
+ <div class="mt-2.5 pt-2 border-t border-borderdim/80 grid grid-cols-2 gap-2">
+ <button onclick="startFixtureSimulation('${m.id}', 'H')" class="py-2 px-2 rounded-xl bg-emeraldai/15 hover:bg-emeraldai/25 border border-emeraldai/45 text-emeraldai font-extrabold text-[11px] flex items-center justify-center gap-1 transition active:scale-95">
+ <span>🛡️</span>
+ <span>${t.pickHomeWin} (${m.home.code})</span>
+ </button>
+ <button onclick="startFixtureSimulation('${m.id}', 'A')" class="py-2 px-2 rounded-xl bg-cyanai/15 hover:bg-cyanai/25 border border-cyanai/45 text-cyanai font-extrabold text-[11px] flex items-center justify-center gap-1 transition active:scale-95">
+ <span>⚔️</span>
+ <span>${t.pickAwayWin} (${m.away.code})</span>
+ </button>
+ </div>
+ </article>
+ `;
+ }).join('');
+ }
+
+ // -----------------------------------------------------------------------
+ // 11. TAB 2: MY CLUB & VIRTUAL LEAGUE
+ // -----------------------------------------------------------------------
+ function toggleCreatorEditor() {
+ state.creatorOpen = !state.creatorOpen;
+ document.getElementById('creator-editor-panel').classList.toggle('hidden', !state.creatorOpen);
+ }
+
+ function updateCustomClubFromInputs() {
+ const nameVal = document.getElementById('input-club-name').value.trim() || 'Turin Mole Utd';
+ const codeVal = (document.getElementById('input-club-code').value.trim() || 'TMU').toUpperCase().slice(0, 3);
+ state.customClub.name = nameVal;
+ state.customClub.code = codeVal;
+ renderMyLeagueTab();
+ renderMatchSimTab();
+ }
+
+ function setCustomClubColor(which, hex) {
+ state.customClub[which] = hex;
+ renderMyLeagueTab();
+ renderMatchSimTab();
+ }
+
+ function setCustomClubShape(shapeId) {
+ state.customClub.emblemShape = shapeId;
+ renderMyLeagueTab();
+ renderMatchSimTab();
+ }
+
+ function setCustomClubPhilosophy(philId) {
+ state.customClub.philosophyId = philId;
+ renderMyLeagueTab();
+ }
+
+ function getUserClubTeamObject() {
+ const phil = CLUB_PHILOSOPHIES.find(p => p.id === state.customClub.philosophyId) || CLUB_PHILOSOPHIES[0];
+ const boost = state.upgrades.analystSlot ? 0.25 : 0;
+ return {
+ code: state.customClub.code,
+ name: state.customClub.name,
+ homeGF: Number((1.72 + boost).toFixed(2)),
+ homeGA: 1.15,
+ awayGF: Number((1.48 + boost).toFixed(2)),
+ awayGA: 1.28,
+ c1: state.customClub.c1,
+ c2: state.customClub.c2,
+ emblemShape: state.customClub.emblemShape,
+ form: phil.form,
+ styleEn: phil.en,
+ styleIt: phil.it,
+ styleCn: phil.cn,
+ counterLesson: 'mod-1'
+ };
+ }
+
+ function getNextLeagueOpponent() {
+ const rivalIdx = (state.leagueMatchday - 1) % AI_LEAGUE_RIVALS.length;
+ return AI_LEAGUE_RIVALS[rivalIdx];
+ }
+
+ function startVirtualLeagueMatch() {
+ if (!state.isVipPro) {
+ if (state.leagueStamina <= 0) {
+ showToast(
+ tr(
+ 'Out of League Stamina! Refill via Sponsor Video, Coins, or activate VIP Pro.',
+ '联赛体力已耗尽！可通过观看短片、消耗金币或开启 VIP 补满体力。',
+ 'Energia Lega esaurita! Ricarica tramite video sponsor, monete o attiva VIP Pro.'
+ )
+ );
+ return;
+ }
+ state.leagueStamina -= 1;
+ renderHeaderResources();
+ renderMyLeagueTab();
+ }
+
+ const userClubObj = getUserClubTeamObject();
+ const rivalObj = getNextLeagueOpponent();
+
+ const leagueFixture = {
+ id: `league-div${state.divisionIdx}-md${state.leagueMatchday}`,
+ league: 'calcio',
+ home: userClubObj,
+ away: rivalObj,
+ bonusCmds: ['wingOverload', 'highPress'],
+ bonusLabelEn: 'Wing Overload / High Press',
+ bonusLabelIt: 'Sovraccarico Fasce / Pressing Alto',
+ bonusLabelCn: '两翼超载 / 高位逼抢'
+ };
+
+ launchSandboxWithMatch(leagueFixture, 'H', 'league');
+ }
+
+ function refillStaminaViaAd() {
+ if (state.isVipPro) {
+ showToast(tr('VIP Pro already grants Unlimited Stamina!', 'VIP Pro 已享无限联赛体力！', 'VIP Pro include già Energia Illimitata!'));
+ return;
+ }
+ if (state.leagueStamina >= state.maxStamina) {
+ showToast(tr('League Stamina is already full (3/3)!', '当前联赛体力已满（3/3）！', 'L\'Energia Lega è già al massimo (3/3)!'));
+ return;
+ }
+ showToast(tr('Playing 2s Sponsor Video...', '正在播放 2 秒能量补给短片...', 'Riproduzione video sponsor (2s)...'));
+ setTimeout(() => {
+ state.leagueStamina = Math.min(state.maxStamina, state.leagueStamina + 2);
+ renderHeaderResources();
+ renderMyLeagueTab();
+ showToast(tr('Stamina Refilled (+2 ⚡)!', '联赛体力已恢复（+2 ⚡）！', 'Energia ricaricata (+2 ⚡)!'));
+ }, 1500);
+ }
+
+ function refillStaminaViaCoins() {
+ if (state.isVipPro) {
+ showToast(tr('VIP Pro already grants Unlimited Stamina!', 'VIP Pro 已享无限联赛体力！', 'VIP Pro include già Energia Illimitata!'));
+ return;
+ }
+ if (state.leagueStamina >= state.maxStamina) {
+ showToast(tr('League Stamina is already full (3/3)!', '当前联赛体力已满（3/3）！', 'L\'Energia Lega è già al massimo (3/3)!'));
+ return;
+ }
+ if (state.coins < 40) {
+ showToast(tr('Need 40 Coins to refill stamina.', '需要 40 金币补满体力。', 'Servono 40 Monete per ricaricare l\'energia.'));
+ return;
+ }
+ state.coins -= 40;
+ state.leagueStamina = state.maxStamina;
+ renderHeaderResources();
+ renderMyLeagueTab();
+ showToast(tr('Full League Stamina Restored (3/3)!', '联赛体力已完全补满（3/3）！', 'Energia Lega completamente ripristinata (3/3)!'));
+ }
+
+ function buyFacilityUpgrade(key, cost) {
+ if (state.upgrades[key]) return;
+ if (state.coins < cost) {
+ showToast(tr(`Need ${cost} Coins for this upgrade.`, `需要 ${cost} 金币解锁该俱乐部设施。`, `Servono ${cost} Monete per questo potenziamento.`));
+ return;
+ }
+ state.coins -= cost;
+ state.upgrades[key] = true;
+ renderAll();
+ showToast(tr('Club Facility Upgraded!', '俱乐部设施升级成功！', 'Struttura del Club potenziata!'));
+ }
+
+ function recordVirtualLeagueResult(userGoals, oppGoals, rivalId) {
+ const userRow = state.leagueStandings.find(r => r.isUser);
+ const rivalRow = state.leagueStandings.find(r => r.id === rivalId);
+ if (userRow && rivalRow) {
+ userRow.p += 1;
+ rivalRow.p += 1;
+ userRow.gf += userGoals;
+ userRow.ga += oppGoals;
+ rivalRow.gf += oppGoals;
+ rivalRow.ga += userGoals;
+
+ if (userGoals > oppGoals) {
+ userRow.w += 1;
+ userRow.pts += 3;
+ rivalRow.l += 1;
+ } else if (userGoals === oppGoals) {
+ userRow.d += 1;
+ userRow.pts += 1;
+ rivalRow.d += 1;
+ rivalRow.pts += 1;
+ } else {
+ userRow.l += 1;
+ rivalRow.w += 1;
+ rivalRow.pts += 3;
+ }
+ }
+
+ const otherRivals = state.leagueStandings.filter(r => !r.isUser && r.id !== rivalId);
+ for (let i = 0; i < otherRivals.length - 1; i += 2) {
+ const a = otherRivals[i];
+ const b = otherRivals[i + 1];
+ const gA = Math.floor(Math.random() * 3);
+ const gB = Math.floor(Math.random() * 3);
+ a.p += 1; b.p += 1;
+ a.gf += gA; a.ga += gB;
+ b.gf += gB; b.ga += gA;
+ if (gA > gB) { a.w += 1; a.pts += 3; b.l += 1; }
+ else if (gA < gB) { b.w += 1; b.pts += 3; a.l += 1; }
+ else { a.d += 1; a.pts += 1; b.d += 1; b.pts += 1; }
+ }
+
+ state.leagueStandings.sort((x, y) => {
+ if (y.pts !== x.pts) return y.pts - x.pts;
+ return (y.gf - y.ga) - (x.gf - x.ga);
+ });
+
+ state.leagueMatchday += 1;
+ }
+
+ function promoteToNextDivision() {
+ if (state.divisionIdx >= DIVISIONS.length - 1) return;
+ state.divisionIdx += 1;
+ state.coins += 120;
+ initLeagueStandings();
+ renderAll();
+ const divObj = DIVISIONS[state.divisionIdx];
+ showToast(
+ tr(
+ `Promoted to ${divObj.nameEn}! +120 Promotion Coins!`,
+ `成功晋级至「${divObj.nameCn}」！获得 +120 晋级奖金！`,
+ `Promosso in ${divObj.nameIt}! Bonus +120 Monete!`
+ )
+ );
+ }
+
+ function renderMyLeagueTab() {
+ const club = state.customClub;
+ const clubObj = getUserClubTeamObject();
+ const phil = CLUB_PHILOSOPHIES.find(p => p.id === club.philosophyId) || CLUB_PHILOSOPHIES[0];
+ const ratingStars = state.upgrades.analystSlot ? '4.0★' : '3.5★';
+ const philLabel = state.lang === 'it' ? phil.it : state.lang === 'cn' ? phil.cn : phil.en;
+
+ document.getElementById('creator-eyebrow').textContent = tr('Custom Club Identity', '自建俱乐部品牌与战术体系', 'Identità Club Personalizzato');
+ document.getElementById('creator-live-crest').innerHTML = renderClubCrestSVG(clubObj, 'w-11 h-11');
+ document.getElementById('creator-club-display').textContent = `${club.name} (${club.code})`;
+ document.getElementById('creator-club-meta').textContent = tr(
+ `Rating: ${ratingStars} • ${phil.form} ${philLabel}`,
+ `俱乐部星级: ${ratingStars} • ${phil.form} ${philLabel}`,
+ `Valutazione: ${ratingStars} • ${phil.form} ${philLabel}`
+ );
+ document.getElementById('btn-toggle-creator').textContent = tr('✏️ Customize', '✏️ 定制队徽', '✏️ Personalizza');
+
+ document.getElementById('lbl-club-name').textContent = tr('Club Name', '俱乐部名称', 'Nome del Club');
+ document.getElementById('lbl-club-code').textContent = tr('3-Letter Code', '三字母代码', 'Sigla (3 Lettere)');
+ document.getElementById('lbl-primary-color').textContent = tr('Primary Jersey Color', '主场球衣主色', 'Colore Maglia Primario');
+ document.getElementById('lbl-secondary-color').textContent = tr('Secondary Trim Color', '球衣副色描边', 'Colore Secondario');
+ document.getElementById('lbl-emblem-shape').textContent = tr('Geometric Emblem Shape', '几何队徽轮廓', 'Geometria Stemma');
+ document.getElementById('lbl-club-style').textContent = tr('Club Tactical Philosophy', '默认战术哲学', 'Filosofia Tattica del Club');
+
+ document.getElementById('swatches-primary').innerHTML = COLOR_SWATCHES.map(hex => `
+ <button onclick="setCustomClubColor('c1', '${hex}')" class="w-5 h-5 rounded-full border ${club.c1 === hex ? 'ring-2 ring-gold scale-110 border-white' : 'border-white/30'}" style="background:${hex}"></button>
+ `).join('');
+
+ document.getElementById('swatches-secondary').innerHTML = COLOR_SWATCHES.map(hex => `
+ <button onclick="setCustomClubColor('c2', '${hex}')" class="w-5 h-5 rounded-full border ${club.c2 === hex ? 'ring-2 ring-gold scale-110 border-white' : 'border-white/30'}" style="background:${hex}"></button>
+ `).join('');
+
+ document.getElementById('emblem-shape-selector').innerHTML = EMBLEM_SHAPES.map(sh => {
+ const active = club.emblemShape === sh.id;
+ return `
+ <button onclick="setCustomClubShape('${sh.id}')" class="py-1.5 px-1 rounded-xl text-[10px] font-bold border transition ${
+ active ? 'bg-golddim border-gold text-gold' : 'bg-appbg border-borderdim text-slate-300'
+ }">${pickLang(sh, 'label')}</button>
+ `;
+ }).join('');
+
+ document.getElementById('club-style-selector').innerHTML = CLUB_PHILOSOPHIES.map(ph => {
+ const active = club.philosophyId === ph.id;
+ const pText = state.lang === 'it' ? ph.it : state.lang === 'cn' ? ph.cn : ph.en;
+ return `
+ <button onclick="setCustomClubPhilosophy('${ph.id}')" class="py-1.5 px-2 rounded-xl text-[10px] font-bold border text-left transition ${
+ active ? 'bg-emeraldai/15 border-emeraldai text-emeraldai' : 'bg-appbg border-borderdim text-slate-300'
+ }">${ph.form} ${pText}</button>
+ `;
+ }).join('');
+
+ const divObj = DIVISIONS[state.divisionIdx];
+ const rivalObj = getNextLeagueOpponent();
+ document.getElementById('league-div-badge').textContent = pickLang(divObj, 'name');
+ document.getElementById('next-fixture-heading').textContent = tr(
+ `Matchday ${state.leagueMatchday} • Virtual League Campaign`,
+ `第 ${state.leagueMatchday} 轮 • 虚拟联赛晋级征程`,
+ `Giornata ${state.leagueMatchday} • Campionato Virtuale`
+ );
+ document.getElementById('lbl-stamina-box').textContent = tr('League Stamina', '联赛体力', 'Energia Lega');
+ document.getElementById('league-stamina-display').textContent = state.isVipPro
+ ? tr('⚡ Unlimited (VIP)', '⚡ 无限畅玩 (VIP)', '⚡ Illimitata (VIP)')
+ : `⚡ ${state.leagueStamina} / ${state.maxStamina}`;
+
+ document.getElementById('next-league-fixture-box').innerHTML = `
+ <div class="flex items-center gap-2 flex-1 min-w-0">
+ ${renderClubCrestSVG(clubObj, 'w-8 h-8 shrink-0')}
+ <div class="truncate">
+ <div class="text-xs font-extrabold text-gold truncate">${clubObj.code} (${tr('YOU', '我方', 'TU')})</div>
+ <div class="text-[10px] text-slate-300 truncate">${clubObj.name}</div>
+ </div>
+ </div>
+ <div class="px-2 font-mono text-xs font-extrabold text-slate-500">VS</div>
+ <div class="flex items-center justify-end gap-2 flex-1 min-w-0 text-right">
+ <div class="truncate">
+ <div class="text-xs font-extrabold text-white truncate">${rivalObj.code}</div>
+ <div class="text-[10px] text-slate-300 truncate">${rivalObj.name}</div>
+ </div>
+ ${renderClubCrestSVG(rivalObj, 'w-8 h-8 shrink-0')}
+ </div>
+ `;
+
+ document.getElementById('btn-play-league-text').textContent = state.isVipPro
+ ? tr(`Command ${club.code} to Win (VIP Free)`, `率领 ${club.code} 冲击胜利（VIP 免费）`, `Guida ${club.code} alla Vittoria (VIP Gratis)`)
+ : tr(`Command ${club.code} to Win (-1 Stamina)`, `率领 ${club.code} 冲击胜利（消耗 1 体力）`, `Guida ${club.code} alla Vittoria (-1 Energia)`);
+ document.getElementById('lbl-refill-stamina').textContent = tr('Refill Stamina:', '补充联赛体力：', 'Ricarica Energia:');
+
+ document.getElementById('standings-heading').textContent = tr('8-Team Division Standings', '8支球队虚拟联赛实时积分榜', 'Classifica Divisione (8 Squadre)');
+ document.getElementById('standings-sub').textContent = tr(
+ 'Top 2 promote to higher division (+120 Coins bonus)',
+ '前 2 名可晋级更高级别联赛（赢取 +120 金币晋级奖金）',
+ 'Le prime 2 salgono di categoria (+120 Monete bonus)'
+ );
+
+ const userPosIndex = state.leagueStandings.findIndex(r => r.isUser);
+ const userRow = state.leagueStandings[userPosIndex];
+ const canPromote = userRow && userRow.p >= 2 && userPosIndex <= 1 && state.divisionIdx < DIVISIONS.length - 1;
+ const promoteBtn = document.getElementById('btn-promote-division');
+ promoteBtn.classList.toggle('hidden', !canPromote);
+ promoteBtn.textContent = tr('Promote ↑', '立即晋级 ↑', 'Promozione ↑');
+
+ document.getElementById('league-standings-tbody').innerHTML = state.leagueStandings.map((row, idx) => {
+ const pos = idx + 1;
+ const isPromoZone = pos <= 2;
+ const info = row.isUser
+ ? { code: club.code, name: club.name }
+ : AI_LEAGUE_RIVALS.find(r => r.id === row.id);
+ const gd = row.gf - row.ga;
+ const gdStr = gd > 0 ? `+${gd}` : `${gd}`;
+
+ return `
+ <tr class="${row.isUser ? 'bg-golddim text-white font-bold' : isPromoZone ? 'bg-emeraldai/5 text-slate-200' : 'text-slate-300'}">
+ <td class="py-1.5 pr-1 ${isPromoZone ? 'text-emeraldai font-extrabold' : ''}">${pos}</td>
+ <td class="py-1.5 truncate max-w-[115px]">${info.code} <span class="text-slate-400 font-sans text-[10px]">${row.isUser ? tr('(You)', '(我)', '(Tu)') : ''}</span></td>
+ <td class="py-1.5 text-center">${row.p}</td>
+ <td class="py-1.5 text-center">${row.w}</td>
+ <td class="py-1.5 text-center">${row.d}</td>
+ <td class="py-1.5 text-center">${row.l}</td>
+ <td class="py-1.5 text-center">${gdStr}</td>
+ <td class="py-1.5 text-right font-extrabold ${row.isUser ? 'text-gold' : 'text-white'}">${row.pts}</td>
+ </tr>
+ `;
+ }).join('');
+
+ document.getElementById('monetization-eyebrow').textContent = tr('Club Progression & Season Pass', '俱乐部成长与双轨通行证', 'Sviluppo Club & Pass Stagionale');
+ document.getElementById('facilities-heading').textContent = tr('Tactical Facilities & Season Pass', '俱乐部设施升级与双轨通行证', 'Strutture Tattiche & Pass Stagionale');
+
+ const facilitiesData = [
+ {
+ key: 'analystSlot',
+ icon: '📊',
+ titleEn: 'Tactical Analyst Slot (+0.5★ & +12% Poisson λ)',
+ titleIt: 'Analista Tattico Capo (+0.5★ & +12% λ Poisson)',
+ titleCn: '首席战术分析师席位（+0.5★ 战力 & +12% 期望进球）',
+ descEn: 'Permanent xG modeling boost for your custom club in all league matches.',
+ descIt: 'Incremento permanente del tasso xG per il tuo club in tutte le gare di lega.',
+ descCn: '永久提升自建俱乐部在虚拟联赛中的进攻期望进球转化率。',
+ cost: 150
+ },
+ {
+ key: 'youthScout',
+ icon: '🔭',
+ titleEn: 'Youth xG Data Scout (+15 Coins/Win)',
+ titleIt: 'Rete Scouting Dati Primavera (+15 Monete/Vittoria)',
+ titleCn: '青训数据球探网络（每场联赛胜利额外 +15 金币）',
+ descEn: 'Generates extra tactical coin dividends after every virtual league victory.',
+ descIt: 'Genera dividendi extra in monete tattiche dopo ogni vittoria in lega.',
+ descCn: '每次率领自建俱乐部赢下联赛对决后自动产出额外金币分红。',
+ cost: 180
+ }
+ ];
+
+ document.getElementById('facility-upgrades-list').innerHTML = facilitiesData.map(f => {
+ const owned = state.upgrades[f.key];
+ return `
+ <div class="bg-appbg border border-borderdim rounded-xl p-2.5 flex items-center justify-between gap-2">
+ <div class="flex items-center gap-2 min-w-0">
+ <span class="text-base shrink-0">${f.icon}</span>
+ <div class="min-w-0">
+ <div class="text-[11px] font-extrabold text-white truncate">${pickLang(f, 'title')}</div>
+ <div class="text-[10px] text-slate-400 leading-tight">${pickLang(f, 'desc')}</div>
+ </div>
+ </div>
+ ${owned
+ ? `<span class="px-2.5 py-1 rounded-lg bg-emeraldai/20 border border-emeraldai/40 text-emeraldai font-mono text-[10px] font-extrabold shrink-0">✓ ${tr('Active', '已激活', 'Attivo')}</span>`
+ : `<button onclick="buyFacilityUpgrade('${f.key}', ${f.cost})" class="px-2.5 py-1.5 rounded-lg bg-golddim hover:bg-gold/25 border border-gold/40 text-gold font-mono text-[10px] font-extrabold shrink-0">${f.cost} 🪙</button>`
+ }
+ </div>
+ `;
+ }).join('');
+
+ const curPts = userRow ? userRow.pts : 0;
+ const pct = Math.min(100, Math.max(10, Math.round((curPts / 15) * 100)));
+ document.getElementById('season-pass-title').textContent = tr('Season Pass Progress', '赛季双轨通行证进度', 'Progresso Pass Stagionale');
+ document.getElementById('season-pass-pts').textContent = `${curPts} / 15 PTS`;
+ document.getElementById('season-pass-bar').style.width = `${pct}%`;
+ document.getElementById('sp-free-label').textContent = tr('FREE TRACK', '免费轨道', 'PERCORSO BASE');
+ document.getElementById('sp-free-reward').innerHTML = tr('• 5 PTS: +50 🪙<br>• 12 PTS: +100 🪙', '• 5 积分: +50 🪙<br>• 12 积分: +100 🪙', '• 5 PT: +50 🪙<br>• 12 PT: +100 🪙');
+ document.getElementById('sp-vip-label').textContent = tr('VIP PRO TRACK ★', 'VIP 尊享轨道 ★', 'PERCORSO VIP PRO ★');
+ document.getElementById('sp-vip-reward').innerHTML = tr('• 5 PTS: +150 🪙 & Pass<br>• 12 PTS: Gold Arena Skin', '• 5 积分: +150 🪙 + 免广券<br>• 12 积分: 黄金大师球场', '• 5 PT: +150 🪙 & Pass<br>• 12 PT: Arena Maestro Oro');
+ }
+
+ // -----------------------------------------------------------------------
+ // 12. TAB 3: ACADEMY RENDERER & INTERACTIONS
+ // -----------------------------------------------------------------------
+ function claimDailyCheckIn() {
+ if (state.checkedInToday) return;
+ state.checkedInToday = true;
+ state.streakDays += 1;
+ const earnedXp = addXpAndCoins(40, 60);
+ showToast(
+ tr(
+ `Check-In Complete! +40 Coins & +${earnedXp} XP`,
+ `打卡成功！获得 +40 金币与 +${earnedXp} 教练经验`,
+ `Check-In completato! +40 Monete e +${earnedXp} XP`
+ )
+ );
+ renderAll();
+ }
+
+ function toggleAcademyModule(modId) {
+ state.expandedModuleId = state.expandedModuleId === modId ? null : modId;
+ renderAcademyTab();
+ }
+
+ function jumpToAcademyLesson(modId) {
+ closeLiveSim();
+ state.expandedModuleId = modId;
+ switchMainTab('academy');
+ showToast(
+ tr(
+ 'Opened recommended counter-tactic lesson!',
+ '已为您打开推荐的战术克制微课程！',
+ 'Lezione sulla contromisura tattica aperta!'
+ )
+ );
+ }
+
+ function answerAcademyQuiz(modId, selectedIdx) {
+ const mod = ACADEMY_MODULES.find(m => m.id === modId);
+ if (!mod) return;
+
+ if (selectedIdx === mod.correctIdx) {
+ if (!state.masteredModules.includes(modId)) {
+ state.masteredModules.push(modId);
+ const earnedXp = addXpAndCoins(35, 50);
+ showToast(
+ tr(
+ `Correct! Module Mastered: +35 Coins & +${earnedXp} XP`,
+ `回答正确！课程已掌握：获得 +35 金币与 +${earnedXp} XP`,
+ `Esatto! Modulo completato: +35 Monete e +${earnedXp} XP`
+ )
+ );
+ } else {
+ showToast(tr('Correct! You already mastered this module.', '回答正确！你已掌握该模块。', 'Esatto! Hai già completato questo modulo.'));
+ }
+ renderAll();
+ } else {
+ showToast(
+ tr(
+ 'Not quite! Review the tactical diagram above and try again.',
+ '还差一点！参考上方战术图解再试一次。',
+ 'Risposta errata! Osserva lo schema tattico sopra e riprova.'
+ )
+ );
+ }
+ }
+
+ function renderAcademyTab() {
+ const t = I18N[state.lang];
+
+ document.getElementById('academy-streak-sub').textContent = t.academyStreakSub;
+ document.getElementById('academy-checkin-title').textContent = t.academyCheckinTitle;
+ document.getElementById('checkin-streak-pill').textContent = `${state.streakDays} ${t.streakDays}`;
+
+ const daysGrid = document.getElementById('checkin-days-grid');
+ let daysHtml = '';
+ for (let d = 1; d <= 7; d++) {
+ const isDone = d <= state.streakDays;
+ const isTodayTarget = !state.checkedInToday && d === state.streakDays + 1;
+ daysHtml += `
+ <div class="py-1.5 rounded-xl border text-center flex flex-col items-center justify-center ${
+ isDone
+ ? 'bg-emeraldai/15 border-emeraldai/40 text-emeraldai'
+ : isTodayTarget
+ ? 'bg-golddim border-gold text-gold ring-1 ring-gold/50'
+ : 'bg-appbg border-borderdim text-slate-500'
+ }">
+ <span class="text-[9px] font-mono font-bold">G${d}</span>
+ <span class="text-xs mt-0.5 font-extrabold">${isDone ? '✓' : '+40'}</span>
+ </div>
+ `;
+ }
+ daysGrid.innerHTML = daysHtml;
+
+ const checkInBtn = document.getElementById('btn-daily-checkin');
+ if (state.checkedInToday) {
+ checkInBtn.textContent = t.btnCheckedIn;
+ checkInBtn.disabled = true;
+ checkInBtn.className = 'w-full py-2.5 rounded-xl bg-appbg border border-emeraldai/40 text-emeraldai font-bold text-xs cursor-default';
+ } else {
+ const xpPreview = state.isVipPro ? 120 : 60;
+ checkInBtn.textContent = tr(
+ `Check In Today (+40 Coins & +${xpPreview} XP)`,
+ `今日学习打卡 (+40 金币 & +${xpPreview} 经验)`,
+ `Check-In di Oggi (+40 Monete & +${xpPreview} XP)`
+ );
+ checkInBtn.disabled = false;
+ checkInBtn.className = 'w-full py-2.5 rounded-xl bg-gradient-to-r from-gold via-amber-400 to-gold text-appbg font-extrabold text-xs shadow-md gold-pulse transition active:scale-95';
+ }
+
+ document.getElementById('academy-modules-heading').textContent = t.academyModulesHeading;
+ document.getElementById('academy-mastered-count').textContent = `${state.masteredModules.length} / ${ACADEMY_MODULES.length} ${t.masteredLabel}`;
+
+ document.getElementById('academy-modules-list').innerHTML = ACADEMY_MODULES.map(mod => {
+ const isMastered = state.masteredModules.includes(mod.id);
+ const isExpanded = state.expandedModuleId === mod.id;
+ const options = state.lang === 'it' ? mod.optionsIt : state.lang === 'cn' ? mod.optionsCn : mod.optionsEn;
+
+ return `
+ <div class="bg-card border ${isMastered ? 'border-emeraldai/40' : 'border-borderdim'} rounded-2xl overflow-hidden transition">
+ <button onclick="toggleAcademyModule('${mod.id}')" class="w-full p-3 text-left flex items-center justify-between gap-2">
+ <div class="min-w-0">
+ <div class="flex items-center gap-1.5">
+ <span class="px-2 py-0.5 rounded border text-[10px] font-mono font-bold ${mod.tagColor}">
+ ${pickLang(mod, 'tag')}
+ </span>
+ ${isMastered
+ ? `<span class="px-1.5 py-0.5 rounded bg-emeraldai/15 text-emeraldai font-mono text-[10px] font-bold">✓ ${t.masteredLabel}</span>`
+ : `<span class="font-mono text-[10px] text-gold font-bold">+35 🪙 +${state.isVipPro ? 100 : 50} XP</span>`
+ }
+ </div>
+ <h4 class="text-xs sm:text-sm font-extrabold text-white mt-1.5 leading-snug">
+ ${pickLang(mod, 'title')}
+ </h4>
+ </div>
+ <span class="text-slate-400 text-xs font-mono shrink-0">${isExpanded ? '▲' : '▼'}</span>
+ </button>
+
+ ${isExpanded ? `
+ <div class="px-3 pb-3 pt-1 border-t border-borderdim/70 space-y-2.5 animate-fade-in">
+ ${mod.diagramSvg}
+ <p class="text-xs text-slate-300 leading-relaxed">
+ ${pickLang(mod, 'summary')}
+ </p>
+ <div class="bg-appbg border border-borderdim rounded-xl p-2.5 space-y-1.5">
+ <div class="text-[11px] font-bold text-gold">
+ ❓ ${pickLang(mod, 'q')}
+ </div>
+ ${options.map((opt, idx) => {
+ const showCorrect = isMastered && idx === mod.correctIdx;
+ return `
+ <button onclick="answerAcademyQuiz('${mod.id}', ${idx})" class="w-full text-left px-2.5 py-2 rounded-lg text-[11px] font-medium border transition active:scale-98 ${
+ showCorrect
+ ? 'bg-emeraldai/20 border-emeraldai text-emeraldai font-bold'
+ : 'bg-card hover:bg-cardhover border-borderdim text-slate-200'
+ }">
+ ${String.fromCharCode(65 + idx)}. ${opt}
+ </button>
+ `;
+ }).join('')}
+ </div>
+ </div>
+ ` : ''}
+ </div>
+ `;
+ }).join('');
+
+ document.getElementById('leaderboard-heading').textContent = t.leaderboardHeading;
+ const combinedRanks = [
+ ...state.peers.map(p => ({ ...p, isUser: false })),
+ {
+ name: t.youLabel,
+ lv: state.coachLevel,
+ mastered: state.masteredModules.length,
+ xp: state.coachXp,
+ isUser: true
+ }
+ ].sort((a, b) => b.xp - a.xp);
+
+ document.getElementById('leaderboard-list').innerHTML = combinedRanks.map((entry, idx) => {
+ const rankNum = idx + 1;
+ const medal = rankNum === 1 ? '🥇' : rankNum === 2 ? '🥈' : rankNum === 3 ? '🥉' : `#${rankNum}`;
+ return `
+ <div class="px-3 py-2 rounded-xl border flex items-center justify-between text-xs ${
+ entry.isUser
+ ? 'bg-golddim border-gold/50 text-white font-bold'
+ : 'bg-appbg/80 border-borderdim/70 text-slate-300'
+ }">
+ <div class="flex items-center gap-2 min-w-0">
+ <span class="w-6 font-mono text-xs font-extrabold text-gold shrink-0">${medal}</span>
+ <span class="truncate">${entry.name}</span>
+ </div>
+ <div class="flex items-center gap-2.5 font-mono text-[11px] shrink-0">
+ <span class="text-slate-400">Lv.${entry.lv}</span>
+ <span class="text-emeraldai">${entry.mastered}/${ACADEMY_MODULES.length}</span>
+ <span class="font-extrabold ${entry.isUser ? 'text-gold' : 'text-white'}">${entry.xp.toLocaleString()} XP</span>
+ </div>
+ </div>
+ `;
+ }).join('');
+ }
+
+ // -----------------------------------------------------------------------
+ // 13. TAB 4: CLUB & DIY RENDERER & INTERACTIONS
+ // -----------------------------------------------------------------------
+ function toggleVipPro() {
+ state.isVipPro = !state.isVipPro;
+ if (state.isVipPro && !state.ownedSkins.includes('gold')) {
+ state.ownedSkins.push('gold');
+ }
+ showToast(
+ state.isVipPro
+ ? tr('VIP Pro Activated! Auto Ad-Free, Unlimited Stamina & 2x XP.', 'VIP Pro 已激活！自动免广告、无限体力与双倍经验已开启。', 'VIP Pro Attivato! Zero Spot, Energia Illimitata e 2x XP.')
+ : tr('Switched to Free Tier Simulator.', '已切换回免费用户模式。', 'Modalità Base Gratuita attivata.')
+ );
+ renderAll();
+ }
+
+ function claimVipDailyDrop() {
+ if (!state.isVipPro || state.vipDailyClaimed) return;
+ state.vipDailyClaimed = true;
+ state.coins += 80;
+ renderAll();
+ showToast(
+ tr(
+ 'Daily VIP Drop Claimed: +80 Gold Coins!',
+ '今日 VIP 补给已领取：+80 金币！',
+ 'Bonus Giornaliero VIP Riscattato: +80 Monete!'
+ )
+ );
+ }
+
+ function redeemAdSkipPass() {
+ if (state.coins < 60) {
+ showToast(tr('Not enough Coins (60 Coins required).', '金币不足（需要 60 金币）。', 'Monete insufficienti (servono 60 Monete).'));
+ return;
+ }
+ state.coins -= 60;
+ state.adSkipPasses += 1;
+ renderAll();
+ showToast(tr('Redeemed +1 Ad-Skip Scout Pass!', '成功兑换 1 张单次免广告球探券！', 'Riscattato +1 Pass Scouting Senza Spot!'));
+ }
+
+ function handleSkinAction(skinId) {
+ const skin = PITCH_SKINS.find(s => s.id === skinId);
+ if (!skin) return;
+ const isUnlocked = state.ownedSkins.includes(skinId) || (skin.vipFree && state.isVipPro);
+ const sName = pickLang(skin, 'name');
+
+ if (isUnlocked) {
+ state.equippedSkin = skinId;
+ renderAll();
+ showToast(tr(`Equipped ${sName}!`, `已装备「${sName}」球场皮肤！`, `Tema campo «${sName}» attivato!`));
+ return;
+ }
+
+ if (state.coins < skin.cost) {
+ showToast(tr(`Need ${skin.cost} Coins to unlock.`, `需要 ${skin.cost} 金币解锁该皮肤。`, `Servono ${skin.cost} Monete per sbloccare.`));
+ return;
+ }
+
+ state.coins -= skin.cost;
+ state.ownedSkins.push(skinId);
+ state.equippedSkin = skinId;
+ renderAll();
+ showToast(tr(`Unlocked & Equipped ${sName}!`, `已解锁并装备「${sName}」！`, `Sbloccato e attivato «${sName}»!`));
+ }
+
+ function handleFrameAction(frameId) {
+ const frame = MARKER_FRAMES.find(f => f.id === frameId);
+ if (!frame) return;
+ const fName = pickLang(frame, 'name');
+
+ if (state.ownedFrames.includes(frameId)) {
+ state.equippedFrame = frameId;
+ renderAll();
+ showToast(tr(`Equipped ${fName}!`, `已装备「${fName}」！`, `Cornice «${fName}» attivata!`));
+ return;
+ }
+
+ if (state.coins < frame.cost) {
+ showToast(tr(`Need ${frame.cost} Coins to unlock.`, `需要 ${frame.cost} 金币解锁该光环。`, `Servono ${frame.cost} Monete per sbloccare.`));
+ return;
+ }
+
+ state.coins -= frame.cost;
+ state.ownedFrames.push(frameId);
+ state.equippedFrame = frameId;
+ renderAll();
+ showToast(tr(`Unlocked & Equipped ${fName}!`, `已解锁并装备「${fName}」！`, `Sbloccata e attivata «${fName}»!`));
+ }
+
+ function renderClubDiyTab() {
+ const t = I18N[state.lang];
+
+ document.getElementById('vip-card-title').textContent = t.vipCardTitle;
+ document.getElementById('vip-card-subtitle').textContent = t.vipCardSub;
+ document.getElementById('vip-auto-adfree-badge').textContent = t.vipAutoAdFree;
+ document.getElementById('vip-auto-adfree-badge').classList.toggle('hidden', !state.isVipPro);
+
+ const toggleBtn = document.getElementById('vip-toggle-btn');
+ if (state.isVipPro) {
+ toggleBtn.textContent = t.btnDeactivateVip;
+ toggleBtn.className = 'px-3 py-1.5 rounded-xl font-extrabold text-xs border transition active:scale-95 shrink-0 bg-gold border-gold text-appbg shadow-md';
+ } else {
+ toggleBtn.textContent = t.btnActivateVip;
+ toggleBtn.className = 'px-3 py-1.5 rounded-xl font-bold text-xs border transition active:scale-95 shrink-0 bg-appbg border-gold text-gold';
+ }
+
+ document.getElementById('vip-perk-1').textContent = t.vipPerk1;
+ document.getElementById('vip-perk-2').textContent = t.vipPerk2;
+ document.getElementById('vip-perk-3').textContent = t.vipPerk3;
+
+ const dropBtn = document.getElementById('btn-vip-daily-drop');
+ if (!state.isVipPro) {
+ dropBtn.disabled = true;
+ dropBtn.textContent = t.btnVipDropLocked;
+ dropBtn.className = 'w-full py-2.5 rounded-xl font-bold text-xs bg-appbg/70 border border-borderdim text-slate-500 cursor-not-allowed';
+ } else if (state.vipDailyClaimed) {
+ dropBtn.disabled = true;
+ dropBtn.textContent = t.btnVipDropClaimed;
+ dropBtn.className = 'w-full py-2.5 rounded-xl font-bold text-xs bg-emeraldai/15 border border-emeraldai/40 text-emeraldai cursor-default';
+ } else {
+ dropBtn.disabled = false;
+ dropBtn.textContent = t.btnVipDropClaim;
+ dropBtn.className = 'w-full py-2.5 rounded-xl font-extrabold text-xs bg-gradient-to-r from-gold to-amber-400 text-appbg shadow-md gold-pulse transition active:scale-95';
+ }
+
+ document.getElementById('utility-pass-title').textContent = t.utilityPassTitle;
+ document.getElementById('utility-pass-desc').textContent = t.utilityPassDesc;
+ document.getElementById('diy-skins-heading').textContent = t.diySkinsHeading;
+ document.getElementById('diy-skins-sub').textContent = t.diySkinsSub;
+ document.getElementById('diy-frames-heading').textContent = t.diyFramesHeading;
+ document.getElementById('diy-frames-sub').textContent = t.diyFramesSub;
+
+ document.getElementById('diy-skins-grid').innerHTML = PITCH_SKINS.map(skin => {
+ const isUnlocked = state.ownedSkins.includes(skin.id) || (skin.vipFree && state.isVipPro);
+ const isEquipped = state.equippedSkin === skin.id;
+
+ let btnHtml = '';
+ if (isEquipped) {
+ btnHtml = `<span class="w-full py-1.5 rounded-lg bg-emeraldai/20 border border-emeraldai/40 text-emeraldai font-mono text-[11px] font-extrabold text-center block">✓ ${t.equipped}</span>`;
+ } else if (isUnlocked) {
+ btnHtml = `<button onclick="handleSkinAction('${skin.id}')" class="w-full py-1.5 rounded-lg bg-appbg hover:bg-cardhover border border-borderdim text-white font-bold text-[11px] transition">${t.equip}</button>`;
+ } else {
+ btnHtml = `<button onclick="handleSkinAction('${skin.id}')" class="w-full py-1.5 rounded-lg bg-golddim hover:bg-gold/25 border border-gold/40 text-gold font-mono font-extrabold text-[11px] transition">${skin.cost} 🪙</button>`;
+ }
+
+ return `
+ <div class="bg-card border ${isEquipped ? 'border-emeraldai/50' : 'border-borderdim'} rounded-2xl p-2.5 flex flex-col justify-between">
+ <div class="h-14 rounded-xl border border-white/15 relative overflow-hidden mb-2 flex items-center justify-center" style="background: repeating-linear-gradient(90deg, ${skin.turfA}, ${skin.turfA} 14px, ${skin.turfB} 14px, ${skin.turfB} 28px);">
+ <div class="w-8 h-8 rounded-full border" style="border-color: ${skin.lines}"></div>
+ <div class="absolute inset-y-0 left-1/2 w-px" style="background: ${skin.lines}"></div>
+ ${skin.vipFree ? `<span class="absolute top-1 right-1 px-1.5 py-0.2 rounded bg-gold text-appbg font-mono text-[8px] font-extrabold">${t.vipIncluded}</span>` : ''}
+ </div>
+ <div>
+ <div class="text-xs font-extrabold text-white truncate mb-2">${pickLang(skin, 'name')}</div>
+ ${btnHtml}
+ </div>
+ </div>
+ `;
+ }).join('');
+
+ document.getElementById('diy-frames-list').innerHTML = MARKER_FRAMES.map(frame => {
+ const isOwned = state.ownedFrames.includes(frame.id);
+ const isEquipped = state.equippedFrame === frame.id;
+
+ let actionBtn = '';
+ if (isEquipped) {
+ actionBtn = `<span class="px-3 py-1.5 rounded-xl bg-emeraldai/20 border border-emeraldai/40 text-emeraldai font-mono text-[11px] font-extrabold shrink-0">✓ ${t.equipped}</span>`;
+ } else if (isOwned) {
+ actionBtn = `<button onclick="handleFrameAction('${frame.id}')" class="px-3 py-1.5 rounded-xl bg-appbg border border-borderdim text-white font-bold text-[11px] shrink-0">${t.equip}</button>`;
+ } else {
+ actionBtn = `<button onclick="handleFrameAction('${frame.id}')" class="px-3 py-1.5 rounded-xl bg-golddim border border-gold/40 text-gold font-mono font-extrabold text-[11px] shrink-0">${frame.cost} 🪙</button>`;
+ }
+
+ const previewRing = frame.id === 'neon'
+ ? 'ring-2 ring-cyanai shadow-[0_0_10px_#38BDF8]'
+ : frame.id === 'scudetto'
+ ? 'ring-2 ring-gold shadow-[0_0_10px_#F5B82E]'
+ : 'ring-1 ring-white';
+
+ return `
+ <div class="bg-card border ${isEquipped ? 'border-emeraldai/50' : 'border-borderdim'} rounded-2xl p-3 flex items-center justify-between gap-2.5">
+ <div class="flex items-center gap-2.5 min-w-0">
+ <div class="w-8 h-8 rounded-full bg-appbg flex items-center justify-center shrink-0">
+ <span class="w-4 h-4 rounded-full bg-emeraldai ${previewRing}"></span>
+ </div>
+ <div class="min-w-0">
+ <div class="text-xs font-extrabold text-white truncate">${pickLang(frame, 'name')}</div>
+ <div class="text-[11px] text-slate-400 truncate">${pickLang(frame, 'desc')}</div>
+ </div>
+ </div>
+ ${actionBtn}
+ </div>
+ `;
+ }).join('');
+ }
+
+ // -----------------------------------------------------------------------
+ // 14. 2D HTML5 CANVAS PITCH ENGINE (Driven by Poisson Arrival Rates λ_H, λ_A)
+ // -----------------------------------------------------------------------
+ function buildFormationCoordinates(isHome) {
+ const homeBase = [
+ [0.06, 0.50],
+ [0.20, 0.18], [0.18, 0.39], [0.18, 0.61], [0.20, 0.82],
+ [0.36, 0.26], [0.33, 0.50], [0.36, 0.74],
+ [0.47, 0.20], [0.49, 0.50], [0.47, 0.80]
+ ];
+ const awayBase = [
+ [0.94, 0.50],
+ [0.80, 0.18], [0.82, 0.39], [0.82, 0.61], [0.80, 0.82],
+ [0.64, 0.26], [0.67, 0.50], [0.64, 0.74],
+ [0.53, 0.20], [0.51, 0.50], [0.53, 0.80]
+ ];
+ const coords = isHome ? homeBase : awayBase;
+ return coords.map(([bx, by], idx) => ({ idx, bx, by, x: bx, y: by }));
+ }
+
+ function startFixtureSimulation(fixtureId, chosenSide) {
+ const fixture = findFixtureById(fixtureId);
+ if (!fixture) return;
+ if (state.simMode === 'historical') {
+ state.replayCounts[fixtureId] = (state.replayCounts[fixtureId] || 0) + 1;
+ }
+ launchSandboxWithMatch(fixture, chosenSide, state.simMode);
+ }
+
+ function launchSandboxWithMatch(m, chosenSide, sourceType) {
+ const t = I18N[state.lang];
+ const chosenTeam = chosenSide === 'H' ? m.home : m.away;
+ const model = computePoissonMatchModel(m.home, m.away, m.league);
+
+ state.sim = {
+ active: true,
+ paused: false,
+ speed: 1,
+ match: m,
+ poissonModel: model,
+ userSide: chosenSide,
+ sourceType: sourceType,
+ minute: 0,
+ accumulator: 0,
+ scoreH: 0,
+ scoreA: 0,
+ xgH: 0,
+ xgA: 0,
+ probH: model.prob[0],
+ probD: model.prob[1],
+ probA: model.prob[2],
+ staminaUser: 100,
+ staminaOpp: 100,
+ possTicksH: 50,
+ possTicksA: 50,
+ distinctCmds: new Set(),
+ activeCommand: null,
+ commandTimer: 0,
+ subUsed: false,
+ scoutBonusClaimed: false,
+ ball: { x: 0.5, y: 0.5, tx: 0.5, ty: 0.5, ownerTeam: chosenSide, flash: 0 },
+ playersH: buildFormationCoordinates(true),
+ playersA: buildFormationCoordinates(false),
+ lastFrameTime: performance.now()
+ };
+
+ const sideLabel = chosenSide === 'H' ? tr('Home', '主队', 'Casa') : tr('Away', '客队', 'Ospiti');
+ document.getElementById('sim-objective-banner').textContent = tr(
+ `OBJECTIVE: Command ${chosenTeam.name} (${sideLabel}) to WIN`,
+ `执教目标：率领 ${chosenTeam.name}（${sideLabel}）赢得胜利！`,
+ `OBIETTIVO: Guida ${chosenTeam.name} (${sideLabel}) alla VITTORIA`
+ );
+
+ document.getElementById('sim-mode-pill').textContent = sourceType === 'historical'
+ ? tr('HISTORICAL', '历史同期', 'STORICO')
+ : sourceType === 'league'
+ ? tr('MY LEAGUE', '自建联赛', 'LA MIA LEGA')
+ : tr('RANDOM', '随机沙盘', 'CASUALE');
+
+ const lgObj = LEAGUES.find(l => l.id === m.league);
+ document.getElementById('sim-league-tag').textContent = sourceType === 'league'
+ ? pickLang(DIVISIONS[state.divisionIdx], 'name')
+ : (lgObj ? pickLang(lgObj, 'name') : 'TACTICA ENGINE');
+
+ document.getElementById('sim-home-crest').innerHTML = renderClubCrestSVG(m.home, "w-8 h-8");
+ document.getElementById('sim-away-crest').innerHTML = renderClubCrestSVG(m.away, "w-8 h-8");
+ document.getElementById('sim-home-code').textContent = m.home.code;
+ document.getElementById('sim-away-code').textContent = m.away.code;
+ document.getElementById('sim-home-formation').textContent = `${m.home.form} ${pickLang(m.home, 'style')}`;
+ document.getElementById('sim-away-formation').textContent = `${m.away.form} ${pickLang(m.away, 'style')}`;
+
+ document.getElementById('sim-home-you-tag').classList.toggle('hidden', chosenSide !== 'H');
+ document.getElementById('sim-away-you-tag').classList.toggle('hidden', chosenSide !== 'A');
+ document.getElementById('sim-box-home').className = `flex items-center gap-2 flex-1 min-w-0 p-1 rounded-xl ${chosenSide === 'H' ? 'bg-golddim border border-gold/40' : ''}`;
+ document.getElementById('sim-box-away').className = `flex items-center justify-end gap-2 flex-1 min-w-0 text-right p-1 rounded-xl ${chosenSide === 'A' ? 'bg-golddim border border-gold/40' : ''}`;
+
+ document.getElementById('lbl-user-stam').textContent = t.lblUserStam;
+ document.getElementById('lbl-opp-stam').textContent = t.lblOppStam;
+ document.getElementById('lbl-tactical-cmds').textContent = t.lblTacticalCmds;
+ document.getElementById('lbl-event-stream').textContent = t.lblEventStream;
+ document.getElementById('sim-bonus-target-hint').textContent = `Bonus: ${pickLang(m, 'bonusLabel')}`;
+
+ document.getElementById('cmd-title-highPress').textContent = t.cmdTitleHighPress;
+ document.getElementById('cmd-sub-highPress').textContent = t.cmdSubHighPress;
+ document.getElementById('cmd-title-catenaccio').textContent = t.cmdTitleCatenaccio;
+ document.getElementById('cmd-sub-catenaccio').textContent = t.cmdSubCatenaccio;
+ document.getElementById('cmd-title-wingOverload').textContent = t.cmdTitleWing;
+ document.getElementById('cmd-sub-wingOverload').textContent = t.cmdSubWing;
+ document.getElementById('cmd-title-superSub').textContent = t.cmdTitleSub;
+ document.getElementById('cmd-sub-superSub').textContent = t.cmdSubSub;
+
+ document.getElementById('sim-speed-btn').textContent = '1x';
+ document.getElementById('sim-pause-btn').textContent = '❚❚';
+ document.getElementById('pitch-event-banner').classList.add('hidden');
+ document.getElementById('post-match-overlay').classList.add('hidden');
+
+ document.querySelectorAll('.cmd-card').forEach(b => b.classList.remove('ring-2', 'ring-gold', 'opacity-45'));
+
+ const logEl = document.getElementById('sim-event-log');
+ logEl.innerHTML = '';
+ appendSimEvent(
+ 0,
+ 'Poisson',
+ tr(
+ `Baseline λ_H = ${model.lambdaH.toFixed(2)}, λ_A = ${model.lambdaA.toFixed(2)}. Commanding ${chosenTeam.code} (${sideLabel})!`,
+ `泊松基准期望进球 λ_H = ${model.lambdaH.toFixed(2)}, λ_A = ${model.lambdaA.toFixed(2)}。已接管 ${chosenTeam.code}（${sideLabel}）！`,
+ `Parametri base λ_H = ${model.lambdaH.toFixed(2)}, λ_A = ${model.lambdaA.toFixed(2)}. Alla guida di ${chosenTeam.code} (${sideLabel})!`
+ ),
+ 'text-gold'
+ );
+
+ updateSimHUD();
+ openModal('modal-live-sim');
+ resizePitchCanvas();
+ requestAnimationFrame(simulationLoop);
+ }
+
+ function closeLiveSim() {
+ state.sim.active = false;
+ closeModal('modal-live-sim');
+ renderAll();
+ }
+
+ function toggleSimPause() {
+ if (!state.sim.active || state.sim.minute >= 90) return;
+ state.sim.paused = !state.sim.paused;
+ document.getElementById('sim-pause-btn').textContent = state.sim.paused ? '▶' : '❚❚';
+ }
+
+ function cycleSimSpeed() {
+ const speeds = [1, 2, 4];
+ state.sim.speed = speeds[(speeds.indexOf(state.sim.speed) + 1) % speeds.length];
+ document.getElementById('sim-speed-btn').textContent = `${state.sim.speed}x`;
+ }
+
+ function skipToFullTime() {
+ if (!state.sim.active || state.sim.minute >= 90) return;
+ while (state.sim.minute < 90) {
+ state.sim.minute += 1;
+ stepMatchMinute(state.sim.minute);
+ }
+ updateSimHUD();
+ finishSimulation();
+ }
+
+ function triggerTacticalCommand(cmdKey) {
+ if (!state.sim.active || state.sim.minute >= 90) return;
+ const sim = state.sim;
+ const userTeam = sim.userSide === 'H' ? sim.match.home : sim.match.away;
+
+ if (cmdKey === 'superSub') {
+ if (sim.subUsed) {
+ showToast(tr('Super Sub already deployed!', '本场奇兵换人已使用！', 'Cambio Decisivo già utilizzato!'));
+ return;
+ }
+ sim.subUsed = true;
+ sim.staminaUser = Math.min(100, sim.staminaUser + 18);
+ sim.distinctCmds.add('superSub');
+ document.getElementById('cmd-btn-superSub').classList.add('opacity-45');
+ appendSimEvent(
+ sim.minute,
+ 'Sub',
+ tr(
+ `${userTeam.code} Super Sub introduced! Stamina restored to ${Math.round(sim.staminaUser)}%.`,
+ `${userTeam.code} 奇兵替补登场！体能恢复至 ${Math.round(sim.staminaUser)}%。`,
+ `${userTeam.code} Cambio Decisivo inserito! Tenuta atletica al ${Math.round(sim.staminaUser)}%.`
+ ),
+ 'text-coralai'
+ );
+ flashPitchBanner(tr(`${userTeam.code} SUPER SUB (+18% STAM)`, `${userTeam.code} 奇兵换人激活`, `${userTeam.code} CAMBIO DECISIVO (+18% TENUTA)`));
+ updateSimHUD();
+ return;
+ }
+
+ sim.activeCommand = cmdKey;
+ sim.commandTimer = 14;
+ sim.distinctCmds.add(cmdKey);
+
+ document.querySelectorAll('.cmd-card').forEach(b => b.classList.remove('ring-2', 'ring-gold'));
+ document.getElementById(`cmd-btn-${cmdKey}`).classList.add('ring-2', 'ring-gold');
+
+ const bannerMap = {
+ highPress: tr(`${userTeam.code}: HIGH PRESS (+30% λ)`, `${userTeam.code}：高位逼抢 (+30% λ)`, `${userTeam.code}: PRESSING ALTO (+30% λ)`),
+ catenaccio: tr(`${userTeam.code}: CATENACCIO (-38% OPP λ)`, `${userTeam.code}：链式防反 (-38% 对手 λ)`, `${userTeam.code}: CATENACCIO (-38% λ AVV.)`),
+ wingOverload: tr(`${userTeam.code}: WING OVERLOAD (+26% λ)`, `${userTeam.code}：两翼超载 (+26% λ)`, `${userTeam.code}: SOVRACCARICO FASCE (+26% λ)`)
+ };
+ appendSimEvent(
+ sim.minute,
+ 'Tactics',
+ tr(
+ `${bannerMap[cmdKey]} — Diversity tracker: ${sim.distinctCmds.size} unique tactics used.`,
+ `${bannerMap[cmdKey]} —— 当前已使用 ${sim.distinctCmds.size} 种不同战术。`,
+ `${bannerMap[cmdKey]} — Varietà tattica: ${sim.distinctCmds.size} comandi distinti usati.`
+ ),
+ 'text-gold'
+ );
+ flashPitchBanner(bannerMap[cmdKey]);
+ updateSimHUD();
+ }
+
+ function flashPitchBanner(text) {
+ const el = document.getElementById('pitch-event-banner');
+ document.getElementById('pitch-event-banner-text').textContent = text;
+ el.classList.remove('hidden');
+ clearTimeout(window._pitchBannerTimer);
+ window._pitchBannerTimer = setTimeout(() => el.classList.add('hidden'), 1700);
+ }
+
+ function appendSimEvent(minute, tag, message, colorClass = 'text-slate-300') {
+ const logEl = document.getElementById('sim-event-log');
+ const minStr = String(minute).padStart(2, '0') + "'";
+ const item = document.createElement('div');
+ item.className = 'bg-card/85 border border-borderdim/70 rounded-xl px-2.5 py-1.5 flex items-start gap-2 animate-fade-in';
+ item.innerHTML = `
+ <span class="font-bold text-gold shrink-0">${minStr}</span>
+ <span class="px-1.5 py-0.2 rounded bg-appbg border border-borderdim text-[10px] font-bold ${colorClass} shrink-0">[${tag}]</span>
+ <span class="text-slate-200 leading-snug">${message}</span>
+ `;
+ logEl.prepend(item);
+ }
+
+ function stepMatchMinute(min) {
+ const sim = state.sim;
+ const m = sim.match;
+ const userIsHome = sim.userSide === 'H';
+
+ if (sim.commandTimer > 0) {
+ sim.commandTimer -= 1;
+ if (sim.commandTimer === 0) {
+ sim.activeCommand = null;
+ document.querySelectorAll('.cmd-card').forEach(b => b.classList.remove('ring-2', 'ring-gold'));
+ }
+ }
+
+ const pressDrain = sim.activeCommand === 'highPress' ? 0.16 : 0;
+ sim.staminaUser = Math.max(42, sim.staminaUser - (0.28 + pressDrain));
+ sim.staminaOpp = Math.max(44, sim.staminaOpp - 0.29);
+
+ const pData = sim.poissonModel || computePoissonMatchModel(m.home, m.away, m.league);
+ const userBaseLambda = userIsHome ? pData.lambdaH : pData.lambdaA;
+ const oppBaseLambda = userIsHome ? pData.lambdaA : pData.lambdaH;
+
+ let userMult = 0.78 + 0.22 * (sim.staminaUser / 100);
+ let oppMult = 0.78 + 0.22 * (sim.staminaOpp / 100);
+
+ if (sim.activeCommand === 'highPress') userMult *= 1.30;
+ else if (sim.activeCommand === 'catenaccio') { oppMult *= 0.62; userMult *= 1.10; }
+ else if (sim.activeCommand === 'wingOverload') userMult *= 1.26;
+ if (sim.subUsed && min >= 60) userMult *= 1.18;
+
+ const userRatePerMin = (userBaseLambda / 90) * userMult;
+ const oppRatePerMin = (oppBaseLambda / 90) * oppMult;
+
+ const homeRate = userIsHome ? userRatePerMin : oppRatePerMin;
+ const awayRate = userIsHome ? oppRatePerMin : userRatePerMin;
+
+ const possShare = homeRate / (homeRate + awayRate);
+ if (Math.random() < possShare) {
+ sim.possTicksH += 1;
+ sim.ball.ownerTeam = 'H';
+ } else {
+ sim.possTicksA += 1;
+ sim.ball.ownerTeam = 'A';
+ }
+
+ if (Math.random() < Math.min(0.24, homeRate * 5.0)) {
+ const shotXg = Number((0.07 + Math.random() * 0.34).toFixed(2));
+ sim.xgH = Number((sim.xgH + shotXg).toFixed(2));
+ sim.ball.tx = 0.94;
+ sim.ball.ty = 0.42 + Math.random() * 0.16;
+ sim.ball.flash = 1.0;
+
+ if (Math.random() < shotXg * 1.05) {
+ sim.scoreH += 1;
+ appendSimEvent(
+ min,
+ 'GOAL!',
+ tr(
+ `${m.home.code} scores! Converted ${shotXg.toFixed(2)} xG opening.`,
+ `${m.home.code} 破门得分！成功转化 ${shotXg.toFixed(2)} xG 战术良机。`,
+ `GOL di ${m.home.code}! Convertita occasione da ${shotXg.toFixed(2)} xG.`
+ ),
+ userIsHome ? 'text-emeraldai' : 'text-coralai'
+ );
+ flashPitchBanner(`⚽ GOAL ${m.home.code}! (${shotXg.toFixed(2)} xG)`);
+ }
+ } else if (Math.random() < Math.min(0.24, awayRate * 5.0)) {
+ const shotXg = Number((0.07 + Math.random() * 0.34).toFixed(2));
+ sim.xgA = Number((sim.xgA + shotXg).toFixed(2));
+ sim.ball.tx = 0.06;
+ sim.ball.ty = 0.42 + Math.random() * 0.16;
+ sim.ball.flash = 1.0;
+
+ if (Math.random() < shotXg * 1.05) {
+ sim.scoreA += 1;
+ appendSimEvent(
+ min,
+ 'GOAL!',
+ tr(
+ `${m.away.code} scores! Converted ${shotXg.toFixed(2)} xG opening.`,
+ `${m.away.code} 破门得分！成功转化 ${shotXg.toFixed(2)} xG 战术良机。`,
+ `GOL di ${m.away.code}! Convertita occasione da ${shotXg.toFixed(2)} xG.`
+ ),
+ !userIsHome ? 'text-emeraldai' : 'text-coralai'
+ );
+ flashPitchBanner(`⚽ GOAL ${m.away.code}! (${shotXg.toFixed(2)} xG)`);
+ }
+ } else {
+ const userHasBall = sim.ball.ownerTeam === sim.userSide;
+ if (sim.ball.ownerTeam === 'H') {
+ sim.ball.tx = 0.45 + Math.random() * 0.42;
+ } else {
+ sim.ball.tx = 0.15 + Math.random() * 0.42;
+ }
+ sim.ball.ty = (userHasBall && sim.activeCommand === 'wingOverload')
+ ? (Math.random() < 0.5 ? 0.12 + Math.random() * 0.14 : 0.74 + Math.random() * 0.14)
+ : 0.18 + Math.random() * 0.64;
+ }
+
+ const remMinutes = Math.max(0, 90 - min);
+ const remLambdaH = homeRate * remMinutes;
+ const remLambdaA = awayRate * remMinutes;
+ const [liveH, liveD, liveA] = computeLivePoissonOutcome(sim.scoreH, sim.scoreA, remLambdaH, remLambdaA);
+ sim.probH = liveH;
+ sim.probD = liveD;
+ sim.probA = liveA;
+ }
+
+ function updateSimHUD() {
+ const sim = state.sim;
+ document.getElementById('sim-home-score').textContent = sim.scoreH;
+ document.getElementById('sim-away-score').textContent = sim.scoreA;
+ document.getElementById('sim-clock').textContent = `${String(sim.minute).padStart(2, '0')}'`;
+
+ document.getElementById('sim-prob-h').textContent = `${sim.probH}%`;
+ document.getElementById('sim-prob-a').textContent = `${sim.probA}%`;
+ document.getElementById('sim-bar-h').style.width = `${sim.probH}%`;
+ document.getElementById('sim-bar-d').style.width = `${sim.probD}%`;
+ document.getElementById('sim-bar-a').style.width = `${sim.probA}%`;
+
+ document.getElementById('sim-xg-h').textContent = sim.xgH.toFixed(2);
+ document.getElementById('sim-xg-a').textContent = sim.xgA.toFixed(2);
+ document.getElementById('sim-stam-user').textContent = `${Math.round(sim.staminaUser)}%`;
+ document.getElementById('sim-stam-opp').textContent = `${Math.round(sim.staminaOpp)}%`;
+
+ const count = sim.distinctCmds.size;
+ document.getElementById('sim-diversity-tracker').textContent = tr(
+ `Diversity: ${count}/2 Cmds`,
+ `多样性: ${count}/2 战术`,
+ `Varietà: ${count}/2 Tattiche`
+ );
+ }
+
+ function rematchCurrentFixture() {
+ const sim = state.sim;
+ if (!sim.match) return;
+ if (sim.sourceType === 'league') {
+ closeLiveSim();
+ startVirtualLeagueMatch();
+ return;
+ }
+ if (sim.sourceType === 'historical') {
+ state.replayCounts[sim.match.id] = (state.replayCounts[sim.match.id] || 0) + 1;
+ }
+ launchSandboxWithMatch(sim.match, sim.userSide, sim.sourceType);
+ }
+
+ function finishSimulation() {
+ const sim = state.sim;
+ const m = sim.match;
+ const t = I18N[state.lang];
+ const userIsHome = sim.userSide === 'H';
+
+ const userGoals = userIsHome ? sim.scoreH : sim.scoreA;
+ const oppGoals = userIsHome ? sim.scoreA : sim.scoreH;
+ const userTeam = userIsHome ? m.home : m.away;
+ const oppTeam = userIsHome ? m.away : m.home;
+ const userWon = userGoals > oppGoals;
+ const isDraw = userGoals === oppGoals;
+
+ if (sim.sourceType === 'league') {
+ recordVirtualLeagueResult(userGoals, oppGoals, oppTeam.id);
+ }
+
+ document.getElementById('sum-home-crest').innerHTML = renderClubCrestSVG(m.home, "w-8 h-8");
+ document.getElementById('sum-away-crest').innerHTML = renderClubCrestSVG(m.away, "w-8 h-8");
+ document.getElementById('sum-home-name').textContent = m.home.name;
+ document.getElementById('sum-away-name').textContent = m.away.name;
+ document.getElementById('sum-home-arch').textContent = `${m.home.form} ${pickLang(m.home, 'style')}`;
+ document.getElementById('sum-away-arch').textContent = `${m.away.form} ${pickLang(m.away, 'style')}`;
+
+ document.getElementById('sum-score-h').textContent = sim.scoreH;
+ document.getElementById('sum-score-a').textContent = sim.scoreA;
+ document.getElementById('sum-xg-h').textContent = sim.xgH.toFixed(2);
+ document.getElementById('sum-xg-a').textContent = sim.xgA.toFixed(2);
+
+ const totalTicks = sim.possTicksH + sim.possTicksA;
+ const possH = Math.round((sim.possTicksH / totalTicks) * 100);
+ document.getElementById('sum-poss-h').textContent = `${possH}%`;
+ document.getElementById('sum-poss-a').textContent = `${100 - possH}%`;
+
+ document.getElementById('lbl-sum-xg').textContent = t.lblSumXg;
+ document.getElementById('lbl-sum-poss').textContent = t.lblSumPoss;
+
+ const outcomePill = document.getElementById('summary-outcome-pill');
+ const outcomeHeading = document.getElementById('summary-heading');
+ const dynamicBox = document.getElementById('summary-dynamic-outcome-box');
+ const footerActions = document.getElementById('summary-footer-actions');
+
+ if (userWon) {
+ outcomePill.textContent = tr('OBJECTIVE COMPLETE • VICTORY!', '执教目标达成 • 率队凯旋！', 'OBIETTIVO CENTRATO • VITTORIA!');
+ outcomePill.className = 'inline-block px-2.5 py-0.5 rounded-full bg-emeraldai/20 border border-emeraldai/40 font-mono text-[10px] font-extrabold text-emeraldai uppercase';
+ outcomeHeading.textContent = tr(
+ `Commanded ${userTeam.name} to Win!`,
+ `成功执教 ${userTeam.name} 赢得胜利！`,
+ `Hai guidato ${userTeam.name} alla Vittoria!`
+ );
+
+ const victoryCoins = 60;
+ const scoutBonusCoins = (sim.sourceType === 'league' && state.upgrades.youthScout) ? 15 : 0;
+ const matchedRecommended = m.bonusCmds.some(c => sim.distinctCmds.has(c));
+ const distinctCount = sim.distinctCmds.size;
+ const diversityCoins = (distinctCount >= 2 || matchedRecommended) ? 50 : distinctCount === 1 ? 20 : 0;
+
+ const baseVictoryXp = (100 + distinctCount * 15) * 2;
+ const actualXp = addXpAndCoins(victoryCoins + scoutBonusCoins + diversityCoins, baseVictoryXp);
+
+ dynamicBox.innerHTML = `
+ <div class="bg-card border border-emeraldai/40 rounded-2xl p-3 space-y-1.5 text-xs">
+ <div class="flex justify-between items-center">
+ <span class="text-slate-200 font-semibold">${tr('Victory Objective Reward', '选边获胜基础金币', 'Premio Obiettivo Vittoria')}</span>
+ <span class="font-mono font-extrabold text-emeraldai">+${victoryCoins} 🪙</span>
+ </div>
+ ${scoutBonusCoins > 0 ? `
+ <div class="flex justify-between items-center">
+ <span class="text-cyanai">${tr('Youth xG Scout Dividend', '青训球探设施胜利分红', 'Dividendo Rete Scouting Primavera')}</span>
+ <span class="font-mono font-bold text-cyanai">+${scoutBonusCoins} 🪙</span>
+ </div>
+ ` : ''}
+ <div class="flex justify-between items-center">
+ <span class="text-gold font-semibold">${tr(`Strategy Diversity (${distinctCount} tactics)`, `策略多样性奖励（${distinctCount}种战术）`, `Bonus Varietà Tattica (${distinctCount} tattiche)`)}</span>
+ <span class="font-mono font-extrabold text-gold">+${diversityCoins} 🪙</span>
+ </div>
+ ${sim.sourceType === 'league' ? `
+ <div class="flex justify-between items-center text-emeraldai">
+ <span>${tr('Virtual League Standings', '虚拟联赛积分更新', 'Punti Classifica Lega')}</span>
+ <span class="font-mono font-extrabold">+3 PTS</span>
+ </div>
+ ` : ''}
+ <div class="pt-1.5 border-t border-borderdim flex justify-between items-center">
+ <span class="text-emeraldai font-bold">${tr('Victory Double XP (2x)', '胜场双倍教练经验 (2x)', 'Doppi XP Vittoria (2x)')}</span>
+ <span class="font-mono font-extrabold text-emeraldai">+${actualXp} XP</span>
+ </div>
+ </div>
+ `;
+
+ footerActions.innerHTML = `
+ <button onclick="closeLiveSim()" class="w-full py-2.5 rounded-xl bg-gold text-appbg font-extrabold text-xs shadow-lg transition active:scale-95">
+ ${t.btnReturnHub}
+ </button>
+ `;
+ } else {
+ outcomePill.textContent = isDraw
+ ? tr('OBJECTIVE MISSED • DRAW', '未能全取三分 • 遗憾战平', 'OBIETTIVO MANCATO • PAREGGIO')
+ : tr('OBJECTIVE MISSED • DEFEAT', '执教目标未达成 • 惜败对手', 'OBIETTIVO MANCATO • SCONFITTA');
+ outcomePill.className = 'inline-block px-2.5 py-0.5 rounded-full bg-coralai/20 border border-coralai/40 font-mono text-[10px] font-extrabold text-coralai uppercase';
+ outcomeHeading.textContent = tr(
+ `${userTeam.name} Fell Short (${userGoals}-${oppGoals})`,
+ `${userTeam.name} 未能取胜 (${userGoals}-${oppGoals})`,
+ `${userTeam.name} Fermato sul ${userGoals}-${oppGoals}`
+ );
+
+ const consolationXp = addXpAndCoins(10, 35);
+ const recLessonId = oppTeam.counterLesson || 'mod-1';
+ const recLesson = ACADEMY_MODULES.find(mod => mod.id === recLessonId) || ACADEMY_MODULES[0];
+
+ dynamicBox.innerHTML = `
+ <div class="bg-card border border-coralai/40 rounded-2xl p-3 space-y-2 text-xs">
+ <div class="flex items-center justify-between">
+ <span class="font-extrabold text-coralai">📋 ${tr('Post-Match Tactical Debrief', '赛后战术复盘诊断', 'Analisi Tattica Post-Partita')}</span>
+ <span class="font-mono text-[10px] text-slate-400">+10 🪙 & +${consolationXp} XP</span>
+ </div>
+ <p class="text-[11px] text-slate-300 leading-relaxed">
+ ${tr(
+ `${oppTeam.name}'s [${oppTeam.form} ${oppTeam.styleEn}] neutralized your setup. Study the counter-principle below and trigger a 1-Click Rematch!`,
+ `对手 ${oppTeam.name} 的【${oppTeam.form} ${oppTeam.styleCn}】限制了你的进攻空间。建议前往学院研习下方克制课程后一键重赛！`,
+ `Il sistema [${oppTeam.form} ${oppTeam.styleIt || oppTeam.styleEn}] di ${oppTeam.name} ha neutralizzato la tua manovra. Studia la contromisura in Accademia e gioca la Rivincita!`
+ )}
+ </p>
+ <button onclick="jumpToAcademyLesson('${recLesson.id}')" class="w-full py-2 px-2.5 rounded-xl bg-golddim hover:bg-gold/25 border border-gold/40 text-left flex items-center justify-between gap-2 transition active:scale-95">
+ <div class="min-w-0">
+ <div class="text-[9px] font-mono text-gold uppercase">${tr('Recommended Academy Counter-Lesson', '推荐知识学院克制课程', 'Lezione Consigliata in Accademia')}</div>
+ <div class="text-[11px] font-extrabold text-white truncate">${pickLang(recLesson, 'title')}</div>
+ </div>
+ <span class="text-xs font-extrabold text-gold shrink-0">${tr('Study →', '去学习 →', 'Studia →')}</span>
+ </button>
+ </div>
+ `;
+
+ footerActions.innerHTML = `
+ <button onclick="rematchCurrentFixture()" class="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-emeraldai to-teal-400 text-appbg font-extrabold text-xs shadow-lg transition active:scale-95">
+ ↻ ${t.btnRematch}
+ </button>
+ <button onclick="closeLiveSim()" class="px-4 py-2.5 rounded-xl bg-card border border-borderdim text-slate-200 font-bold text-xs transition active:scale-95">
+ ${t.btnReturnHub}
+ </button>
+ `;
+ }
+
+ renderPostMatchScoutBox();
+ document.getElementById('post-match-overlay').classList.remove('hidden');
+ }
+
+ function renderPostMatchScoutBox() {
+ const box = document.getElementById('scout-bonus-box');
+ const sim = state.sim;
+
+ if (state.isVipPro) {
+ if (!sim.scoutBonusClaimed) {
+ sim.scoutBonusClaimed = true;
+ state.coins += 40;
+ renderHeaderResources();
+ }
+ box.innerHTML = `
+ <div class="flex items-center justify-between gap-2">
+ <div>
+ <div class="text-xs font-extrabold text-gold">★ ${tr('VIP Auto Ad-Free Claimed!', 'VIP 自动免广告奖励已发放！', 'Bonus VIP Zero Spot Accreditato!')}</div>
+ <div class="text-[10px] text-slate-300 mt-0.5">${tr('Zero videos watched — instant scout telemetry bonus credited.', '无需观看任何短片，额外球探金币已自动入账。', 'Nessun video richiesto — bonus telemetria accreditato istantaneamente.')}</div>
+ </div>
+ <span class="px-2.5 py-1 rounded-lg bg-gold text-appbg font-mono text-xs font-extrabold shrink-0">+40 🪙</span>
+ </div>
+ `;
+ return;
+ }
+
+ if (sim.scoutBonusClaimed) {
+ box.innerHTML = `
+ <div class="text-center py-1 text-xs font-extrabold text-emeraldai">
+ ✓ ${tr('+40 Bonus Scout Coins Credited!', '已成功领取 +40 额外球探金币！', '+40 Monete Scouting Accreditate!')}
+ </div>
+ `;
+ return;
+ }
+
+ box.innerHTML = `
+ <div class="text-[11px] font-bold text-cyanai mb-2">
+ 📡 ${tr('Post-Match Tactical Scout Report Bonus (+40 Coins)', '赛后深度球探报告额外补给 (+40 金币)', 'Bonus Report Scouting Post-Partita (+40 Monete)')}
+ </div>
+ <div class="grid grid-cols-2 gap-2" id="scout-action-btns">
+ <button onclick="watchSimulatedScoutAd()" class="py-2 px-2.5 rounded-xl bg-cyanai/15 hover:bg-cyanai/25 border border-cyanai/40 text-cyanai font-bold text-[11px] transition active:scale-95">
+ 🎬 ${tr('Watch Scout Clip (+40)', '看球探短片 (+40)', 'Guarda Clip (+40)')}
+ </button>
+ <button onclick="useAdSkipPassForBonus()" class="py-2 px-2.5 rounded-xl font-bold text-[11px] border transition active:scale-95 ${
+ state.adSkipPasses > 0
+ ? 'bg-golddim hover:bg-gold/25 border-gold text-gold'
+ : 'bg-appbg border-borderdim text-slate-500'
+ }">
+ 🎟️ ${tr(`Use Ad-Skip Pass (${state.adSkipPasses})`, `用免广券跳过 (${state.adSkipPasses})`, `Usa Pass (${state.adSkipPasses})`)}
+ </button>
+ </div>
+ `;
+ }
+
+ function watchSimulatedScoutAd() {
+ if (state.sim.scoutBonusClaimed) return;
+ const btnsEl = document.getElementById('scout-action-btns');
+ if (!btnsEl) return;
+
+ btnsEl.innerHTML = `
+ <div class="col-span-2 py-2 px-3 rounded-xl bg-appbg border border-cyanai/40 text-center">
+ <div class="text-[11px] font-mono text-cyanai animate-pulse">
+ ${tr('Analyzing Tactical Telemetry Video (2s)...', '正在播放战术球探短片 (2秒)...', 'Analisi Telemetria Tattica in corso (2s)...')}
+ </div>
+ </div>
+ `;
+
+ setTimeout(() => {
+ if (!state.sim.scoutBonusClaimed) {
+ state.sim.scoutBonusClaimed = true;
+ state.coins += 40;
+ renderHeaderResources();
+ renderPostMatchScoutBox();
+ showToast(tr('Scout Clip Complete: +40 Coins!', '短片播放完毕：+40 金币已入账！', 'Clip completata: +40 Monete accreditate!'));
+ }
+ }, 1800);
+ }
+
+ function useAdSkipPassForBonus() {
+ if (state.sim.scoutBonusClaimed) return;
+ if (state.adSkipPasses <= 0) {
+ showToast(tr('No Ad-Skip Passes left! Redeem in Club & DIY tab.', '免广告券不足！可前往「DIY与订阅」用 60 金币兑换。', 'Pass esauriti! Riscattali nella scheda Club & VIP.'));
+ return;
+ }
+ state.adSkipPasses -= 1;
+ state.sim.scoutBonusClaimed = true;
+ state.coins += 40;
+ renderHeaderResources();
+ renderPostMatchScoutBox();
+ showToast(tr('Ad-Skip Pass Used! +40 Coins Instant Claim!', '已消耗 1 张免广券，瞬间领取 +40 金币！', 'Pass utilizzato! +40 Monete accreditate istantaneamente!'));
+ }
+
+ // -----------------------------------------------------------------------
+ // 15. RESPONSIVE 2D HTML5 CANVAS PITCH RENDERING
+ // -----------------------------------------------------------------------
+ function resizePitchCanvas() {
+ const wrapper = document.getElementById('pitch-canvas-wrapper');
+ const canvas = document.getElementById('tactical-pitch-canvas');
+ if (!wrapper || !canvas) return;
+ const rect = wrapper.getBoundingClientRect();
+ const dpr = window.devicePixelRatio || 1;
+ canvas.width = Math.max(1, Math.floor(rect.width * dpr));
+ canvas.height = Math.max(1, Math.floor(rect.height * dpr));
+ const ctx = canvas.getContext('2d');
+ ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+ drawPitchFrame(rect.width, rect.height);
+ }
+
+ window.addEventListener('resize', () => {
+ if (state.sim.active) resizePitchCanvas();
+ });
+
+ function simulationLoop(now) {
+ if (!state.sim.active) return;
+ const dt = Math.min(0.1, (now - state.sim.lastFrameTime) / 1000);
+ state.sim.lastFrameTime = now;
+
+ const sim = state.sim;
+ if (!sim.paused && sim.minute < 90) {
+ sim.accumulator += dt * 5 * sim.speed;
+ while (sim.accumulator >= 1 && sim.minute < 90) {
+ sim.accumulator -= 1;
+ sim.minute += 1;
+ stepMatchMinute(sim.minute);
+ updateSimHUD();
+ if (sim.minute >= 90) {
+ finishSimulation();
+ break;
+ }
+ }
+ }
+
+ updatePitchKinematics(dt);
+
+ const wrapper = document.getElementById('pitch-canvas-wrapper');
+ if (wrapper) {
+ const rect = wrapper.getBoundingClientRect();
+ drawPitchFrame(rect.width, rect.height);
+ }
+
+ requestAnimationFrame(simulationLoop);
+ }
+
+ function updatePitchKinematics(dt) {
+ const sim = state.sim;
+ const lerpRate = Math.min(1, dt * 6.5 * sim.speed);
+ const userIsHome = sim.userSide === 'H';
+
+ sim.ball.x += (sim.ball.tx - sim.ball.x) * lerpRate;
+ sim.ball.y += (sim.ball.ty - sim.ball.y) * lerpRate;
+ if (sim.ball.flash > 0) {
+ sim.ball.flash = Math.max(0, sim.ball.flash - dt * 2.2);
+ }
+
+ const ballShiftX = (sim.ball.x - 0.5) * 0.42;
+ const ballShiftY = (sim.ball.y - 0.5) * 0.24;
+
+ sim.playersH.forEach((p, i) => {
+ if (i === 0) {
+ const gy = 0.5 + (sim.ball.y - 0.5) * 0.18;
+ p.x += (p.bx - p.x) * lerpRate;
+ p.y += (gy - p.y) * lerpRate;
+ return;
+ }
+ const pressPush = userIsHome
+ ? (sim.activeCommand === 'highPress' ? 0.07 : sim.activeCommand === 'catenaccio' ? -0.06 : 0)
+ : 0;
+ const wingStretch = (userIsHome && sim.activeCommand === 'wingOverload' && (p.by < 0.3 || p.by > 0.7))
+ ? (p.by < 0.5 ? -0.06 : 0.06)
+ : 0;
+ const targetX = Math.max(0.12, Math.min(0.92, p.bx + ballShiftX + pressPush));
+ const targetY = Math.max(0.08, Math.min(0.92, p.by + ballShiftY + wingStretch));
+ p.x += (targetX - p.x) * lerpRate;
+ p.y += (targetY - p.y) * lerpRate;
+ });
+
+ sim.playersA.forEach((p, i) => {
+ if (i === 0) {
+ const gy = 0.5 + (sim.ball.y - 0.5) * 0.18;
+ p.x += (p.bx - p.x) * lerpRate;
+ p.y += (gy - p.y) * lerpRate;
+ return;
+ }
+ const pressPush = !userIsHome
+ ? (sim.activeCommand === 'highPress' ? -0.07 : sim.activeCommand === 'catenaccio' ? 0.06 : 0)
+ : 0;
+ const wingStretch = (!userIsHome && sim.activeCommand === 'wingOverload' && (p.by < 0.3 || p.by > 0.7))
+ ? (p.by < 0.5 ? -0.06 : 0.06)
+ : 0;
+ const targetX = Math.max(0.08, Math.min(0.88, p.bx + ballShiftX + pressPush));
+ const targetY = Math.max(0.08, Math.min(0.92, p.by + ballShiftY + wingStretch));
+ p.x += (targetX - p.x) * lerpRate;
+ p.y += (targetY - p.y) * lerpRate;
+ });
+ }
+
+ function drawPitchFrame(w, h) {
+ const canvas = document.getElementById('tactical-pitch-canvas');
+ if (!canvas || w <= 0 || h <= 0) return;
+ const ctx = canvas.getContext('2d');
+ const sim = state.sim;
+ const m = sim.match;
+ const skin = PITCH_SKINS.find(s => s.id === state.equippedSkin) || PITCH_SKINS[0];
+
+ const padX = 16;
+ const padY = 12;
+ const pw = w - padX * 2;
+ const ph = h - padY * 2;
+
+ ctx.fillStyle = skin.turfB;
+ ctx.fillRect(0, 0, w, h);
+
+ const stripes = 10;
+ const stripeW = pw / stripes;
+ for (let i = 0; i < stripes; i++) {
+ ctx.fillStyle = i % 2 === 0 ? skin.turfA : skin.turfB;
+ ctx.fillRect(padX + i * stripeW, padY, stripeW, ph);
+ }
+
+ ctx.strokeStyle = skin.lines;
+ ctx.lineWidth = 1.3;
+ ctx.strokeRect(padX, padY, pw, ph);
+
+ ctx.beginPath();
+ ctx.moveTo(padX + pw / 2, padY);
+ ctx.lineTo(padX + pw / 2, padY + ph);
+ ctx.stroke();
+
+ ctx.beginPath();
+ ctx.arc(padX + pw / 2, padY + ph / 2, ph * 0.19, 0, Math.PI * 2);
+ ctx.stroke();
+
+ const boxW = pw * 0.14;
+ const boxH = ph * 0.52;
+ ctx.strokeRect(padX, padY + (ph - boxH) / 2, boxW, boxH);
+ ctx.strokeRect(padX + pw - boxW, padY + (ph - boxH) / 2, boxW, boxH);
+
+ ctx.save();
+ ctx.setLineDash([3, 4]);
+ ctx.strokeStyle = skin.grid;
+ ctx.beginPath();
+ ctx.moveTo(padX + pw * 0.33, padY);
+ ctx.lineTo(padX + pw * 0.33, padY + ph);
+ ctx.moveTo(padX + pw * 0.67, padY);
+ ctx.lineTo(padX + pw * 0.67, padY + ph);
+ ctx.stroke();
+ ctx.restore();
+
+ const bx = padX + sim.ball.x * pw;
+ const by = padY + sim.ball.y * ph;
+
+ const homeTeamColors = m ? { c1: m.home.c1, c2: m.home.c2 } : { c1: '#10B981', c2: '#FFFFFF' };
+ const awayTeamColors = m ? { c1: m.away.c1, c2: m.away.c2 } : { c1: '#38BDF8', c2: '#0B0F17' };
+
+ const drawPlayerUnit = (p, teamColors, isUserTeam, idx) => {
+ const px = padX + p.x * pw;
+ const py = padY + p.y * ph;
+ const radius = idx === 0 ? 4.8 : 5.3;
+
+ if (state.equippedFrame === 'neon') {
+ ctx.beginPath();
+ ctx.arc(px, py, radius + 3.2, 0, Math.PI * 2);
+ ctx.strokeStyle = isUserTeam ? 'rgba(16, 185, 129, 0.65)' : 'rgba(56, 189, 248, 0.55)';
+ ctx.lineWidth = 1.3;
+ ctx.stroke();
+ } else if (state.equippedFrame === 'scudetto') {
+ ctx.beginPath();
+ ctx.arc(px, py, radius + 2.8, 0, Math.PI * 2);
+ ctx.strokeStyle = 'rgba(245, 184, 46, 0.85)';
+ ctx.lineWidth = 1.4;
+ ctx.stroke();
+ }
+
+ ctx.beginPath();
+ ctx.arc(px, py, radius, 0, Math.PI * 2);
+ ctx.fillStyle = idx === 0 ? '#F5B82E' : teamColors.c1;
+ ctx.fill();
+ ctx.lineWidth = 1.5;
+ ctx.strokeStyle = teamColors.c2 === teamColors.c1 ? '#FFFFFF' : teamColors.c2;
+ ctx.stroke();
+ };
+
+ sim.playersH.forEach((p, idx) => drawPlayerUnit(p, homeTeamColors, sim.userSide === 'H', idx));
+ sim.playersA.forEach((p, idx) => drawPlayerUnit(p, awayTeamColors, sim.userSide === 'A', idx));
+
+ if (sim.ball.flash > 0) {
+ ctx.beginPath();
+ ctx.arc(bx, by, 8 + (1 - sim.ball.flash) * 26, 0, Math.PI * 2);
+ ctx.strokeStyle = `rgba(245, 184, 46, ${sim.ball.flash})`;
+ ctx.lineWidth = 2.5;
+ ctx.stroke();
+ }
+
+ ctx.beginPath();
+ ctx.arc(bx, by, 6.5, 0, Math.PI * 2);
+ ctx.fillStyle = 'rgba(245, 184, 46, 0.35)';
+ ctx.fill();
+
+ ctx.beginPath();
+ ctx.arc(bx, by, 3.6, 0, Math.PI * 2);
+ ctx.fillStyle = '#FFFFFF';
+ ctx.fill();
+ ctx.lineWidth = 1.2;
+ ctx.strokeStyle = '#F5B82E';
+ ctx.stroke();
+ }
+
+ // -----------------------------------------------------------------------
+ // 16. INITIALIZE APP ON WINDOW LOAD
+ // -----------------------------------------------------------------------
+ window.onload = function () {
+ initLeagueStandings();
+ renderAll();
+ };
+ </script>
+</body>
+</html>
