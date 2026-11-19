@@ -1,6 +1,6 @@
 # TACTICA.SIM — Bivariate Poisson Football Simulation & Sports EdTech Engine
 
-**[Launch Live TRL 6 Interactive Demo →](https://www.google.com/search?q=https://indexkon.github.io/tactica-sim-prototype/)**
+**[Launch Live TRL 6 Interactive Demo →](https://indexkon.github.io/tactica-sim-prototype/)**
 
 **TACTICA.SIM** is a client-side 2D football tactical simulation and quantitative sports EdTech prototype developed for **TACTICA.SIM S.r.l.** (Turin, Italy). It translates econometric match-outcome modeling into an interactive coaching, analytics, and educational environment with zero real-money wagering.
 
@@ -8,7 +8,7 @@
 
 ## Live Prototype
 
-- **Interactive Web App**: [https://indexkon.github.io/tactica-sim-prototype/](https://www.google.com/search?q=https://indexkon.github.io/tactica-sim-prototype/)
+- **Interactive Web App**: [https://indexkon.github.io/tactica-sim-prototype/](https://indexkon.github.io/tactica-sim-prototype/)
 - **Technology Readiness Level**: **TRL 6** (functional browser-based system demonstrated in a relevant operational environment)
 - **Languages**: Bilingual interface (**English / Italian**) switchable in real time
 - **Runtime**: Zero-backend, self-contained HTML5 / Canvas / JavaScript (`index.html`), compatible with modern desktop and mobile browsers
