@@ -232,11 +232,11 @@
  <div class="grid grid-cols-2 gap-1.5 bg-appbg p-1 rounded-2xl border border-borderdim">
  <button id="mode-btn-historical" onclick="switchSimMode('historical')" class="py-2 px-2 rounded-xl font-extrabold text-xs flex items-center justify-center gap-1.5 transition bg-gold text-appbg shadow">
  <span>📅</span>
- <span id="mode-label-historical">Historical Sync</span>
+ <span id="mode-label-historical">Featured Matchups</span>
  </button>
  <button id="mode-btn-random" onclick="switchSimMode('random')" class="py-2 px-2 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition text-slate-400 hover:text-white">
  <span>🎲</span>
- <span id="mode-label-random">Random Matchups</span>
+ <span id="mode-label-random">Top Leagues</span>
  </button>
  </div>
 
@@ -246,7 +246,7 @@
  <div class="min-w-0">
  <div class="flex items-center gap-1.5">
  <span class="w-2 h-2 rounded-full bg-emeraldai animate-pulse"></span>
- <span id="hist-week-title" class="text-xs font-extrabold text-white truncate">Nov 13 Classic Matchweek</span>
+ <span id="hist-week-title" class="text-xs font-extrabold text-white truncate">Today's Featured Matchups</span>
  </div>
  <p id="hist-week-sub" class="text-[10px] text-slate-400 mt-0.5 truncate">
  Real calendar archive • Auto-rotates weekly • Unlimited replays
@@ -265,10 +265,10 @@
  <span id="lbl-week-rotation" class="font-mono text-slate-400">Calendar Rotation:</span>
  <div class="flex items-center gap-1 bg-appbg p-0.5 rounded-lg border border-borderdim">
  <button id="week-btn-current" onclick="selectHistoricalWeek('current')" class="px-2 py-0.5 rounded-md font-mono font-bold bg-emeraldai/20 text-emeraldai border border-emeraldai/30">
- This Week (Nov 13)
+ Today's Picks
  </button>
  <button id="week-btn-next" onclick="selectHistoricalWeek('next')" class="px-2 py-0.5 rounded-md font-mono font-semibold text-slate-400 hover:text-white">
- Next Week (Nov 20)
+ Tomorrow's Preview
  </button>
  </div>
  </div>
@@ -1024,15 +1024,15 @@
  navLeague: "My League",
  navAcademy: "Academy",
  navClub: "Club & DIY",
- modeHistorical: "Historical Sync",
- modeRandom: "Random Matchups",
- histWeekThisTitle: "Nov 13 Classic Matchweek",
- histWeekNextTitle: "Nov 20 Derby Matchweek",
- histWeekSub: "Real calendar archive • Auto-rotates weekly • Unlimited replays",
- syncLocked: "Sync Locked",
- lblWeekRotation: "Calendar Rotation:",
- btnThisWeek: "This Week (Nov 13)",
- btnNextWeek: "Next Week (Nov 20)",
+ modeHistorical: "Featured Matchups",
+ modeRandom: "Top Leagues",
+ histWeekThisTitle: "Today's Featured Matchups",
+ histWeekNextTitle: "Tomorrow's Matchups Preview",
+ histWeekSub: "Curated daily showcase • Auto-rotates daily • Unlimited replays",
+ syncLocked: "Daily Sync",
+ lblWeekRotation: "Daily Schedule:",
+ btnThisWeek: "Today's Picks",
+ btnNextWeek: "Tomorrow's Preview",
  randomLeagueSub: "Poisson strength model • Free unlimited rerolls",
  btnReroll: "Reroll",
  homeWin: "HOME",
@@ -1133,15 +1133,15 @@
  navLeague: "La Mia Lega",
  navAcademy: "Accademia",
  navClub: "Club & VIP",
- modeHistorical: "Archivio Storico",
- modeRandom: "Sfide Casuali",
- histWeekThisTitle: "13 Nov • Giornata Storica Classica",
- histWeekNextTitle: "20 Nov • Giornata Storica Derby",
- histWeekSub: "Archivio calendario reale • Rotazione settimanale • Replay illimitati",
- syncLocked: "Sync Bloccato",
- lblWeekRotation: "Rotazione Calendario:",
- btnThisWeek: "Questa Sett. (13 Nov)",
- btnNextWeek: "Prossima Sett. (20 Nov)",
+ modeHistorical: "Sfide in Evidenza",
+ modeRandom: "Top Leagues",
+ histWeekThisTitle: "Sfide in Evidenza di Oggi",
+ histWeekNextTitle: "Anteprima Sfide di Domani",
+ histWeekSub: "Selezione quotidiana • Rotazione giornaliera • Replay illimitati",
+ syncLocked: "Sync Giornaliero",
+ lblWeekRotation: "Programma Giornaliero:",
+ btnThisWeek: "Scelte di Oggi",
+ btnNextWeek: "Anteprima Domani",
  randomLeagueSub: "Modello di Poisson • Ricariche gratuite illimitate",
  btnReroll: "Ricarica",
  homeWin: "CASA",
@@ -1242,15 +1242,15 @@
  navLeague: "自建联赛",
  navAcademy: "知识学院",
  navClub: "DIY与订阅",
- modeHistorical: "历史同期对阵",
- modeRandom: "纯随机对阵",
- histWeekThisTitle: "11月13日 经典历史同期比赛周",
- histWeekNextTitle: "11月20日 德比焦点历史比赛周",
- histWeekSub: "锚定真实日历周期 • 随时间自动轮换 • 不可刷新但可无限重玩",
- syncLocked: "同期锁定",
- lblWeekRotation: "时间推移轮换预览：",
- btnThisWeek: "本周 (11月13日)",
- btnNextWeek: "下周 (11月20日)",
+ modeHistorical: "精选对阵",
+ modeRandom: "Top Leagues",
+ histWeekThisTitle: "今日精选焦点对阵",
+ histWeekNextTitle: "明日精选对阵预览",
+ histWeekSub: "每日精选焦点场次 • 每日自动轮换 • 当日可无限重玩",
+ syncLocked: "每日锁定",
+ lblWeekRotation: "每日精选轮换：",
+ btnThisWeek: "今日精选",
+ btnNextWeek: "明日预览",
  randomLeagueSub: "泊松攻防强度模型 • 玩家可无限次免费刷新",
  btnReroll: "无限刷新",
  homeWin: "主胜",
@@ -1517,9 +1517,9 @@
  {
  id: 'hist-nov13-4',
  league: 'calcio',
- eraTagEn: 'Nov Classic • Sweeper & Zone 14 Duel',
- eraTagIt: 'Classico Nov • Duello Libero & Zona 14',
- eraTagCn: '11月经典同期 • 拖后自由人与14区攻防博弈',
+ eraTagEn: "Today's Pick • Sweeper & Zone 14 Duel",
+ eraTagIt: 'Scelta Oggi • Duello Libero & Zona 14',
+ eraTagCn: '今日精选 • 拖后自由人与14区攻防博弈',
  home: TEAM_POOLS.calcio[0], // TOR
  away: TEAM_POOLS.calcio[1], // MIL
  bonusCmds: ['wingOverload', 'highPress'],
@@ -1530,9 +1530,9 @@
  {
  id: 'hist-nov13-1',
  league: 'albion',
- eraTagEn: 'Nov Classic • Tactical Title Showdown',
- eraTagIt: 'Classico Nov • Sfida Scudetto Tattica',
- eraTagCn: '11月经典同期 • 传控体系巅峰对决',
+ eraTagEn: "Today's Pick • Tactical Title Showdown",
+ eraTagIt: 'Scelta Oggi • Sfida Scudetto Tattica',
+ eraTagCn: '今日精选 • 传控体系巅峰对决',
  home: TEAM_POOLS.albion[0], // MCB
  away: TEAM_POOLS.albion[1], // NLR
  bonusCmds: ['catenaccio', 'wingOverload'],
@@ -1543,9 +1543,9 @@
  {
  id: 'hist-nov13-2',
  league: 'iberia',
- eraTagEn: 'Nov Classic • Positional Possession Era',
- eraTagIt: 'Classico Nov • Era Possesso Posizionale',
- eraTagCn: '11月经典同期 • 肋部传控大师 vs 闪电反击',
+ eraTagEn: "Today's Pick • Positional Possession Clash",
+ eraTagIt: 'Scelta Oggi • Sfida Possesso Posizionale',
+ eraTagCn: '今日精选 • 肋部传控大师 vs 闪电反击',
  home: TEAM_POOLS.iberia[0], // MAD
  away: TEAM_POOLS.iberia[1], // CAT
  bonusCmds: ['highPress', 'catenaccio'],
@@ -1556,9 +1556,9 @@
  {
  id: 'hist-nov13-3',
  league: 'rheinland',
- eraTagEn: 'Nov Classic • Gegenpress Blitz Archive',
- eraTagIt: 'Classico Nov • Archivio Gegenpressing',
- eraTagCn: '11月经典同期 • 重金属反抢闪电战档案',
+ eraTagEn: "Today's Pick • Gegenpress Blitz Clash",
+ eraTagIt: 'Scelta Oggi • Sfida Gegenpressing',
+ eraTagCn: '今日精选 • 重金属反抢闪电战焦点战',
  home: TEAM_POOLS.rheinland[0], // ISR
  away: TEAM_POOLS.rheinland[1], // RHR
  bonusCmds: ['catenaccio', 'wingOverload'],
@@ -1571,9 +1571,9 @@
  {
  id: 'hist-nov20-1',
  league: 'albion',
- eraTagEn: 'Nov 20 Preview • North London High-Line Classic',
- eraTagIt: 'Anteprima 20 Nov • Linea Alta Nord Londra',
- eraTagCn: '11月20日同期预告 • 北伦敦造越位与边路风暴',
+ eraTagEn: 'Tomorrow • North London High-Line Derby',
+ eraTagIt: 'Domani • Derby Linea Alta Nord Londra',
+ eraTagCn: '明日预览 • 北伦敦造越位与边路风暴',
  home: TEAM_POOLS.albion[1], // NLR
  away: TEAM_POOLS.albion[4], // NLW
  bonusCmds: ['wingOverload', 'superSub'],
@@ -1584,9 +1584,9 @@
  {
  id: 'hist-nov20-2',
  league: 'calcio',
- eraTagEn: 'Nov 20 Preview • Derby della Madonnina 3-5-2',
- eraTagIt: 'Anteprima 20 Nov • Derby 3-5-2 Quinti di Fascia',
- eraTagCn: '11月20日同期预告 • 双翼卫反击档案',
+ eraTagEn: 'Tomorrow • Derby della Madonnina 3-5-2',
+ eraTagIt: 'Domani • Derby 3-5-2 Quinti di Fascia',
+ eraTagCn: '明日预览 • 意式双翼卫反击焦点战',
  home: TEAM_POOLS.calcio[2], // AMB
  away: TEAM_POOLS.calcio[1], // MIL
  bonusCmds: ['catenaccio', 'superSub'],
@@ -1597,9 +1597,9 @@
  {
  id: 'hist-nov20-3',
  league: 'global',
- eraTagEn: 'Nov 20 Preview • Total Football Tactical Shift',
- eraTagIt: 'Anteprima 20 Nov • Rivoluzione Calcio Totale',
- eraTagCn: '11月20日同期预告 • 全攻全守无位置足球革命',
+ eraTagEn: 'Tomorrow • Total Football Tactical Shift',
+ eraTagIt: 'Domani • Rivoluzione Calcio Totale',
+ eraTagCn: '明日预览 • 全攻全守无位置足球焦点战',
  home: TEAM_POOLS.global[0], // ORA
  away: TEAM_POOLS.global[1], // AZZ
  bonusCmds: ['wingOverload', 'catenaccio'],
@@ -2377,12 +2377,21 @@
  </div>
 
  <div class="grid grid-cols-2 gap-2 pt-1">
+ ${isTomorrowFixture(fixture.id) ? `
+ <button onclick="handleTomorrowLockedClick()" class="py-2.5 px-2 rounded-xl bg-appbg border border-borderdim text-slate-400 font-bold text-xs cursor-not-allowed opacity-75 transition active:scale-95">
+ 🔒 ${t.pickHomeWin} (${fixture.home.code})
+ </button>
+ <button onclick="handleTomorrowLockedClick()" class="py-2.5 px-2 rounded-xl bg-appbg border border-borderdim text-slate-400 font-bold text-xs cursor-not-allowed opacity-75 transition active:scale-95">
+ 🔒 ${t.pickAwayWin} (${fixture.away.code})
+ </button>
+ ` : `
  <button onclick="closeModal('modal-poisson-matrix'); startFixtureSimulation('${fixture.id}', 'H')" class="py-2.5 px-2 rounded-xl bg-emeraldai text-appbg font-extrabold text-xs transition active:scale-95">
  🛡️ ${t.pickHomeWin} (${fixture.home.code})
  </button>
  <button onclick="closeModal('modal-poisson-matrix'); startFixtureSimulation('${fixture.id}', 'A')" class="py-2.5 px-2 rounded-xl bg-cyanai text-appbg font-extrabold text-xs transition active:scale-95">
  ⚔️ ${t.pickAwayWin} (${fixture.away.code})
  </button>
+ `}
  </div>
  `;
 
@@ -2471,9 +2480,23 @@
  function handleLockedRefreshClick() {
  showToast(
  tr(
- 'Locked: Historical Sync follows real-calendar matchweeks. Unlimited replays enabled!',
- '已锁定：历史同期对阵随真实日历周期自动轮换，不可手动刷新，支持无限次重玩！',
- 'Bloccato: l\'Archivio Storico segue il calendario reale. Replay illimitati attivi!'
+ 'Daily Featured Matchups rotate automatically every day. Unlimited replays enabled for today!',
+ '精选对阵每日自动轮换，不支持手动刷新，今日场次可无限次重玩！',
+ 'Le Sfide in Evidenza ruotano automaticamente ogni giorno. Replay illimitati per oggi!'
+ )
+ );
+ }
+
+ function isTomorrowFixture(fixtureId) {
+ return (HISTORICAL_WEEKS.next || []).some(f => f.id === fixtureId);
+ }
+
+ function handleTomorrowLockedClick() {
+ showToast(
+ tr(
+ 'Not yet open — please come back tomorrow!',
+ '暂未开放，请明日再来',
+ 'Non ancora disponibile, torna domani!'
  )
  );
  }
@@ -2650,6 +2673,16 @@
  </div>
 
  <div class="mt-2.5 pt-2 border-t border-borderdim/80 grid grid-cols-2 gap-2">
+ ${isHist && state.histWeek === 'next' ? `
+ <button onclick="handleTomorrowLockedClick()" class="min-h-[42px] py-2 px-2 rounded-xl bg-appbg/80 border border-borderdim text-slate-400 font-bold text-[11px] flex items-center justify-center gap-1 cursor-not-allowed opacity-75 transition active:scale-95">
+ <span>🔒</span>
+ <span class="truncate">${t.pickHomeWin} (${m.home.code})</span>
+ </button>
+ <button onclick="handleTomorrowLockedClick()" class="min-h-[42px] py-2 px-2 rounded-xl bg-appbg/80 border border-borderdim text-slate-400 font-bold text-[11px] flex items-center justify-center gap-1 cursor-not-allowed opacity-75 transition active:scale-95">
+ <span>🔒</span>
+ <span class="truncate">${t.pickAwayWin} (${m.away.code})</span>
+ </button>
+ ` : `
  <button onclick="startFixtureSimulation('${m.id}', 'H')" class="min-h-[42px] py-2 px-2 rounded-xl bg-emeraldai/15 hover:bg-emeraldai/25 border border-emeraldai/45 text-emeraldai font-extrabold text-[11px] flex items-center justify-center gap-1 transition active:scale-95">
  <span>🛡️</span>
  <span class="truncate">${t.pickHomeWin} (${m.home.code})</span>
@@ -2658,6 +2691,7 @@
  <span>⚔️</span>
  <span class="truncate">${t.pickAwayWin} (${m.away.code})</span>
  </button>
+ `}
  </div>
  </article>
  `;
@@ -3531,10 +3565,10 @@
  );
 
  document.getElementById('sim-mode-pill').textContent = sourceType === 'historical'
- ? tr('HISTORICAL', '历史同期', 'STORICO')
+ ? tr('FEATURED', '精选对阵', 'IN EVIDENZA')
  : sourceType === 'league'
  ? tr('MY LEAGUE', '自建联赛', 'LA MIA LEGA')
- : tr('RANDOM', '随机沙盘', 'CASUALE');
+ : 'TOP LEAGUES';
 
  const lgObj = LEAGUES.find(l => l.id === m.league);
  document.getElementById('sim-league-tag').textContent = sourceType === 'league'
