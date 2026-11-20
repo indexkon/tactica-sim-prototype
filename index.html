@@ -3,7 +3,7 @@
 <head>
  <meta charset="UTF-8" />
  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
- <title>TACTICA.SIM S.r.l. — Bivariate Poisson Football Simulation & EdTech Engine (v3.1 MIMIT L. 193/2024 Edition)</title>
+ <title>TACTICA.SIM S.r.l. — Dixon-Coles Correlated Double-Poisson Simulation, EdTech & Coach Engine (v3.3 MIMIT Edition)</title>
  <!-- Load Tailwind CSS -->
  <script src="https://cdn.tailwindcss.com"></script>
  <!-- Load Inter & JetBrains Mono Fonts -->
@@ -236,7 +236,7 @@
  </button>
  <button id="mode-btn-random" onclick="switchSimMode('random')" class="py-2 px-2 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition text-slate-400 hover:text-white">
  <span>🎲</span>
- <span id="mode-label-random">Top Leagues</span>
+ <span id="mode-label-random">Grandi Leghe</span>
  </button>
  </div>
 
@@ -490,8 +490,111 @@
 
  </section>
 
+
  <!-- ================================================================= -->
- <!-- TAB 3: ACADEMY (知识学院 — Check-in, 5 Micro-Lessons, Leaderboard) -->
+ <!-- TAB 3: COACH — Custom Match-Prep & Tactical Workbench -->
+ <!-- ================================================================= -->
+ <section id="view-coach" class="hidden px-3 pt-3 pb-4 space-y-3.5">
+
+ <!-- 1. Coach Studio Header & Quick Presets -->
+ <div class="bg-gradient-to-br from-[#102033] via-card to-[#111C2A] border border-cyanai/40 rounded-2xl p-3.5 shadow-md">
+ <div class="flex items-start justify-between gap-2">
+ <div class="min-w-0">
+ <div class="flex items-center gap-1.5 flex-wrap">
+ <span id="coach-studio-pill" class="px-2 py-0.5 rounded bg-cyanai text-appbg font-mono text-[9px] font-extrabold uppercase tracking-wider">STUDIO ALLENATORE</span>
+ <span id="coach-studio-tag" class="px-1.5 py-0.5 rounded bg-emeraldai/15 border border-emeraldai/35 text-emeraldai font-mono text-[9px] font-bold">Laboratorio Tattico</span>
+ </div>
+ <h2 id="coach-studio-title" class="text-sm sm:text-base font-extrabold text-white mt-1.5">Area Tattica Allenatore</h2>
+ <p id="coach-studio-sub" class="text-[11px] text-slate-300 leading-snug mt-0.5">
+ Inserisci statistiche, moduli e stili della tua squadra e dell'avversario per analisi Dixon-Coles, simulazioni Monte Carlo e lavagna 2D.
+ </p>
+ </div>
+ </div>
+
+ <!-- Quick Scenario Presets -->
+ <div class="mt-2.5 pt-2 border-t border-borderdim/70">
+ <div id="coach-presets-label" class="text-[10px] font-mono text-slate-400 mb-1.5">Scenari Rapidi:</div>
+ <div id="coach-presets-bar" class="flex items-center gap-1.5 overflow-x-auto no-scrollbar">
+ <!-- Populated via JS -->
+ </div>
+ </div>
+ </div>
+
+ <!-- 2. Dual Squad & Engine Input Workbench -->
+ <div class="bg-card border border-borderdim rounded-2xl p-3.5 space-y-3">
+ <!-- Sub-tabs: My Squad | Opponent | Engine -->
+ <div class="grid grid-cols-3 gap-1 bg-appbg p-1 rounded-xl border border-borderdim">
+ <button id="coach-subtab-my" onclick="switchCoachSubTab('my')" class="py-1.5 px-1 rounded-lg font-extrabold text-[11px] transition bg-emeraldai text-appbg shadow">
+ 🛡️ La Mia Squadra
+ </button>
+ <button id="coach-subtab-opp" onclick="switchCoachSubTab('opp')" class="py-1.5 px-1 rounded-lg font-bold text-[11px] transition text-slate-400 hover:text-white">
+ ⚔️ Avversario
+ </button>
+ <button id="coach-subtab-ctx" onclick="switchCoachSubTab('ctx')" class="py-1.5 px-1 rounded-lg font-bold text-[11px] transition text-slate-400 hover:text-white">
+ ⚙️ Parametri
+ </button>
+ </div>
+
+ <!-- Dynamic Input Editor Container -->
+ <div id="coach-editor-body" class="space-y-2.5">
+ <!-- Populated via JS -->
+ </div>
+ </div>
+
+ <!-- 3. Live Dixon-Coles Forecast & Matchup Diagnosis Card -->
+ <div id="coach-live-forecast" class="bg-card border border-gold/40 rounded-2xl p-3.5 space-y-2.5 shadow-md">
+ <!-- Populated via JS -->
+ </div>
+
+ <!-- 4. Primary Action Suite: One-Click 2D Sim + 1,000x Monte Carlo Lab -->
+ <div class="space-y-2">
+ <button onclick="launchCoachSimulation()" class="w-full py-3 px-3 rounded-2xl bg-gradient-to-r from-gold via-amber-400 to-gold text-appbg font-extrabold text-xs shadow-lg gold-pulse transition active:scale-95 flex items-center justify-center gap-1.5">
+ <span>🚀</span>
+ <span id="btn-coach-launch-sim">Avvia Simulazione Tattica 2D (1-Click)</span>
+ </button>
+
+ <div class="grid grid-cols-2 gap-2">
+ <button onclick="runCoachMonteCarlo()" class="py-2.5 px-2 rounded-xl bg-cyanai/15 hover:bg-cyanai/25 border border-cyanai/45 text-cyanai font-extrabold text-[11px] flex items-center justify-center gap-1 transition active:scale-95">
+ <span>📊</span>
+ <span id="btn-coach-mc">Monte Carlo 1.000×</span>
+ </button>
+ <button onclick="openCoachTacticalBriefModal()" class="py-2.5 px-2 rounded-xl bg-appbg hover:bg-cardhover border border-borderdim text-slate-200 font-bold text-[11px] flex items-center justify-center gap-1 transition active:scale-95">
+ <span>📋</span>
+ <span id="btn-coach-brief">Report Pre-Gara</span>
+ </button>
+ </div>
+ </div>
+
+ <!-- 5. Batch Monte Carlo Tactical Sensitivity Output (Populated on click) -->
+ <div id="coach-mc-results" class="hidden bg-card border border-cyanai/40 rounded-2xl p-3.5 space-y-2.5 animate-fade-in">
+ <!-- Populated dynamically by runCoachMonteCarlo() -->
+ </div>
+
+ <!-- 6. Saved Scouting Profiles -->
+ <div class="bg-card border border-borderdim rounded-2xl p-3.5 space-y-2.5">
+ <div class="flex items-center justify-between gap-2">
+ <div class="min-w-0">
+ <span id="coach-profiles-eyebrow" class="text-[10px] font-mono uppercase tracking-wider text-cyanai">Archivio Scouting</span>
+ <h3 id="coach-profiles-heading" class="text-xs font-extrabold text-white">Profili Avversari Salvati</h3>
+ </div>
+ <button onclick="saveCurrentCoachProfile()" id="btn-coach-save-profile" class="px-2.5 py-1.5 rounded-xl bg-emeraldai/15 hover:bg-emeraldai/25 border border-emeraldai/40 text-emeraldai font-mono text-[10px] font-extrabold shrink-0 transition active:scale-95">
+ 💾 Salva Profilo
+ </button>
+ </div>
+ <div id="coach-saved-profiles-list" class="space-y-1.5">
+ <!-- Populated via JS -->
+ </div>
+ <div id="coach-footer-note" class="pt-2 border-t border-borderdim/60 text-[10px] text-slate-400 flex items-center justify-between gap-2">
+ <span>📋 Preparazione Gara Personalizzata • Salvataggio Locale</span>
+ <span class="font-mono text-emeraldai shrink-0">Dixon-Coles</span>
+ </div>
+ </div>
+
+ </section>
+
+ <!-- ================================================================= -->
+ <!-- TAB 4: ACADEMY (知识学院 — Check-in, 5 Micro-Lessons, Leaderboard) -->
+
  <!-- ================================================================= -->
  <section id="view-academy" class="hidden px-3 pt-3 pb-4 space-y-3.5">
  
@@ -545,9 +648,27 @@
  </section>
 
  <!-- ================================================================= -->
- <!-- TAB 4: CLUB & DIY (DIY与订阅 — VIP Subscription & Pitch Skins) -->
+ <!-- TAB 5: ME (Profile, VIP Subscription & Pitch Skins) -->
  <!-- ================================================================= -->
  <section id="view-club-diy" class="hidden px-3 pt-3 pb-4 space-y-3.5">
+
+ <!-- 0. Compact Personal Coach Profile Summary Card (ME) -->
+ <div class="bg-card border border-borderdim rounded-2xl p-3 flex items-center justify-between gap-2.5">
+ <div class="flex items-center gap-2.5 min-w-0">
+ <div id="me-profile-crest" class="w-10 h-10 shrink-0"></div>
+ <div class="min-w-0">
+ <div class="flex items-center gap-1.5">
+ <span id="me-profile-eyebrow" class="text-[9px] font-mono uppercase tracking-wider text-gold">Profilo Personale</span>
+ <span id="me-profile-lv" class="px-1.5 py-0.2 rounded bg-emeraldai/15 text-emeraldai font-mono text-[9px] font-bold">Lv.4</span>
+ </div>
+ <h2 id="me-profile-name" class="text-sm font-extrabold text-white truncate">Turin Mole Utd (TMU)</h2>
+ <div id="me-profile-stats" class="text-[10px] font-mono text-slate-400 truncate">0/5 Accademia • 0 Profili Scouting</div>
+ </div>
+ </div>
+ <button onclick="switchMainTab('coach')" id="btn-me-to-coach" class="px-2.5 py-1.5 rounded-xl bg-cyanai/15 hover:bg-cyanai/25 border border-cyanai/40 text-cyanai font-mono text-[10px] font-bold shrink-0 transition active:scale-95">
+ Allenatore →
+ </button>
+ </div>
 
  <!-- 1. VIP Subscription Simulator Card ("Tactica Pro Pass") -->
  <div id="vip-card-box" class="bg-gradient-to-br from-[#192234] via-card to-[#1C1A17] border border-gold/40 rounded-2xl p-3.5 shadow-lg relative overflow-hidden">
@@ -648,20 +769,20 @@
  </div>
 
  <!-- =================================================================== -->
- <!-- STICKY BOTTOM NAVIGATION BAR (4 Main Tabs) -->
+ <!-- STICKY BOTTOM NAVIGATION BAR (5 Main Tabs incl. Coach & ME) -->
  <!-- =================================================================== -->
- <nav class="relative z-30 bg-[#0E131D]/95 backdrop-blur-xl border-t border-borderdim px-2 pt-2 safe-bottom-nav shrink-0">
- <div class="grid grid-cols-4 gap-1.5">
- <button onclick="switchMainTab('sim')" id="nav-tab-sim" class="py-1.5 px-1 rounded-2xl flex flex-col items-center justify-center gap-0.5 transition bg-golddim border border-gold/40 text-gold">
+ <nav class="relative z-30 bg-[#0E131D]/95 backdrop-blur-xl border-t border-borderdim px-1.5 pt-2 safe-bottom-nav shrink-0">
+ <div class="grid grid-cols-5 gap-1">
+ <button onclick="switchMainTab('sim')" id="nav-tab-sim" class="py-1.5 px-0.5 rounded-2xl flex flex-col items-center justify-center gap-0.5 transition bg-golddim border border-gold/40 text-gold relative">
  <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1">
  <rect x="2" y="4" width="20" height="16" rx="2" />
  <line x1="12" y1="4" x2="12" y2="20" />
  <circle cx="12" cy="12" r="2.8" />
  </svg>
- <span id="nav-label-sim" class="text-[10px] font-extrabold truncate">Match Sim</span>
+ <span id="nav-label-sim" class="text-[9.5px] font-extrabold truncate max-w-full">Partite</span>
  </button>
 
- <button onclick="switchMainTab('league')" id="nav-tab-league" class="py-1.5 px-1 rounded-2xl flex flex-col items-center justify-center gap-0.5 transition bg-card border border-transparent text-slate-400 hover:text-slate-200">
+ <button onclick="switchMainTab('league')" id="nav-tab-league" class="py-1.5 px-0.5 rounded-2xl flex flex-col items-center justify-center gap-0.5 transition bg-card border border-transparent text-slate-400 hover:text-slate-200 relative">
  <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1">
  <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6" />
  <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18" />
@@ -670,23 +791,34 @@
  <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22" />
  <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z" />
  </svg>
- <span id="nav-label-league" class="text-[10px] font-bold truncate">My League</span>
+ <span id="nav-label-league" class="text-[9.5px] font-bold truncate max-w-full">Lega</span>
  </button>
 
- <button onclick="switchMainTab('academy')" id="nav-tab-academy" class="py-1.5 px-1 rounded-2xl flex flex-col items-center justify-center gap-0.5 transition bg-card border border-transparent text-slate-400 hover:text-slate-200 relative">
- <span id="academy-notif-dot" class="absolute top-1 right-3 w-2 h-2 rounded-full bg-gold animate-ping"></span>
+ <button onclick="switchMainTab('coach')" id="nav-tab-coach" class="py-1.5 px-0.5 rounded-2xl flex flex-col items-center justify-center gap-0.5 transition bg-card border border-transparent text-slate-400 hover:text-slate-200 relative">
+ <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1">
+ <rect x="5" y="3" width="14" height="18" rx="2" />
+ <path d="M9 3h6v3H9z" />
+ <line x1="8.5" y1="11" x2="15.5" y2="11" />
+ <line x1="8.5" y1="15" x2="13" y2="15" />
+ </svg>
+ <span id="nav-label-coach" class="text-[9.5px] font-bold truncate max-w-full">Allenatore</span>
+ </button>
+
+ <button onclick="switchMainTab('academy')" id="nav-tab-academy" class="py-1.5 px-0.5 rounded-2xl flex flex-col items-center justify-center gap-0.5 transition bg-card border border-transparent text-slate-400 hover:text-slate-200 relative">
+ <span id="academy-notif-dot" class="absolute top-1 right-2 w-2 h-2 rounded-full bg-gold animate-ping"></span>
  <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1">
  <path d="M22 10L12 5 2 10l10 5 10-5z" />
  <path d="M6 12v5c3 3 9 3 12 0v-5" />
  </svg>
- <span id="nav-label-academy" class="text-[10px] font-bold truncate">Academy</span>
+ <span id="nav-label-academy" class="text-[9.5px] font-bold truncate max-w-full">Accademia</span>
  </button>
 
- <button onclick="switchMainTab('club')" id="nav-tab-club" class="py-1.5 px-1 rounded-2xl flex flex-col items-center justify-center gap-0.5 transition bg-card border border-transparent text-slate-400 hover:text-slate-200">
+ <button onclick="switchMainTab('club')" id="nav-tab-club" class="py-1.5 px-0.5 rounded-2xl flex flex-col items-center justify-center gap-0.5 transition bg-card border border-transparent text-slate-400 hover:text-slate-200 relative">
  <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1">
- <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+ <circle cx="12" cy="8" r="4" />
+ <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
  </svg>
- <span id="nav-label-club" class="text-[10px] font-bold truncate">Club & DIY</span>
+ <span id="nav-label-club" class="text-[9.5px] font-bold truncate max-w-full">ME</span>
  </button>
  </div>
  </nav>
@@ -747,6 +879,32 @@
  <!-- Dynamic Content Container -->
  <div id="pm-modal-body" class="space-y-3 text-xs">
  <!-- Populated dynamically when clicking Poisson Matrix on any fixture -->
+ </div>
+ </div>
+ </div>
+
+
+ <!-- =================================================================== -->
+ <!-- MODAL 4: COACH PRE-MATCH TACTICAL BRIEF EXPORT -->
+ <!-- =================================================================== -->
+ <div id="modal-coach-brief" onclick="if(event.target === this) closeModal('modal-coach-brief')" class="hidden absolute inset-0 z-50 bg-black/85 backdrop-blur-sm flex items-end sm:items-center justify-center p-3 safe-bottom-pad">
+ <div class="w-full max-h-[88%] bg-card border border-cyanai/40 rounded-3xl p-4 overflow-y-auto overscroll-y-contain custom-scroll animate-slide-up shadow-2xl space-y-3">
+ <div class="w-10 h-1 rounded-full bg-slate-600/80 mx-auto mb-1 sm:hidden"></div>
+ <div class="flex items-center justify-between pb-2.5 border-b border-borderdim">
+ <div>
+ <span id="cb-eyebrow" class="text-[10px] font-mono uppercase tracking-wider text-cyanai">Studio Allenatore • Report Tattico Pre-Gara</span>
+ <h3 id="cb-title" class="text-sm font-extrabold text-white">Report Tattico Pre-Gara</h3>
+ </div>
+ <button onclick="closeModal('modal-coach-brief')" class="w-8 h-8 rounded-full bg-appbg border border-borderdim flex items-center justify-center text-slate-400 hover:text-white">✕</button>
+ </div>
+ <pre id="cb-content" class="bg-appbg border border-borderdim rounded-2xl p-3 font-mono text-[10.5px] text-slate-200 whitespace-pre-wrap leading-relaxed select-all"></pre>
+ <div class="grid grid-cols-2 gap-2">
+ <button onclick="copyCoachBriefToClipboard()" id="cb-btn-copy" class="py-2.5 rounded-xl bg-cyanai text-appbg font-extrabold text-xs transition active:scale-95">
+ 📋 Copia Report
+ </button>
+ <button onclick="closeModal('modal-coach-brief')" id="cb-btn-close" class="py-2.5 rounded-xl bg-appbg border border-borderdim text-slate-200 font-bold text-xs transition active:scale-95">
+ Chiudi
+ </button>
  </div>
  </div>
  </div>
@@ -863,47 +1021,53 @@
  </div>
  <div class="grid grid-cols-2 gap-1.5">
  <button onclick="triggerTacticalCommand('highPress')" id="cmd-btn-highPress" class="cmd-card relative overflow-hidden p-2 rounded-xl bg-card hover:bg-cardhover border border-borderdim text-left transition active:scale-95 flex items-center justify-between min-h-[44px]">
- <div class="min-w-0 pr-1">
+ <div id="cmd-fill-highPress" class="hidden absolute inset-0 bg-emeraldai/15 pointer-events-none origin-left" style="transform: scaleX(0); will-change: transform;"></div>
+ <div class="relative z-10 min-w-0 pr-1">
  <div class="flex items-center gap-1">
  <div id="cmd-title-highPress" class="text-xs font-bold text-emeraldai truncate">High Press</div>
- <span id="cmd-timer-highPress" class="hidden px-1 py-0.2 rounded bg-emeraldai/20 text-emeraldai font-mono text-[9px] font-extrabold shrink-0">14'</span>
+ <span id="cmd-timer-highPress" class="hidden px-1 py-0.2 rounded bg-emeraldai/25 text-emeraldai font-mono text-[9px] font-extrabold shrink-0">14'</span>
+ <span id="cmd-lock-highPress" class="hidden text-[9px] text-slate-400 shrink-0">🔒</span>
  </div>
  <div id="cmd-sub-highPress" class="text-[10px] text-slate-400 truncate">+30% Poisson Attack λ</div>
  </div>
- <span class="text-sm shrink-0">⚡</span>
- <div id="cmd-prog-highPress" class="hidden absolute bottom-0 left-0 h-0.5 bg-emeraldai transition-all duration-300" style="width: 0%"></div>
+ <span class="relative z-10 text-sm shrink-0">⚡</span>
+ <div id="cmd-prog-highPress" class="hidden absolute bottom-0 left-0 right-0 h-1 bg-emeraldai pointer-events-none origin-left" style="transform: scaleX(0); will-change: transform;"></div>
  </button>
 
  <button onclick="triggerTacticalCommand('catenaccio')" id="cmd-btn-catenaccio" class="cmd-card relative overflow-hidden p-2 rounded-xl bg-card hover:bg-cardhover border border-borderdim text-left transition active:scale-95 flex items-center justify-between min-h-[44px]">
- <div class="min-w-0 pr-1">
+ <div id="cmd-fill-catenaccio" class="hidden absolute inset-0 bg-cyanai/15 pointer-events-none origin-left" style="transform: scaleX(0); will-change: transform;"></div>
+ <div class="relative z-10 min-w-0 pr-1">
  <div class="flex items-center gap-1">
  <div id="cmd-title-catenaccio" class="text-xs font-bold text-cyanai truncate">Catenaccio Block</div>
- <span id="cmd-timer-catenaccio" class="hidden px-1 py-0.2 rounded bg-cyanai/20 text-cyanai font-mono text-[9px] font-extrabold shrink-0">14'</span>
+ <span id="cmd-timer-catenaccio" class="hidden px-1 py-0.2 rounded bg-cyanai/25 text-cyanai font-mono text-[9px] font-extrabold shrink-0">14'</span>
+ <span id="cmd-lock-catenaccio" class="hidden text-[9px] text-slate-400 shrink-0">🔒</span>
  </div>
  <div id="cmd-sub-catenaccio" class="text-[10px] text-slate-400 truncate">-38% Opp λ + Counter</div>
  </div>
- <span class="text-sm shrink-0">🛡️</span>
- <div id="cmd-prog-catenaccio" class="hidden absolute bottom-0 left-0 h-0.5 bg-cyanai transition-all duration-300" style="width: 0%"></div>
+ <span class="relative z-10 text-sm shrink-0">🛡️</span>
+ <div id="cmd-prog-catenaccio" class="hidden absolute bottom-0 left-0 right-0 h-1 bg-cyanai pointer-events-none origin-left" style="transform: scaleX(0); will-change: transform;"></div>
  </button>
 
  <button onclick="triggerTacticalCommand('wingOverload')" id="cmd-btn-wingOverload" class="cmd-card relative overflow-hidden p-2 rounded-xl bg-card hover:bg-cardhover border border-borderdim text-left transition active:scale-95 flex items-center justify-between min-h-[44px]">
- <div class="min-w-0 pr-1">
+ <div id="cmd-fill-wingOverload" class="hidden absolute inset-0 bg-gold/15 pointer-events-none origin-left" style="transform: scaleX(0); will-change: transform;"></div>
+ <div class="relative z-10 min-w-0 pr-1">
  <div class="flex items-center gap-1">
  <div id="cmd-title-wingOverload" class="text-xs font-bold text-gold truncate">Wing Overload</div>
  <span id="cmd-timer-wingOverload" class="hidden px-1 py-0.2 rounded bg-golddim text-gold font-mono text-[9px] font-extrabold shrink-0">14'</span>
+ <span id="cmd-lock-wingOverload" class="hidden text-[9px] text-slate-400 shrink-0">🔒</span>
  </div>
  <div id="cmd-sub-wingOverload" class="text-[10px] text-slate-400 truncate">+26% Flank xG Rate</div>
  </div>
- <span class="text-sm shrink-0">🏹</span>
- <div id="cmd-prog-wingOverload" class="hidden absolute bottom-0 left-0 h-0.5 bg-gold transition-all duration-300" style="width: 0%"></div>
+ <span class="relative z-10 text-sm shrink-0">🏹</span>
+ <div id="cmd-prog-wingOverload" class="hidden absolute bottom-0 left-0 right-0 h-1 bg-gold pointer-events-none origin-left" style="transform: scaleX(0); will-change: transform;"></div>
  </button>
 
  <button onclick="triggerTacticalCommand('superSub')" id="cmd-btn-superSub" class="cmd-card relative overflow-hidden p-2 rounded-xl bg-card hover:bg-cardhover border border-borderdim text-left transition active:scale-95 flex items-center justify-between min-h-[44px]">
- <div class="min-w-0 pr-1">
+ <div class="relative z-10 min-w-0 pr-1">
  <div id="cmd-title-superSub" class="text-xs font-bold text-coralai truncate">Super Sub</div>
  <div id="cmd-sub-superSub" class="text-[10px] text-slate-400 truncate">+18% Stamina & Clutch</div>
  </div>
- <span class="text-sm shrink-0">🔄</span>
+ <span class="relative z-10 text-sm shrink-0">🔄</span>
  </button>
  </div>
  </div>
@@ -990,7 +1154,7 @@
  </div>
 
  <!-- ===================================================================== -->
- <!-- JAVASCRIPT LOGIC (Bivariate Poisson Engine, Custom Club, 2D Pitch) -->
+ <!-- JAVASCRIPT LOGIC (Dixon-Coles Correlated Double-Poisson Engine, Coach Workbench, 2D Pitch) -->
  <!-- ===================================================================== -->
  <script>
  // -----------------------------------------------------------------------
@@ -1013,10 +1177,11 @@
  en: {
  mvpBadge: "EdTech & Poisson Sim",
  mimitSpecs: "MIMIT",
- navSim: "Match Sim",
- navLeague: "My League",
+ navSim: "Matches",
+ navLeague: "League",
+ navCoach: "Coach",
  navAcademy: "Academy",
- navClub: "Club & DIY",
+ navClub: "ME",
  modeHistorical: "Featured Matchups",
  modeRandom: "Top Leagues",
  histWeekThisTitle: "Today's Featured Matchups",
@@ -1068,13 +1233,13 @@
  lblTacticalCmds: "Manager Tactical Interventions",
  lblEventStream: "Poisson & Markov State-Machine Stream",
  cmdTitleHighPress: "High Press",
- cmdSubHighPress: "+30% Poisson Attack λ",
+ cmdSubHighPress: "+30% λ | +18% Opp (vs Poss.)",
  cmdTitleCatenaccio: "Catenaccio Block",
- cmdSubCatenaccio: "-38% Opp λ + Counter",
+ cmdSubCatenaccio: "-38% Opp | -10% λ (vs Press)",
  cmdTitleWing: "Wing Overload",
- cmdSubWing: "+26% Flank xG Rate",
+ cmdSubWing: "+26% λ | +10% Opp (vs Block)",
  cmdTitleSub: "Super Sub",
- cmdSubSub: "+18% Stamina & Clutch",
+ cmdSubSub: "+18% Stam & Late Clutch",
  lblSumXg: "Expected Goals (xG)",
  lblSumPoss: "Possession Share",
  btnReturnHub: "Return to Hub",
@@ -1084,10 +1249,10 @@
  mimitModalHtml: `
  <div class="bg-appbg p-3 rounded-2xl border border-gold/40">
  <div class="flex items-center justify-between mb-1">
- <h4 class="font-bold text-gold">1. Poisson Attack-Defense & Dixon-Coles Engine (TRL 6)</h4>
- <span class="px-1.5 py-0.2 rounded bg-golddim text-gold font-mono text-[9px] font-bold">4,400+ LOC</span>
+ <h4 class="font-bold text-gold">1. Dixon-Coles Correlated Double-Poisson & B2B Coach Engine (TRL 6)</h4>
+ <span class="px-1.5 py-0.2 rounded bg-golddim text-gold font-mono text-[9px] font-bold">5,800+ LOC</span>
  </div>
- <p class="text-slate-300 text-[11px] leading-relaxed">Computes pre-match Expected Goals via <span class="font-mono text-white">λ_H = (HomeGF × AwayGA) / LeagueHomeAvg</span> and <span class="font-mono text-white">λ_A = (AwayGF × HomeGA) / LeagueAwayAvg</span>, generating an 11×11 joint probability matrix under a bivariate Poisson framework with Dixon-Coles low-score correlation (<span class="font-mono text-cyanai">ρ = -0.08</span>) and real-time piecewise Markov arrival rate (<span class="font-mono text-emeraldai">λ_rem</span>) recalibration.</p>
+ <p class="text-slate-300 text-[11px] leading-relaxed">Computes pre-match Expected Goals via <span class="font-mono text-white">λ_H = (HomeGF × AwayGA) / LeagueHomeAvg</span> and <span class="font-mono text-white">λ_A = (AwayGF × HomeGA) / LeagueAwayAvg</span>, building an 11×11 joint scoreline matrix via a <strong>Dixon-Coles (1997) correlated double-Poisson model</strong> (<span class="font-mono text-cyanai">τ_ρ, ρ = -0.08</span>), bidirectional tactical risk &amp; style-counter matrix, pre-match What-If lab, and B2B Coach Monte Carlo workbench.</p>
  </div>
  <div class="bg-appbg p-3 rounded-2xl border border-emeraldai/40">
  <div class="flex items-center justify-between mb-1">
@@ -1122,12 +1287,13 @@
  it: {
  mvpBadge: "EdTech & Sim Poisson",
  mimitSpecs: "MIMIT",
- navSim: "Simulazione",
- navLeague: "La Mia Lega",
+ navSim: "Partite",
+ navLeague: "Lega",
+ navCoach: "Allenatore",
  navAcademy: "Accademia",
- navClub: "Club & VIP",
+ navClub: "ME",
  modeHistorical: "Sfide in Evidenza",
- modeRandom: "Top Leagues",
+ modeRandom: "Grandi Leghe",
  histWeekThisTitle: "Sfide in Evidenza di Oggi",
  histWeekNextTitle: "Anteprima Sfide di Domani",
  histWeekSub: "Selezione quotidiana • Rotazione giornaliera • Replay illimitati",
@@ -1177,11 +1343,11 @@
  lblTacticalCmds: "Interventi Tattici in Tempo Reale (Ricalcolo λ)",
  lblEventStream: "Telemetria Stato-Macchina di Poisson & Markov",
  cmdTitleHighPress: "Pressing Alto",
- cmdSubHighPress: "+30% λ Attacco Poisson",
+ cmdSubHighPress: "+30% λ | +18% Avv. (vs Poss.)",
  cmdTitleCatenaccio: "Blocco Catenaccio",
- cmdSubCatenaccio: "-38% λ Avv. + Contropiede",
+ cmdSubCatenaccio: "-38% Avv. | -10% λ (vs Press.)",
  cmdTitleWing: "Sovraccarico Fasce",
- cmdSubWing: "+26% Tasso xG Esterno",
+ cmdSubWing: "+26% λ | +10% Avv. (vs Blocco)",
  cmdTitleSub: "Cambio Decisivo",
  cmdSubSub: "+18% Tenuta & Finale",
  lblSumXg: "Gol Attesi (xG)",
@@ -1193,10 +1359,10 @@
  mimitModalHtml: `
  <div class="bg-appbg p-3 rounded-2xl border border-gold/40">
  <div class="flex items-center justify-between mb-1">
- <h4 class="font-bold text-gold">1. Motore di Poisson & Correzione Dixon-Coles (Prototipo TRL 6)</h4>
- <span class="px-1.5 py-0.2 rounded bg-golddim text-gold font-mono text-[9px] font-bold">4.400+ Righe Codice</span>
+ <h4 class="font-bold text-gold">1. Motore Doppio Poisson Dixon-Coles & Coach Studio B2B (TRL 6)</h4>
+ <span class="px-1.5 py-0.2 rounded bg-golddim text-gold font-mono text-[9px] font-bold">5.800+ Righe Codice</span>
  </div>
- <p class="text-slate-300 text-[11px] leading-relaxed">Calcola i Gol Attesi (xG) pre-gara tramite <span class="font-mono text-white">λ_H = (HomeGF × AwayGA) / LeagueHomeAvg</span> e <span class="font-mono text-white">λ_A = (AwayGF × HomeGA) / LeagueAwayAvg</span>, generando una matrice di probabilità congiunta 11×11 in quadro Poisson bivariato con correzione Dixon-Coles (<span class="font-mono text-cyanai">ρ = -0,08</span>) e ricalcolo dinamico a tratti del tasso di arrivo residuo (<span class="font-mono text-emeraldai">λ_rem</span>).</p>
+ <p class="text-slate-300 text-[11px] leading-relaxed">Calcola i Gol Attesi (xG) pre-gara tramite <span class="font-mono text-white">λ_H = (HomeGF × AwayGA) / LeagueHomeAvg</span> e <span class="font-mono text-white">λ_A = (AwayGF × HomeGA) / LeagueAwayAvg</span>, generando una matrice 11×11 tramite <strong>modello doppio Poisson con correzione di correlazione di Dixon-Coles (1997)</strong> (<span class="font-mono text-cyanai">τ_ρ, ρ = -0,08</span>), matrice rischio/contromisure tattiche, laboratorio What-If e modulo B2B Coach con Monte Carlo 1.000×.</p>
  </div>
  <div class="bg-appbg p-3 rounded-2xl border border-emeraldai/40">
  <div class="flex items-center justify-between mb-1">
@@ -1231,12 +1397,13 @@
  cn: {
  mvpBadge: "体育教育与泊松仿真",
  mimitSpecs: "MIMIT 与新法合规",
- navSim: "对阵推演",
- navLeague: "自建联赛",
- navAcademy: "知识学院",
- navClub: "DIY与订阅",
+ navSim: "对阵",
+ navLeague: "联赛",
+ navCoach: "教练",
+ navAcademy: "学院",
+ navClub: "ME",
  modeHistorical: "精选对阵",
- modeRandom: "Top Leagues",
+ modeRandom: "顶级联赛",
  histWeekThisTitle: "今日精选焦点对阵",
  histWeekNextTitle: "明日精选对阵预览",
  histWeekSub: "每日精选焦点场次 • 每日自动轮换 • 当日可无限重玩",
@@ -1286,13 +1453,13 @@
  lblTacticalCmds: "主教练临场战术干预（动态重算泊松到达率 λ）",
  lblEventStream: "泊松与马尔可夫状态机实时事件流",
  cmdTitleHighPress: "高位逼抢",
- cmdSubHighPress: "+30% 我方泊松进攻 λ",
+ cmdSubHighPress: "+30% λ | +18% 对手 (克传控)",
  cmdTitleCatenaccio: "意式链式防反",
- cmdSubCatenaccio: "-38% 对手 λ + 反击",
+ cmdSubCatenaccio: "-38% 对手 | -10% λ (克逼抢)",
  cmdTitleWing: "两翼超载突击",
- cmdSubWing: "+26% 边路期望进球率",
+ cmdSubWing: "+26% λ | +10% 对手 (克铁桶)",
  cmdTitleSub: "奇兵换人调整",
- cmdSubSub: "+18% 末段体能与绝杀率",
+ cmdSubSub: "+18% 体能与末段绝杀",
  lblSumXg: "全场期望进球 (xG)",
  lblSumPoss: "控球率分布",
  btnReturnHub: "返回大厅",
@@ -1302,10 +1469,10 @@
  mimitModalHtml: `
  <div class="bg-appbg p-3 rounded-2xl border border-gold/40">
  <div class="flex items-center justify-between mb-1">
- <h4 class="font-bold text-gold">1. 泊松攻防与 Dixon-Coles 相关性推演引擎（TRL 6 工程原型）</h4>
- <span class="px-1.5 py-0.2 rounded bg-golddim text-gold font-mono text-[9px] font-bold">4,400+ 行净室代码</span>
+ <h4 class="font-bold text-gold">1. Dixon-Coles 相关性双泊松引擎与 B2B 教练工作台（TRL 6 原型）</h4>
+ <span class="px-1.5 py-0.2 rounded bg-golddim text-gold font-mono text-[9px] font-bold">5,800+ 行净室代码</span>
  </div>
- <p class="text-slate-300 text-[11px] leading-relaxed">基于主客场攻防强度参数动态计算期望进球 <span class="font-mono text-white">λ_H = (HomeGF × AwayGA) / LeagueHomeAvg</span> 与 <span class="font-mono text-white">λ_A = (AwayGF × HomeGA) / LeagueAwayAvg</span>，构建基于 Dixon-Coles 低比分相关性修正（<span class="font-mono text-cyanai">ρ = -0.08</span>）的双变量泊松 11×11 联合比分概率矩阵，并在 90 分钟仿真中按战术指令有效窗口分段实时重算剩余到达率（<span class="font-mono text-emeraldai">λ_rem</span>）。</p>
+ <p class="text-slate-300 text-[11px] leading-relaxed">基于主客场攻防强度参数动态计算期望进球 <span class="font-mono text-white">λ_H = (HomeGF × AwayGA) / LeagueHomeAvg</span> 与 <span class="font-mono text-white">λ_A = (AwayGF × HomeGA) / LeagueAwayAvg</span>，采用学术严谨的 <strong>Dixon-Coles (1997) 相关性修正双泊松模型</strong>（<span class="font-mono text-cyanai">τ_ρ, ρ = -0.08</span>）构建 11×11 联合比分矩阵，集成双向风险与战术克制矩阵、赛前 What-If 实时敏感度推演及 B2B Coach 蒙特卡洛备战台。</p>
  </div>
  <div class="bg-appbg p-3 rounded-2xl border border-emeraldai/40">
  <div class="flex items-center justify-between mb-1">
@@ -1395,7 +1562,7 @@
  };
 
  // -----------------------------------------------------------------------
- // 3. BIVARIATE POISSON + DIXON-COLES MATHEMATICAL ENGINE
+ // 3. DIXON-COLES CORRELATED DOUBLE-POISSON ENGINE & TACTICAL COUNTER MATRIX
  // -----------------------------------------------------------------------
  function factorial(n) {
  let res = 1;
@@ -1408,16 +1575,142 @@
  return (Math.exp(-lambda) * Math.pow(lambda, k)) / factorial(k);
  }
 
- function computePoissonMatchModel(home, away, leagueId) {
- const league = LEAGUES.find(l => l.id === leagueId) || LEAGUES[0];
- const homeAvg = league.homeAvg || 1.80;
- const awayAvg = league.awayAvg || 1.48;
+ // Tactical Style Archetype Classifier & Bidirectional Risk / Style Counter Matrix
+ function classifyTeamArchetype(team) {
+ if (!team) return 'possession';
+ if (team.archetype) return team.archetype;
+ const s = `${team.styleEn || ''} ${team.form || ''}`.toLowerCase();
+ if (/catenaccio|low block|man-marking|5-3-2/.test(s)) return 'lowBlock';
+ if (/press|gegenpress|dominance|vertical trap|high line|high duel|blitz/.test(s)) return 'highPress';
+ if (/wing|transition|counter|explosive/.test(s)) return 'flankTransition';
+ return 'possession';
+ }
 
- const lambdaH = Number(Math.max(0.25, Math.min(4.5, (home.homeGF * away.awayGA) / homeAvg)).toFixed(4));
- const lambdaA = Number(Math.max(0.25, Math.min(4.5, (away.awayGF * home.homeGA) / awayAvg)).toFixed(4));
+ function getArchetypeLabel(arch) {
+ const map = {
+ lowBlock: tr('Low Block / Catenaccio', '低位铁桶 / 链式防守', 'Blocco Basso / Catenaccio'),
+ highPress: tr('High Press / Gegenpress', '高位逼抢 / 反抢压迫', 'Pressing Alto / Gegenpressing'),
+ possession: tr('Positional / Possession', '阵地传控 / 14区渗透', 'Possesso Posizionale'),
+ flankTransition: tr('Wing / Rapid Transition', '边路突击 / 快速转换', 'Fasce / Transizione Rapida')
+ };
+ return map[arch] || map.possession;
+ }
+
+ function getBestCounterCommand(opponentTeam) {
+ const oppArch = classifyTeamArchetype(opponentTeam);
+ if (oppArch === 'lowBlock') return 'wingOverload';
+ if (oppArch === 'highPress' || oppArch === 'flankTransition') return 'catenaccio';
+ return 'highPress';
+ }
+
+ function getTacticLabel(cmdKey) {
+ const map = {
+ balanced: tr('Balanced', '攻守平衡', 'Equilibrato'),
+ highPress: tr('High Press', '高位逼抢', 'Pressing Alto'),
+ catenaccio: tr('Catenaccio', '链式防反', 'Catenaccio'),
+ wingOverload: tr('Wing Overload', '两翼超载', 'Sovraccarico Fasce')
+ };
+ return map[cmdKey] || map.balanced;
+ }
+
+ function evaluateTacticalModifiers(cmdKey, opponentTeam) {
+ const oppArch = classifyTeamArchetype(opponentTeam);
+ if (!cmdKey || cmdKey === 'balanced') {
+ return {
+ userMult: 1.0,
+ oppMult: 1.0,
+ isCounter: false,
+ oppArch,
+ noteEn: 'Standard baseline structure without directional risk bias.',
+ noteIt: 'Assetto di base equilibrato senza sbilanciamenti di rischio.',
+ noteCn: '常规攻守平衡阵型，无额外双向风险偏移。',
+ recLessonId: 'mod-5'
+ };
+ }
+
+ if (cmdKey === 'highPress') {
+ const isCounter = oppArch === 'possession';
+ const userMult = isCounter ? Number((1.30 * 1.12).toFixed(3)) : 1.30;
+ const oppMult = isCounter ? Number((1.18 * 0.88).toFixed(3)) : 1.18;
+ return {
+ userMult,
+ oppMult,
+ isCounter,
+ oppArch,
+ noteEn: isCounter
+ ? 'COUNTER vs Possession: High Press disrupts Zone 14 buildup (+46% λ, risk reduced to +4% Opp λ).'
+ : 'Bidirectional Risk: +30% Attack λ, but high defensive line leaves +18% Opp counter λ.',
+ noteIt: isCounter
+ ? 'CONTROMISURA vs Possesso: Il Pressing Alto spezza la regia in Zona 14 (+46% λ, rischio ridotto a +4% λ Avv.).'
+ : 'Rischio Bidirezionale: +30% λ Attacco, ma linea alta espone a +18% λ contropiede avversario.',
+ noteCn: isCounter
+ ? '战术克制（克传控）：高位逼抢切断对手 14 区出球（我方 +46% λ，对手反击风险压低至 +4% λ）。'
+ : '双向风险：我方进攻 +30% λ，但防线前压给对手留出 +18% λ 身后反击空当。',
+ recLessonId: 'mod-3'
+ };
+ }
+
+ if (cmdKey === 'catenaccio') {
+ const isCounter = (oppArch === 'highPress' || oppArch === 'flankTransition');
+ const userMult = isCounter ? Number((0.90 * 1.20).toFixed(3)) : 0.90;
+ const oppMult = isCounter ? Number((0.62 * 0.92).toFixed(3)) : 0.62;
+ return {
+ userMult,
+ oppMult,
+ isCounter,
+ oppArch,
+ noteEn: isCounter
+ ? 'COUNTER vs High Press/Transition: Compact block absorbs pressure & springs vertical counters (+8% λ, -43% Opp λ).'
+ : 'Bidirectional Trade-off: Cuts Opp λ by -38%, but deeper block reduces own buildup by -10% λ.',
+ noteIt: isCounter
+ ? 'CONTROMISURA vs Pressing/Transizione: Blocco compatto assorbe la pressione e innesca il contropiede (+8% λ, -43% λ Avv.).'
+ : 'Compromesso Bidirezionale: Riduce λ avversario del -38%, ma riduce la spinta offensiva del -10% λ.',
+ noteCn: isCounter
+ ? '战术克制（克逼抢/转换）：紧凑链式防线吸收压迫并触发自由人纵向反击（我方净增 +8% λ，对手 -43% λ）。'
+ : '双向权衡：压低对手进攻 -38% λ，但深度退防会削弱我方阵地进攻 -10% λ。',
+ recLessonId: 'mod-1'
+ };
+ }
+
+ if (cmdKey === 'wingOverload') {
+ const isCounter = oppArch === 'lowBlock';
+ const userMult = isCounter ? Number((1.26 * 1.15).toFixed(3)) : 1.26;
+ const oppMult = isCounter ? Number((1.10 * 0.92).toFixed(3)) : 1.10;
+ return {
+ userMult,
+ oppMult,
+ isCounter,
+ oppArch,
+ noteEn: isCounter
+ ? 'COUNTER vs Low Block: 2v1 flank overloads stretch compact 5-3-2/Catenaccio lines (+45% λ, +1% Opp λ).'
+ : 'Bidirectional Risk: +26% Flank Attack λ, with +10% central transition exposure on turnovers.',
+ noteIt: isCounter
+ ? 'CONTROMISURA vs Blocco Basso: Superiorità 2v1 sulle corsie allarga il Catenaccio/5-3-2 (+45% λ, +1% λ Avv.).'
+ : 'Rischio Bidirezionale: +26% λ sulle fasce, ma +10% vulnerabilità nelle transizioni centrali.',
+ noteCn: isCounter
+ ? '战术克制（克低位铁桶）：边路 2打1 超载横向拉扯 5-3-2/链式防线（我方 +45% λ，对手仅 +1% λ）。'
+ : '双向风险：边路进攻 +26% λ，但边后卫套上会暴露 +10% λ 中路转换空当。',
+ recLessonId: 'mod-4'
+ };
+ }
+
+ return { userMult: 1.0, oppMult: 1.0, isCounter: false, oppArch, noteEn: '', noteIt: '', noteCn: '', recLessonId: 'mod-5' };
+ }
+
+ function computePoissonMatchModel(home, away, leagueId, options = {}) {
+ const league = LEAGUES.find(l => l.id === leagueId) || LEAGUES[0];
+ const homeAvg = options.homeAvg || league.homeAvg || 1.56;
+ const awayAvg = options.awayAvg || league.awayAvg || 1.24;
+ const multH = options.lambdaHMult || 1.0;
+ const multA = options.lambdaAMult || 1.0;
+
+ const baseLambdaH = Math.max(0.20, Math.min(4.5, (home.homeGF * away.awayGA) / homeAvg));
+ const baseLambdaA = Math.max(0.20, Math.min(4.5, (away.awayGF * home.homeGA) / awayAvg));
+ const lambdaH = Number(Math.max(0.18, Math.min(5.0, baseLambdaH * multH)).toFixed(4));
+ const lambdaA = Number(Math.max(0.18, Math.min(5.0, baseLambdaA * multA)).toFixed(4));
 
  const maxGoals = 10; // 11x11 matrix (0..10)
- const rho = -0.08;
+ const rho = typeof options.rho === 'number' ? options.rho : -0.08;
  const matrix = [];
  let totalMass = 0;
 
@@ -1470,7 +1763,10 @@
  }
 
  return {
- league,
+ league: { ...league, homeAvg, awayAvg },
+ rho,
+ baseLambdaH: Number(baseLambdaH.toFixed(4)),
+ baseLambdaA: Number(baseLambdaA.toFixed(4)),
  lambdaH,
  lambdaA,
  matrix,
@@ -1784,12 +2080,12 @@
  tagIt: 'Analisi Quantitativa',
  tagCn: '定量概率分析',
  tagColor: 'text-cyanai bg-cyanai/10 border-cyanai/30',
- titleEn: 'Poisson Expected Goals (xG) & Scoreline Matrix Modeling',
- titleIt: 'Modello di Poisson per i Gol Attesi (xG) e Matrice dei Risultati',
- titleCn: '泊松期望进球（xG）与联合比分概率矩阵建模',
- summaryEn: 'In quantitative football analytics, Expected Goals (λ) is modeled via λ_H = (HomeGF × AwayGA) / LeagueHomeAvg. Applying P(X=k) = (e^-λ · λ^k) / k! produces the joint scoreline probability matrix.',
- summaryIt: 'Nell\'analisi calcistica quantitativa, i Gol Attesi (λ) si calcolano con λ_H = (HomeGF × AwayGA) / LeagueHomeAvg. La distribuzione di Poisson P(X=k) = (e^-λ · λ^k) / k! genera la matrice delle probabilità.',
- summaryCn: '在足球定量分析中，主队期望进球由 λ_H = (主场均进 × 客场均失) / 联赛主场均进 计算得出，再代入泊松分布公式 P(X=k) = (e^-λ · λ^k) / k! 即可生成双方各比分的联合概率矩阵。',
+ titleEn: 'Dixon-Coles Correlated Double-Poisson & Scoreline Matrix',
+ titleIt: 'Modello Doppio Poisson Dixon-Coles e Matrice dei Risultati',
+ titleCn: 'Dixon-Coles 相关性修正双泊松与联合比分矩阵建模',
+ summaryEn: 'Expected Goals (λ) is derived via λ_H = (HomeGF × AwayGA) / LeagueHomeAvg. Combining two Poisson marginals with the Dixon-Coles (1997) low-score correlation factor τ_ρ(h,a) calibrates 0-0, 1-0, 0-1, and 1-1 probabilities.',
+ summaryIt: 'I Gol Attesi (λ) derivano da λ_H = (HomeGF × AwayGA) / LeagueHomeAvg. Combinando due marginali di Poisson con il fattore di correlazione Dixon-Coles (1997) τ_ρ(h,a) si calibrano con precisione i risultati 0-0, 1-0, 0-1 e 1-1.',
+ summaryCn: '主客队期望进球由 λ_H = (主场均进 × 客场均失) / 联赛主场均进 得出；在双独立泊松边缘分布基础上引入 Dixon-Coles (1997) 低比分相关性修正因子 τ_ρ(h,a)，可精准校准 0-0、1-0、0-1、1-1 的真实概率分布。',
  diagramSvg: `
  <svg class="w-full h-24 rounded-xl bg-[#0A1E15] border border-borderdim" viewBox="0 0 280 90">
  <rect x="8" y="8" width="264" height="74" rx="6" fill="none" stroke="rgba(255,255,255,0.2)" />
@@ -1925,6 +2221,73 @@
  vip12: false
  },
 
+ matrixLab: {
+ fixture: null,
+ side: 'H',
+ tactic: 'balanced',
+ customOptions: null,
+ isCustomCoach: false
+ },
+
+ coachSubTab: 'my',
+ coachMcResult: null,
+ coach: {
+ myTeam: {
+ name: 'Torino Youth U17',
+ code: 'TYU',
+ c1: '#881337',
+ c2: '#F8FAFC',
+ emblemShape: 'shield',
+ form: '4-3-3',
+ archetype: 'possession',
+ homeGF: 1.85,
+ homeGA: 0.95,
+ awayGF: 1.55,
+ awayGA: 1.15,
+ stamina: 96
+ },
+ oppTeam: {
+ name: 'Piemonte Block U17',
+ code: 'PBU',
+ c1: '#1E3A8A',
+ c2: '#F5B82E',
+ emblemShape: 'stripes',
+ form: '5-3-2',
+ archetype: 'lowBlock',
+ homeGF: 1.45,
+ homeGA: 0.85,
+ awayGF: 1.20,
+ awayGA: 1.05,
+ stamina: 94
+ },
+ venue: 'home',
+ envPreset: 'figc',
+ homeAvg: 1.56,
+ awayAvg: 1.24,
+ rho: -0.08,
+ openingTactic: 'balanced'
+ },
+ coachSavedProfiles: [
+ {
+ id: 'scout-preset-1',
+ label: 'Piemonte Block U17 (5-3-2)',
+ oppTeam: {
+ name: 'Piemonte Block U17', code: 'PBU', c1: '#1E3A8A', c2: '#F5B82E',
+ emblemShape: 'stripes', form: '5-3-2', archetype: 'lowBlock',
+ homeGF: 1.45, homeGA: 0.85, awayGF: 1.20, awayGA: 1.05, stamina: 94
+ }
+ },
+ {
+ id: 'scout-preset-2',
+ label: 'Milano Press U17 (4-2-3-1)',
+ oppTeam: {
+ name: 'Milano Press U17', code: 'MPU', c1: '#DC2626', c2: '#09090B',
+ emblemShape: 'crown', form: '4-2-3-1', archetype: 'highPress',
+ homeGF: 2.10, homeGA: 1.10, awayGF: 1.85, awayGA: 1.25, stamina: 95
+ }
+ }
+ ],
+
  peers: [
  { name: 'Marco_Torino', lv: 6, mastered: 5, xp: 1840 },
  { name: 'Elena_FCO', lv: 5, mastered: 4, xp: 1520 },
@@ -1957,6 +2320,7 @@
  distinctCmds: new Set(),
  activeCommand: null,
  commandTimer: 0,
+ commandRemaining: 0,
  subUsed: false,
  scoutBonusClaimed: false,
  ball: { x: 0.5, y: 0.5, tx: 0.5, ty: 0.5, ownerTeam: 'H', flash: 0 },
@@ -2067,6 +2431,8 @@
  leagueStandings: state.leagueStandings,
  upgrades: state.upgrades,
  seasonPassClaimed: state.seasonPassClaimed,
+ coach: state.coach,
+ coachSavedProfiles: state.coachSavedProfiles,
  replayCounts: state.replayCounts
  };
  localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
@@ -2100,6 +2466,15 @@
  if (Array.isArray(saved.leagueStandings) && saved.leagueStandings.length > 0) state.leagueStandings = saved.leagueStandings;
  if (saved.upgrades && typeof saved.upgrades === 'object') state.upgrades = { ...state.upgrades, ...saved.upgrades };
  if (saved.seasonPassClaimed && typeof saved.seasonPassClaimed === 'object') state.seasonPassClaimed = { ...state.seasonPassClaimed, ...saved.seasonPassClaimed };
+ if (saved.coach && typeof saved.coach === 'object') {
+ state.coach = {
+ ...state.coach,
+ ...saved.coach,
+ myTeam: { ...state.coach.myTeam, ...(saved.coach.myTeam || {}) },
+ oppTeam: { ...state.coach.oppTeam, ...(saved.coach.oppTeam || {}) }
+ };
+ }
+ if (Array.isArray(saved.coachSavedProfiles) && saved.coachSavedProfiles.length > 0) state.coachSavedProfiles = saved.coachSavedProfiles;
  if (saved.replayCounts && typeof saved.replayCounts === 'object') state.replayCounts = saved.replayCounts;
  return true;
  } catch (e) {
@@ -2149,10 +2524,13 @@
  document.addEventListener('keydown', (e) => {
  if (e.key !== 'Escape') return;
  closeLangMenu();
+ const mBrief = document.getElementById('modal-coach-brief');
  const mPoisson = document.getElementById('modal-poisson-matrix');
  const mMimit = document.getElementById('modal-mimit-specs');
  const mPost = document.getElementById('post-match-overlay');
- if (mPoisson && !mPoisson.classList.contains('hidden')) {
+ if (mBrief && !mBrief.classList.contains('hidden')) {
+ closeModal('modal-coach-brief');
+ } else if (mPoisson && !mPoisson.classList.contains('hidden')) {
  closeModal('modal-poisson-matrix');
  } else if (mMimit && !mMimit.classList.contains('hidden')) {
  closeModal('modal-mimit-specs');
@@ -2165,20 +2543,23 @@
  state.mainTab = tabId;
  document.getElementById('view-match-sim').classList.toggle('hidden', tabId !== 'sim');
  document.getElementById('view-my-league').classList.toggle('hidden', tabId !== 'league');
+ document.getElementById('view-coach').classList.toggle('hidden', tabId !== 'coach');
  document.getElementById('view-academy').classList.toggle('hidden', tabId !== 'academy');
  document.getElementById('view-club-diy').classList.toggle('hidden', tabId !== 'club');
 
  const tabButtons = {
  sim: document.getElementById('nav-tab-sim'),
  league: document.getElementById('nav-tab-league'),
+ coach: document.getElementById('nav-tab-coach'),
  academy: document.getElementById('nav-tab-academy'),
  club: document.getElementById('nav-tab-club')
  };
  Object.entries(tabButtons).forEach(([key, btn]) => {
+ if (!btn) return;
  if (key === tabId) {
- btn.className = 'py-1.5 px-1 rounded-2xl flex flex-col items-center justify-center gap-0.5 transition bg-golddim border border-gold/40 text-gold relative';
+ btn.className = 'py-1.5 px-0.5 rounded-2xl flex flex-col items-center justify-center gap-0.5 transition bg-golddim border border-gold/40 text-gold relative';
  } else {
- btn.className = 'py-1.5 px-1 rounded-2xl flex flex-col items-center justify-center gap-0.5 transition bg-card border border-transparent text-slate-400 hover:text-slate-200 relative';
+ btn.className = 'py-1.5 px-0.5 rounded-2xl flex flex-col items-center justify-center gap-0.5 transition bg-card border border-transparent text-slate-400 hover:text-slate-200 relative';
  }
  });
 
@@ -2256,24 +2637,74 @@
  }
 
  // -----------------------------------------------------------------------
- // 8. POISSON MATRIX INSPECTOR MODAL (6x6 Joint Scoreline Heatmap)
+ // 8. DIXON-COLES DOUBLE-POISSON MATRIX & PRE-MATCH TACTICAL WHAT-IF LAB
  // -----------------------------------------------------------------------
  function openPoissonMatrixModal(fixtureId) {
  const fixture = findFixtureById(fixtureId);
  if (!fixture) return;
+ state.matrixLab = {
+ fixture,
+ side: 'H',
+ tactic: 'balanced',
+ customOptions: null,
+ isCustomCoach: false
+ };
+ renderPoissonMatrixModalBody();
+ openModal('modal-poisson-matrix');
+ }
+
+ function openCustomCoachMatrixModal() {
+ const { fixture, options, userSide } = buildCoachMatchBundle();
+ state.matrixLab = {
+ fixture,
+ side: userSide,
+ tactic: state.coach.openingTactic || 'balanced',
+ customOptions: options,
+ isCustomCoach: true
+ };
+ renderPoissonMatrixModalBody();
+ openModal('modal-poisson-matrix');
+ }
+
+ function setMatrixWhatIf(side, tactic) {
+ if (!state.matrixLab.fixture) return;
+ state.matrixLab.side = side;
+ state.matrixLab.tactic = tactic;
+ renderPoissonMatrixModalBody();
+ }
+
+ function renderPoissonMatrixModalBody() {
+ const lab = state.matrixLab;
+ const fixture = lab.fixture;
+ if (!fixture) return;
 
  const t = I18N[state.lang];
- const model = computePoissonMatchModel(fixture.home, fixture.away, fixture.league);
+ const baseOpts = lab.customOptions || {};
+ const baseModel = computePoissonMatchModel(fixture.home, fixture.away, fixture.league, baseOpts);
+
+ const oppTeam = lab.side === 'H' ? fixture.away : fixture.home;
+ const mods = evaluateTacticalModifiers(lab.tactic, oppTeam);
+ // Pre-match What-If reflects tactical plan weight across ~50% active match phase for realistic sensitivity
+ const effUserMult = 1 + (mods.userMult - 1) * 0.55;
+ const effOppMult = 1 + (mods.oppMult - 1) * 0.55;
+ const lambdaHMult = lab.side === 'H' ? effUserMult : effOppMult;
+ const lambdaAMult = lab.side === 'H' ? effOppMult : effUserMult;
+
+ const model = computePoissonMatchModel(fixture.home, fixture.away, fixture.league, {
+ ...baseOpts,
+ lambdaHMult,
+ lambdaAMult
+ });
 
  document.getElementById('pm-eyebrow').textContent = tr(
- 'Tactical Expected Goals Distribution (Zero Wagering)',
- '战术期望进球概率分布（纯数学推演引擎）',
- 'Distribuzione Probabilistica Gol Attesi (Zero Scommesse)'
+ 'Dixon-Coles Correlated Double-Poisson • Tactical What-If Lab',
+ 'Dixon-Coles 相关性双泊松 • 赛前战术 What-If 推演实验室',
+ 'Doppio Poisson Dixon-Coles • Laboratorio Tattico What-If'
  );
  document.getElementById('pm-modal-title').textContent = tr(
- `${fixture.home.code} vs ${fixture.away.code} • Poisson Scoreline Matrix`,
- `${fixture.home.code} vs ${fixture.away.code} • 泊松联合比分概率矩阵`,
- `${fixture.home.code} vs ${fixture.away.code} • Matrice Risultati di Poisson`
+ `${fixture.home.code} vs ${fixture.away.code} • 11×11 Scoreline Matrix`,
+ `${fixture.home.code} vs ${fixture.away.code} • 11×11 联合比分概率矩阵`,
+ `${fixture.home.code} vs ${fixture.away.code} • Matrice Risultati 11×11`
  );
 
  let maxCellProb = 0;
@@ -2317,19 +2748,87 @@
  }
  gridHtml += `</tbody></table></div>`;
 
+ const dLamH = model.lambdaH - baseModel.lambdaH;
+ const dLamA = model.lambdaA - baseModel.lambdaA;
+ const dProbH = model.exactProbs[0] - baseModel.exactProbs[0];
+ const dProbD = model.exactProbs[1] - baseModel.exactProbs[1];
+ const dProbA = model.exactProbs[2] - baseModel.exactProbs[2];
+ const fmtDelta = (val, decimals = 2, suffix = '') => {
+ if (Math.abs(val) < 0.005) return '';
+ const sign = val > 0 ? '+' : '';
+ const cls = val > 0 ? 'text-emeraldai' : 'text-coralai';
+ return `<span class="${cls} text-[9px] font-bold ml-1">(${sign}${val.toFixed(decimals)}${suffix})</span>`;
+ };
+
+ const whatIfBtns = [
+ { id: 'balanced', icon: '⚖️', label: getTacticLabel('balanced') },
+ { id: 'highPress', icon: '⚡', label: getTacticLabel('highPress') },
+ { id: 'catenaccio', icon: '🛡️', label: getTacticLabel('catenaccio') },
+ { id: 'wingOverload', icon: '🏹', label: getTacticLabel('wingOverload') }
+ ];
+ const bestCmd = getBestCounterCommand(oppTeam);
+ const diagnosisNote = state.lang === 'it' ? mods.noteIt : state.lang === 'cn' ? mods.noteCn : mods.noteEn;
+
  document.getElementById('pm-modal-body').innerHTML = `
+ <!-- Interactive Pre-Match Tactical What-If Lab -->
+ <div class="bg-gradient-to-br from-[#121F30] to-appbg border border-gold/40 rounded-2xl p-2.5 space-y-2">
+ <div class="flex items-center justify-between gap-2">
+ <span class="text-[10px] font-mono font-extrabold text-gold uppercase">
+ ⚡ ${tr('Pre-Match Tactical What-If Lab', '赛前战术 What-If 实时敏感度推演', 'Laboratorio Tattico What-If Pre-Gara')}
+ </span>
+ <div class="flex items-center gap-1 bg-card p-0.5 rounded-lg border border-borderdim text-[9.5px] font-mono">
+ <button onclick="setMatrixWhatIf('H', '${lab.tactic}')" class="px-1.5 py-0.5 rounded font-bold transition ${lab.side === 'H' ? 'bg-emeraldai text-appbg' : 'text-slate-400 hover:text-white'}">
+ ${fixture.home.code}
+ </button>
+ <button onclick="setMatrixWhatIf('A', '${lab.tactic}')" class="px-1.5 py-0.5 rounded font-bold transition ${lab.side === 'A' ? 'bg-cyanai text-appbg' : 'text-slate-400 hover:text-white'}">
+ ${fixture.away.code}
+ </button>
+ </div>
+ </div>
+
+ <div class="grid grid-cols-2 gap-1.5">
+ ${whatIfBtns.map(btn => {
+ const active = lab.tactic === btn.id;
+ const isOptimal = btn.id === bestCmd;
+ return `
+ <button onclick="setMatrixWhatIf('${lab.side}', '${btn.id}')" class="py-1.5 px-2 rounded-xl text-[10.5px] font-bold border flex items-center justify-between gap-1 transition active:scale-95 ${
+ active
+ ? 'bg-gold text-appbg border-gold shadow'
+ : 'bg-card hover:bg-cardhover border-borderdim text-slate-200'
+ }">
+ <span class="truncate">${btn.icon} ${btn.label}</span>
+ ${isOptimal ? `<span class="px-1 py-0.2 rounded text-[8px] font-mono font-extrabold shrink-0 ${active ? 'bg-appbg/20 text-appbg' : 'bg-emeraldai/20 text-emeraldai'}">${tr('CTR', '克制', 'CTR')}</span>` : ''}
+ </button>
+ `;
+ }).join('')}
+ </div>
+
+ <div class="p-2 rounded-xl text-[10px] leading-snug border ${
+ mods.isCounter
+ ? 'bg-emeraldai/10 border-emeraldai/40 text-emeraldai'
+ : lab.tactic === 'balanced'
+ ? 'bg-card/60 border-borderdim text-slate-300'
+ : 'bg-golddim border-gold/35 text-gold'
+ }">
+ <div class="font-bold mb-0.5">
+ ${mods.isCounter ? '✓ ' + tr('TACTICAL STYLE COUNTER ACTIVE', '已触发风格克制加成', 'CONTROMISURA TATTICA ATTIVA') : tr('Opponent Archetype', '对手战术风格画像', 'Archetipo Avversario') + ': ' + getArchetypeLabel(mods.oppArch)}
+ </div>
+ <div class="text-slate-200">${diagnosisNote}</div>
+ </div>
+ </div>
+
  <div class="bg-appbg border border-borderdim rounded-2xl p-3 space-y-2">
  <div class="flex items-center justify-between">
  <div class="flex items-center gap-2">
  ${renderClubCrestSVG(fixture.home, 'w-7 h-7')}
  <div>
- <div class="font-extrabold text-white">${fixture.home.name}</div>
+ <div class="font-extrabold text-white">${fixture.home.name} <span class="text-[9px] font-mono text-emeraldai">(${fixture.home.form})</span></div>
  <div class="font-mono text-[10px] text-slate-400">HomeGF: ${fixture.home.homeGF.toFixed(2)} | HomeGA: ${fixture.home.homeGA.toFixed(2)}</div>
  </div>
  </div>
  <div class="text-right font-mono">
  <div class="text-[10px] text-slate-400">λ_H (${tr('Expected', '期望值', 'Atteso')})</div>
- <div class="text-sm font-extrabold text-emeraldai">${model.lambdaH.toFixed(3)}</div>
+ <div class="text-sm font-extrabold text-emeraldai">${model.lambdaH.toFixed(3)}${fmtDelta(dLamH, 2)}</div>
  </div>
  </div>
 
@@ -2337,27 +2836,27 @@
  <div class="flex items-center gap-2">
  ${renderClubCrestSVG(fixture.away, 'w-7 h-7')}
  <div>
- <div class="font-extrabold text-white">${fixture.away.name}</div>
+ <div class="font-extrabold text-white">${fixture.away.name} <span class="text-[9px] font-mono text-cyanai">(${fixture.away.form})</span></div>
  <div class="font-mono text-[10px] text-slate-400">AwayGF: ${fixture.away.awayGF.toFixed(2)} | AwayGA: ${fixture.away.awayGA.toFixed(2)}</div>
  </div>
  </div>
  <div class="text-right font-mono">
  <div class="text-[10px] text-slate-400">λ_A (${tr('Expected', '期望值', 'Atteso')})</div>
- <div class="text-sm font-extrabold text-cyanai">${model.lambdaA.toFixed(3)}</div>
+ <div class="text-sm font-extrabold text-cyanai">${model.lambdaA.toFixed(3)}${fmtDelta(dLamA, 2)}</div>
  </div>
  </div>
 
  <div class="mt-2 pt-2 border-t border-borderdim/60 font-mono text-[10px] text-slate-300 space-y-1 bg-card/70 p-2 rounded-xl">
- <div class="text-gold font-bold">${tr('Attack-Defense Strength Derivation:', '攻防强度期望进球计算公式：', 'Derivazione Forza Attacco-Difesa:')}</div>
- <div>λ_H = (${fixture.home.homeGF.toFixed(2)} × ${fixture.away.awayGA.toFixed(2)}) / ${model.league.homeAvg.toFixed(2)} = <span class="text-emeraldai font-bold">${model.lambdaH.toFixed(3)}</span></div>
- <div>λ_A = (${fixture.away.awayGF.toFixed(2)} × ${fixture.home.homeGA.toFixed(2)}) / ${model.league.awayAvg.toFixed(2)} = <span class="text-cyanai font-bold">${model.lambdaA.toFixed(3)}</span></div>
+ <div class="text-gold font-bold">${tr('Dixon-Coles Double-Poisson Derivation:', 'Dixon-Coles 相关性双泊松期望进球推导：', 'Derivazione Doppio Poisson Dixon-Coles:')}</div>
+ <div>λ_H = (${fixture.home.homeGF.toFixed(2)} × ${fixture.away.awayGA.toFixed(2)}) / ${model.league.homeAvg.toFixed(2)}${lab.tactic !== 'balanced' ? ` × ${lambdaHMult.toFixed(2)}` : ''} = <span class="text-emeraldai font-bold">${model.lambdaH.toFixed(3)}</span></div>
+ <div>λ_A = (${fixture.away.awayGF.toFixed(2)} × ${fixture.home.homeGA.toFixed(2)}) / ${model.league.awayAvg.toFixed(2)}${lab.tactic !== 'balanced' ? ` × ${lambdaAMult.toFixed(2)}` : ''} = <span class="text-cyanai font-bold">${model.lambdaA.toFixed(3)}</span></div>
  </div>
  </div>
 
  <div class="bg-appbg border border-borderdim rounded-2xl p-2.5">
  <div class="flex items-center justify-between mb-1.5">
  <span class="font-bold text-white text-[11px]">${tr('Joint Scoreline Probability (0–5 Goals)', '双方联合比分概率热力矩阵 (0–5球)', 'Probabilità Congiunta Risultati (0–5 Gol)')}</span>
- <span class="font-mono text-[9px] text-gold">Dixon-Coles ρ = -0.08</span>
+ <span class="font-mono text-[9px] text-gold">Dixon-Coles τ_ρ (ρ = ${model.rho.toFixed(2)})</span>
  </div>
  ${gridHtml}
  </div>
@@ -2365,20 +2864,24 @@
  <div class="grid grid-cols-3 gap-2 font-mono text-center">
  <div class="bg-emeraldai/10 border border-emeraldai/30 rounded-xl p-2">
  <div class="text-[9px] text-slate-400">${tr('Home Win (H>A)', '主队胜率 (H>A)', 'Vittoria Casa (H>A)')}</div>
- <div class="text-xs font-extrabold text-emeraldai mt-0.5">${model.exactProbs[0].toFixed(1)}%</div>
+ <div class="text-xs font-extrabold text-emeraldai mt-0.5">${model.exactProbs[0].toFixed(1)}%${fmtDelta(dProbH, 1, '%')}</div>
  </div>
  <div class="bg-appbg border border-borderdim rounded-xl p-2">
  <div class="text-[9px] text-slate-400">${tr('Draw (H=A)', '平局概率 (H=A)', 'Pareggio (H=A)')}</div>
- <div class="text-xs font-extrabold text-slate-200 mt-0.5">${model.exactProbs[1].toFixed(1)}%</div>
+ <div class="text-xs font-extrabold text-slate-200 mt-0.5">${model.exactProbs[1].toFixed(1)}%${fmtDelta(dProbD, 1, '%')}</div>
  </div>
  <div class="bg-cyanai/10 border border-cyanai/30 rounded-xl p-2">
  <div class="text-[9px] text-slate-400">${tr('Away Win (H<A)', '客队胜率 (H<A)', 'Vittoria Ospiti (H<A)')}</div>
- <div class="text-xs font-extrabold text-cyanai mt-0.5">${model.exactProbs[2].toFixed(1)}%</div>
+ <div class="text-xs font-extrabold text-cyanai mt-0.5">${model.exactProbs[2].toFixed(1)}%${fmtDelta(dProbA, 1, '%')}</div>
  </div>
  </div>
 
  <div class="grid grid-cols-2 gap-2 pt-1">
- ${isTomorrowFixture(fixture.id) ? `
+ ${lab.isCustomCoach ? `
+ <button onclick="closeModal('modal-poisson-matrix'); launchCoachSimulation('${lab.tactic}')" class="col-span-2 py-2.5 px-2 rounded-xl bg-gradient-to-r from-gold to-amber-400 text-appbg font-extrabold text-xs transition active:scale-95">
+ 🚀 ${tr('Launch 2D Simulation with Selected Plan', '按当前战术方案一键启动 2D 推演', 'Avvia Simulazione 2D con Piano Tattico')}
+ </button>
+ ` : isTomorrowFixture(fixture.id) ? `
  <button onclick="handleTomorrowLockedClick()" class="py-2.5 px-2 rounded-xl bg-appbg border border-borderdim text-slate-400 font-bold text-xs cursor-not-allowed opacity-75 transition active:scale-95">
  🔒 ${t.pickHomeWin} (${fixture.home.code})
  </button>
@@ -2395,8 +2898,6 @@
  `}
  </div>
  `;
-
- openModal('modal-poisson-matrix');
  }
 
  // -----------------------------------------------------------------------
@@ -2417,6 +2918,8 @@
  document.getElementById('btn-mimit-label').textContent = t.mimitSpecs;
  document.getElementById('nav-label-sim').textContent = t.navSim;
  document.getElementById('nav-label-league').textContent = t.navLeague;
+ const navCoachEl = document.getElementById('nav-label-coach');
+ if (navCoachEl) navCoachEl.textContent = t.navCoach;
  document.getElementById('nav-label-academy').textContent = t.navAcademy;
  document.getElementById('nav-label-club').textContent = t.navClub;
 
@@ -2469,8 +2972,12 @@
 
  renderMatchSimTab();
  renderMyLeagueTab();
+ renderCoachTab();
  renderAcademyTab();
  renderClubDiyTab();
+ if (!document.getElementById('modal-poisson-matrix').classList.contains('hidden')) {
+ renderPoissonMatrixModalBody();
+ }
  saveState();
  }
 
@@ -3164,7 +3671,7 @@
  if (!cfg || state.seasonPassClaimed[tierKey]) return;
 
  if (cfg.vip && !state.isVipPro) {
- showToast(tr('Activate VIP Pro in Club & DIY to claim VIP Track rewards!', '请先在「DIY与订阅」开启 VIP Pro 领取尊享轨道奖励！', 'Attiva VIP Pro in Club & VIP per riscattare i premi VIP!'));
+ showToast(tr('Activate VIP Pro in ME to claim VIP Track rewards!', '请先在「ME」页面开启 VIP Pro 领取尊享轨道奖励！', 'Attiva VIP Pro nella scheda ME per riscattare i premi VIP!'));
  return;
  }
  if (curPts < cfg.pts) {
@@ -3187,7 +3694,678 @@
  }
 
  // -----------------------------------------------------------------------
- // 12. TAB 3: ACADEMY RENDERER & INTERACTIONS
+ // 11B. COACH TAB (CUSTOM SQUAD DATA, TACTICS, MONTE CARLO & EXPORT)
+ // -----------------------------------------------------------------------
+ const COACH_ENV_PRESETS = {
+ figc: { homeAvg: 1.56, awayAvg: 1.24, en: 'Serie A / FIGC Standard (1.56 / 1.24)', it: 'Standard Serie A / FIGC (1.56 / 1.24)', cn: '意甲 / FIGC 基准环境 (1.56 / 1.24)' },
+ youth: { homeAvg: 1.95, awayAvg: 1.65, en: 'Youth Academy High-Tempo (1.95 / 1.65)', it: 'Giovanili / Primavera Ritmo Alto (1.95 / 1.65)', cn: '青训高节奏联赛 (1.95 / 1.65)' },
+ cup: { homeAvg: 1.35, awayAvg: 1.10, en: 'Knockout / Tight Tactical (1.35 / 1.10)', it: 'Gara Secca / Difese Chiuse (1.35 / 1.10)', cn: '淘汰赛紧密防守 (1.35 / 1.10)' }
+ };
+
+ const COACH_ARCHETYPE_OPTIONS = [
+ { id: 'possession', en: 'Positional / Tiki-Taka', it: 'Possesso Posizionale / Tiki-Taka', cn: '阵地传控 / 14区渗透', lesson: 'mod-3' },
+ { id: 'highPress', en: 'High Press / Gegenpress', it: 'Pressing Alto / Gegenpressing', cn: '高位逼抢 / 重金属反抢', lesson: 'mod-1' },
+ { id: 'lowBlock', en: 'Catenaccio / Low Block', it: 'Catenaccio / Blocco Basso', cn: '意式链式 / 低位铁桶', lesson: 'mod-4' },
+ { id: 'flankTransition', en: 'Wing Overload / Counter', it: 'Fasce / Transizione Rapida', cn: '两翼突击 / 快速转换', lesson: 'mod-4' }
+ ];
+
+ const COACH_SCENARIO_PRESETS = [
+ {
+ id: 'torino-u17',
+ labelEn: 'Torino U17 Derby', labelIt: 'Derby Torino U17', labelCn: '都灵 U17 德比',
+ myTeam: { name: 'Torino Youth U17', code: 'TYU', c1: '#881337', c2: '#F8FAFC', emblemShape: 'shield', form: '4-3-3', archetype: 'possession', homeGF: 1.85, homeGA: 0.95, awayGF: 1.55, awayGA: 1.15, stamina: 96 },
+ oppTeam: { name: 'Zebras Academy U17', code: 'ZAU', c1: '#F8FAFC', c2: '#09090B', emblemShape: 'stripes', form: '3-5-2', archetype: 'lowBlock', homeGF: 1.92, homeGA: 0.78, awayGF: 1.52, awayGA: 0.96, stamina: 95 },
+ venue: 'home', envPreset: 'figc', homeAvg: 1.56, awayAvg: 1.24, rho: -0.08
+ },
+ {
+ id: 'break-lowblock',
+ labelEn: 'Break 5-3-2 Block', labelIt: 'Scardina 5-3-2', labelCn: '破 5-3-2 铁桶',
+ myTeam: { name: 'Piemonte Lab FC', code: 'PLB', c1: '#10B981', c2: '#0F172A', emblemShape: 'star', form: '4-3-3', archetype: 'flankTransition', homeGF: 2.15, homeGA: 1.05, awayGF: 1.80, awayGA: 1.20, stamina: 98 },
+ oppTeam: { name: 'Catenaccio Shield', code: 'CSH', c1: '#1E3A8A', c2: '#F5B82E', emblemShape: 'shield', form: '5-3-2', archetype: 'lowBlock', homeGF: 1.25, homeGA: 0.72, awayGF: 0.98, awayGA: 0.88, stamina: 94 },
+ venue: 'home', envPreset: 'cup', homeAvg: 1.35, awayAvg: 1.10, rho: -0.10
+ },
+ {
+ id: 'high-press-clash',
+ labelEn: 'Press vs Possession', labelIt: 'Pressing vs Possesso', labelCn: '高位逼抢 vs 传控',
+ myTeam: { name: 'Coverciano XI', code: 'COV', c1: '#2563EB', c2: '#F8FAFC', emblemShape: 'crown', form: '4-2-3-1', archetype: 'highPress', homeGF: 2.25, homeGA: 1.18, awayGF: 1.90, awayGA: 1.30, stamina: 95 },
+ oppTeam: { name: 'Condal Youth U19', code: 'CYU', c1: '#DC2626', c2: '#1D4ED8', emblemShape: 'stripes', form: '3-2-4-1', archetype: 'possession', homeGF: 2.35, homeGA: 1.02, awayGF: 2.05, awayGA: 1.18, stamina: 96 },
+ venue: 'neutral', envPreset: 'youth', homeAvg: 1.95, awayAvg: 1.65, rho: -0.06
+ }
+ ];
+
+ function switchCoachSubTab(subTab) {
+ state.coachSubTab = subTab;
+ renderCoachTab();
+ }
+
+ function applyCoachScenarioPreset(presetId) {
+ const p = COACH_SCENARIO_PRESETS.find(x => x.id === presetId);
+ if (!p) return;
+ state.coach.myTeam = { ...p.myTeam };
+ state.coach.oppTeam = { ...p.oppTeam };
+ state.coach.venue = p.venue;
+ state.coach.envPreset = p.envPreset;
+ state.coach.homeAvg = p.homeAvg;
+ state.coach.awayAvg = p.awayAvg;
+ state.coach.rho = p.rho;
+ state.coachMcResult = null;
+ renderAll();
+ showToast(tr(
+ `Loaded scenario: ${p.labelEn}`,
+ `已载入战术场景：${p.labelCn}`,
+ `Scenario caricato: ${p.labelIt}`
+ ));
+ }
+
+ function updateCoachTeamField(teamKey, field, rawVal) {
+ const team = state.coach[teamKey];
+ if (!team) return;
+ if (field === 'code') {
+ team.code = (String(rawVal || 'CLB').trim().toUpperCase().slice(0, 3)) || 'CLB';
+ } else if (field === 'name') {
+ team.name = String(rawVal || '').slice(0, 24) || 'Custom Squad';
+ } else if (['homeGF', 'homeGA', 'awayGF', 'awayGA'].includes(field)) {
+ const v = Math.max(0.35, Math.min(3.80, parseFloat(rawVal) || 1.20));
+ team[field] = Number(v.toFixed(2));
+ // Keep away/home paired proportionally if editing single attack/defense slider
+ if (field === 'homeGF') team.awayGF = Number(Math.max(0.35, v * 0.86).toFixed(2));
+ if (field === 'homeGA') team.awayGA = Number(Math.min(3.80, v * 1.12).toFixed(2));
+ } else if (field === 'stamina') {
+ team.stamina = Math.max(65, Math.min(100, parseInt(rawVal, 10) || 95));
+ } else {
+ team[field] = rawVal;
+ }
+ state.coachMcResult = null;
+ renderCoachLiveForecast();
+ saveState();
+ }
+
+ function updateCoachContextField(field, rawVal) {
+ if (field === 'envPreset' && COACH_ENV_PRESETS[rawVal]) {
+ state.coach.envPreset = rawVal;
+ state.coach.homeAvg = COACH_ENV_PRESETS[rawVal].homeAvg;
+ state.coach.awayAvg = COACH_ENV_PRESETS[rawVal].awayAvg;
+ } else if (field === 'homeAvg' || field === 'awayAvg') {
+ state.coach.envPreset = 'custom';
+ state.coach[field] = Number(Math.max(0.80, Math.min(3.00, parseFloat(rawVal) || 1.50)).toFixed(2));
+ } else if (field === 'rho') {
+ state.coach.rho = Number(Math.max(-0.15, Math.min(0.00, parseFloat(rawVal) || -0.08)).toFixed(2));
+ } else {
+ state.coach[field] = rawVal;
+ }
+ state.coachMcResult = null;
+ renderCoachTab();
+ saveState();
+ }
+
+ function formatCoachTeamForEngine(rawTeam) {
+ const archObj = COACH_ARCHETYPE_OPTIONS.find(a => a.id === rawTeam.archetype) || COACH_ARCHETYPE_OPTIONS[0];
+ return {
+ ...rawTeam,
+ styleEn: archObj.en,
+ styleIt: archObj.it,
+ styleCn: archObj.cn,
+ counterLesson: archObj.lesson
+ };
+ }
+
+ function buildCoachMatchBundle() {
+ const c = state.coach;
+ const myEng = formatCoachTeamForEngine(c.myTeam);
+ const oppEng = formatCoachTeamForEngine(c.oppTeam);
+ const myIsHome = c.venue !== 'away';
+
+ // Neutral venue equalizes league baseline averages
+ const hAvg = c.venue === 'neutral' ? Number(((c.homeAvg + c.awayAvg) / 2).toFixed(2)) : c.homeAvg;
+ const aAvg = c.venue === 'neutral' ? hAvg : c.awayAvg;
+
+ // For away venue, swap home/away slots so home advantage naturally belongs to opponent
+ const homeTeam = myIsHome ? myEng : oppEng;
+ const awayTeam = myIsHome ? oppEng : myEng;
+ const bestCmd = getBestCounterCommand(oppEng);
+
+ const fixture = {
+ id: 'coach-custom-match',
+ league: 'calcio',
+ home: homeTeam,
+ away: awayTeam,
+ bonusCmds: [bestCmd, 'superSub'],
+ bonusLabelEn: `${getTacticLabel(bestCmd)} / Super Sub`,
+ bonusLabelIt: `${getTacticLabel(bestCmd)} / Cambio Decisivo`,
+ bonusLabelCn: `${getTacticLabel(bestCmd)} / 奇兵换人`,
+ customOptions: {
+ homeAvg: hAvg,
+ awayAvg: aAvg,
+ rho: c.rho
+ },
+ initStaminaUser: c.myTeam.stamina || 96,
+ initStaminaOpp: c.oppTeam.stamina || 94,
+ openingTactic: c.openingTactic || 'balanced'
+ };
+
+ return {
+ fixture,
+ options: fixture.customOptions,
+ userSide: myIsHome ? 'H' : 'A',
+ myEng,
+ oppEng
+ };
+ }
+
+ function launchCoachSimulation(overrideTactic) {
+ const bundle = buildCoachMatchBundle();
+ if (overrideTactic && ['balanced', 'highPress', 'catenaccio', 'wingOverload'].includes(overrideTactic)) {
+ bundle.fixture.openingTactic = overrideTactic;
+ }
+ launchSandboxWithMatch(bundle.fixture, bundle.userSide, 'coach');
+ }
+
+ function runCoachMonteCarlo() {
+ const { fixture, options, userSide, oppEng } = buildCoachMatchBundle();
+ const baseModel = computePoissonMatchModel(fixture.home, fixture.away, fixture.league, options);
+ const userBaseLam = userSide === 'H' ? baseModel.lambdaH : baseModel.lambdaA;
+ const oppBaseLam = userSide === 'H' ? baseModel.lambdaA : baseModel.lambdaH;
+ const initStamU = fixture.initStaminaUser || 96;
+ const initStamO = fixture.initStaminaOpp || 94;
+
+ const tactics = ['balanced', 'highPress', 'catenaccio', 'wingOverload'];
+ const N = 1000;
+ const MEAN_SHOT_XG = 0.24;
+ const results = [];
+
+ tactics.forEach(tac => {
+ const mods = evaluateTacticalModifiers(tac, oppEng);
+ let wins = 0, draws = 0, losses = 0, totGF = 0, totGA = 0;
+
+ for (let i = 0; i < N; i++) {
+ let sU = initStamU, sO = initStamO, gU = 0, gO = 0;
+ // Apply coach's selected tactical plan across 3 tactical windows (~42 mins active)
+ for (let m = 1; m <= 90; m++) {
+ const activeWin = tac !== 'balanced' && ((m >= 15 && m <= 28) || (m >= 46 && m <= 59) || (m >= 72 && m <= 85));
+ const pressDrain = (activeWin && tac === 'highPress') ? 0.16 : 0;
+ sU = Math.max(42, sU - (0.28 + pressDrain));
+ sO = Math.max(44, sO - 0.29);
+
+ let multU = 0.78 + 0.22 * (sU / 100);
+ let multO = 0.78 + 0.22 * (sO / 100);
+ if (activeWin) {
+ multU *= mods.userMult;
+ multO *= mods.oppMult;
+ }
+ const rU = (userBaseLam / 90) * multU;
+ const rO = (oppBaseLam / 90) * multO;
+
+ if (Math.random() < Math.min(0.35, rU / MEAN_SHOT_XG)) {
+ const xg = 0.08 + Math.random() * 0.32;
+ if (Math.random() < xg) gU += 1;
+ }
+ if (Math.random() < Math.min(0.35, rO / MEAN_SHOT_XG)) {
+ const xg = 0.08 + Math.random() * 0.32;
+ if (Math.random() < xg) gO += 1;
+ }
+ }
+ totGF += gU;
+ totGA += gO;
+ if (gU > gO) wins += 1;
+ else if (gU === gO) draws += 1;
+ else losses += 1;
+ }
+
+ results.push({
+ tactic: tac,
+ isCounter: mods.isCounter,
+ winPct: (wins / N) * 100,
+ drawPct: (draws / N) * 100,
+ lossPct: (losses / N) * 100,
+ avgGF: totGF / N,
+ avgGA: totGA / N
+ });
+ });
+
+ results.sort((a, b) => b.winPct - a.winPct);
+ state.coachMcResult = {
+ bestTactic: results[0].tactic,
+ runsPerTactic: N,
+ rows: results
+ };
+ renderCoachMonteCarloResults();
+ showToast(tr(
+ '4,000 Monte Carlo matches simulated (1,000× per tactic)!',
+ '已完成 4,000 场蒙特卡洛战术对比模拟（每套方案 1,000 场）！',
+ '4.000 gare Monte Carlo simulate (1.000× per tattica)!'
+ ));
+ }
+
+ function renderCoachMonteCarloResults() {
+ const el = document.getElementById('coach-mc-results');
+ if (!el) return;
+ if (!state.coachMcResult) {
+ el.classList.add('hidden');
+ return;
+ }
+ el.classList.remove('hidden');
+ const mc = state.coachMcResult;
+ el.innerHTML = `
+ <div class="flex items-center justify-between gap-2">
+ <div>
+ <span class="text-[9.5px] font-mono uppercase tracking-wider text-cyanai">${tr('Empirical Sensitivity Analysis', '蒙特卡洛战术敏感度实证对比', 'Analisi Empirica di Sensibilità')}</span>
+ <h3 class="text-xs font-extrabold text-white">${tr('1,000× Monte Carlo per Tactical Plan', '四套战术方案 1,000 场蒙特卡洛胜率榜', 'Monte Carlo 1.000× per Piano Tattico')}</h3>
+ </div>
+ <span class="px-2 py-0.5 rounded bg-emeraldai/20 text-emeraldai font-mono text-[9px] font-extrabold shrink-0">★ ${getTacticLabel(mc.bestTactic)}</span>
+ </div>
+ <div class="overflow-x-auto">
+ <table class="w-full text-left border-collapse font-mono text-[10px]">
+ <thead>
+ <tr class="border-b border-borderdim text-slate-400">
+ <th class="py-1.5 pr-1">${tr('Tactic', '战术方案', 'Tattica')}</th>
+ <th class="py-1.5 text-center text-emeraldai">${tr('Win%', '胜率', 'V%')}</th>
+ <th class="py-1.5 text-center">${tr('Draw%', '平率', 'N%')}</th>
+ <th class="py-1.5 text-center text-coralai">${tr('Loss%', '负率', 'P%')}</th>
+ <th class="py-1.5 text-right text-gold">${tr('Avg Score', '场均比分', 'Media Gol')}</th>
+ </tr>
+ </thead>
+ <tbody class="divide-y divide-borderdim/40">
+ ${mc.rows.map((r, idx) => `
+ <tr class="${idx === 0 ? 'bg-emeraldai/10 text-white font-bold' : 'text-slate-300'}">
+ <td class="py-1.5 pr-1">
+ ${getTacticLabel(r.tactic)}
+ ${r.isCounter ? `<span class="ml-1 px-1 rounded bg-gold text-appbg text-[8px] font-extrabold">${tr('CTR', '克制', 'CTR')}</span>` : ''}
+ </td>
+ <td class="py-1.5 text-center text-emeraldai font-extrabold">${r.winPct.toFixed(1)}%</td>
+ <td class="py-1.5 text-center">${r.drawPct.toFixed(1)}%</td>
+ <td class="py-1.5 text-center text-coralai">${r.lossPct.toFixed(1)}%</td>
+ <td class="py-1.5 text-right text-gold">${r.avgGF.toFixed(2)} - ${r.avgGA.toFixed(2)}</td>
+ </tr>
+ `).join('')}
+ </tbody>
+ </table>
+ </div>
+ <button onclick="launchCoachSimulation('${mc.bestTactic}')" class="w-full py-2 rounded-xl bg-emeraldai/20 hover:bg-emeraldai/30 border border-emeraldai/40 text-emeraldai font-extrabold text-[11px] transition active:scale-95">
+ 🚀 ${tr(`Test Optimal Plan (${getTacticLabel(mc.bestTactic)}) in 2D Pitch`, `使用最优方案（${getTacticLabel(mc.bestTactic)}）进入 2D 球场验证`, `Testa il Piano Ottimale (${getTacticLabel(mc.bestTactic)}) sul Campo 2D`)}
+ </button>
+ `;
+ }
+
+ function saveCurrentCoachProfile() {
+ const opp = state.coach.oppTeam;
+ const newProfile = {
+ id: `scout-${Date.now()}`,
+ label: `${opp.name} (${opp.form})`,
+ oppTeam: { ...opp }
+ };
+ state.coachSavedProfiles.unshift(newProfile);
+ if (state.coachSavedProfiles.length > 6) state.coachSavedProfiles.pop();
+ renderAll();
+ showToast(tr(
+ `Saved scouting profile: ${newProfile.label}`,
+ `已保存对手球探档案：${newProfile.label}`,
+ `Profilo scouting salvato: ${newProfile.label}`
+ ));
+ }
+
+ function loadCoachProfile(profileId) {
+ const prof = state.coachSavedProfiles.find(p => p.id === profileId);
+ if (!prof) return;
+ state.coach.oppTeam = { ...prof.oppTeam };
+ state.coachMcResult = null;
+ renderAll();
+ showToast(tr(
+ `Loaded opponent: ${prof.label}`,
+ `已加载对手球探档案：${prof.label}`,
+ `Avversario caricato: ${prof.label}`
+ ));
+ }
+
+ function deleteCoachProfile(profileId) {
+ state.coachSavedProfiles = state.coachSavedProfiles.filter(p => p.id !== profileId);
+ renderAll();
+ }
+
+ function openCoachTacticalBriefModal() {
+ const { fixture, options, userSide, myEng, oppEng } = buildCoachMatchBundle();
+ const model = computePoissonMatchModel(fixture.home, fixture.away, fixture.league, options);
+ const bestCmd = getBestCounterCommand(oppEng);
+ const bestMods = evaluateTacticalModifiers(bestCmd, oppEng);
+ const myWin = userSide === 'H' ? model.exactProbs[0] : model.exactProbs[2];
+ const drawP = model.exactProbs[1];
+ const oppWin = userSide === 'H' ? model.exactProbs[2] : model.exactProbs[0];
+ const myLam = userSide === 'H' ? model.lambdaH : model.lambdaA;
+ const oppLam = userSide === 'H' ? model.lambdaA : model.lambdaH;
+
+ document.getElementById('cb-eyebrow').textContent = tr(
+ 'TACTICA.SIM Coach Studio • Pre-Match Quantitative Brief',
+ 'TACTICA.SIM 教练工作室 • 赛前定量战术备战简报',
+ 'TACTICA.SIM Studio Allenatore • Report Quantitativo Pre-Gara'
+ );
+ document.getElementById('cb-title').textContent = `${myEng.code} vs ${oppEng.code} • ${tr('Match-Prep Brief', '赛前战术简报', 'Report Pre-Gara')}`;
+ document.getElementById('cb-btn-copy').textContent = tr('📋 Copy Brief', '📋 复制战术简报', '📋 Copia Report');
+ document.getElementById('cb-btn-close').textContent = tr('Close', '关闭', 'Chiudi');
+
+ const note = state.lang === 'it' ? bestMods.noteIt : state.lang === 'cn' ? bestMods.noteCn : bestMods.noteEn;
+ const briefText = tr(
+ `=== TACTICA.SIM MATCH-PREP BRIEF ===
+Matchup: ${myEng.name} (${myEng.form} ${myEng.styleEn}) vs ${oppEng.name} (${oppEng.form} ${oppEng.styleEn})
+Model: Dixon-Coles Correlated Double-Poisson (ρ = ${options.rho.toFixed(2)}, Avg ${options.homeAvg}/${options.awayAvg})
+Expected Goals (λ): ${myEng.code} ${myLam.toFixed(2)} — ${oppLam.toFixed(2)} ${oppEng.code}
+Outcome Split: Win ${myWin.toFixed(1)}% | Draw ${drawP.toFixed(1)}% | Loss ${oppWin.toFixed(1)}%
+Most Likely Score (Modal): ${model.modalScore.h}-${model.modalScore.a} (${(model.modalScore.prob * 100).toFixed(1)}%)
+Recommended Counter-Tactic: ${getTacticLabel(bestCmd)}
+Diagnosis: ${note}`,
+ `=== TACTICA.SIM 赛前定量战术简报 ===
+对阵双方：${myEng.name}（${myEng.form} ${myEng.styleCn}） vs ${oppEng.name}（${oppEng.form} ${oppEng.styleCn}）
+底层模型：Dixon-Coles 相关性修正双泊松（ρ = ${options.rho.toFixed(2)}，环境均值 ${options.homeAvg}/${options.awayAvg}）
+期望进球（λ）：${myEng.code} ${myLam.toFixed(2)} — ${oppLam.toFixed(2)} ${oppEng.code}
+胜平负分布：我方胜 ${myWin.toFixed(1)}% | 平局 ${drawP.toFixed(1)}% | 对手胜 ${oppWin.toFixed(1)}%
+众数比分：${model.modalScore.h}-${model.modalScore.a}（${(model.modalScore.prob * 100).toFixed(1)}%）
+推荐临场克制战术：${getTacticLabel(bestCmd)}
+诊断建议：${note}`,
+ `=== TACTICA.SIM REPORT TATTICO PRE-GARA ===
+Sfida: ${myEng.name} (${myEng.form} ${myEng.styleIt}) vs ${oppEng.name} (${oppEng.form} ${oppEng.styleIt})
+Modello: Doppio Poisson con Correzione Dixon-Coles (ρ = ${options.rho.toFixed(2)}, Media ${options.homeAvg}/${options.awayAvg})
+Gol Attesi (λ): ${myEng.code} ${myLam.toFixed(2)} — ${oppLam.toFixed(2)} ${oppEng.code}
+Probabilità: Vittoria ${myWin.toFixed(1)}% | Pareggio ${drawP.toFixed(1)}% | Sconfitta ${oppWin.toFixed(1)}%
+Risultato Moda: ${model.modalScore.h}-${model.modalScore.a} (${(model.modalScore.prob * 100).toFixed(1)}%)
+Contromisura Consigliata: ${getTacticLabel(bestCmd)}
+Diagnosi Tattica: ${note}`
+ );
+
+ document.getElementById('cb-content').textContent = briefText;
+ openModal('modal-coach-brief');
+ }
+
+ function copyCoachBriefToClipboard() {
+ const txt = document.getElementById('cb-content').textContent;
+ if (navigator.clipboard && navigator.clipboard.writeText) {
+ navigator.clipboard.writeText(txt).then(() => {
+ showToast(tr('Tactical brief copied to clipboard!', '战术简报已复制到剪贴板！', 'Report tattico copiato negli appunti!'));
+ }).catch(() => {
+ showToast(tr('Select text above to copy.', '请选中上方文本手动复制。', 'Seleziona il testo sopra per copiare.'));
+ });
+ } else {
+ showToast(tr('Select text above to copy.', '请选中上方文本手动复制。', 'Seleziona il testo sopra per copiare.'));
+ }
+ }
+
+ function renderCoachLiveForecast() {
+ const container = document.getElementById('coach-live-forecast');
+ if (!container) return;
+ const { fixture, options, userSide, myEng, oppEng } = buildCoachMatchBundle();
+ const baseModel = computePoissonMatchModel(fixture.home, fixture.away, fixture.league, options);
+ const openTac = state.coach.openingTactic || 'balanced';
+ const mods = evaluateTacticalModifiers(openTac, oppEng);
+ const effU = 1 + (mods.userMult - 1) * 0.55;
+ const effO = 1 + (mods.oppMult - 1) * 0.55;
+ const model = computePoissonMatchModel(fixture.home, fixture.away, fixture.league, {
+ ...options,
+ lambdaHMult: userSide === 'H' ? effU : effO,
+ lambdaAMult: userSide === 'H' ? effO : effU
+ });
+
+ const myWin = userSide === 'H' ? model.exactProbs[0] : model.exactProbs[2];
+ const drawP = model.exactProbs[1];
+ const oppWin = userSide === 'H' ? model.exactProbs[2] : model.exactProbs[0];
+ const myLam = userSide === 'H' ? model.lambdaH : model.lambdaA;
+ const oppLam = userSide === 'H' ? model.lambdaA : model.lambdaH;
+ const bestCmd = getBestCounterCommand(oppEng);
+ const bestMods = evaluateTacticalModifiers(bestCmd, oppEng);
+
+ container.innerHTML = `
+ <div class="flex items-center justify-between gap-2">
+ <span class="text-[10px] font-mono uppercase tracking-wider text-gold font-bold">
+ 📈 ${tr('Live Dixon-Coles Forecast', '实时 Dixon-Coles 双泊松预测', 'Previsione Live Dixon-Coles')}
+ </span>
+ <button onclick="openCustomCoachMatrixModal()" class="px-2 py-0.5 rounded-lg bg-appbg hover:bg-[#1E293B] border border-cyanai/40 font-mono text-[10px] font-bold text-cyanai transition active:scale-95">
+ ∑ ${tr('11×11 What-If', '11×11 矩阵推演', 'Matrice What-If')}
+ </button>
+ </div>
+
+ <div class="flex items-center justify-between gap-2 bg-appbg/90 border border-borderdim rounded-2xl p-2.5">
+ <div class="flex items-center gap-2 flex-1 min-w-0">
+ ${renderClubCrestSVG(myEng, 'w-8 h-8 shrink-0')}
+ <div class="min-w-0">
+ <div class="text-xs font-extrabold text-emeraldai truncate">${myEng.code} <span class="text-[9px] font-mono text-slate-400">(${myEng.form})</span></div>
+ <div class="text-[10px] text-slate-300 truncate">${myEng.name}</div>
+ </div>
+ </div>
+ <div class="text-center px-1.5 shrink-0 font-mono">
+ <div class="text-[10px] font-extrabold text-white">λ ${myLam.toFixed(2)} : ${oppLam.toFixed(2)}</div>
+ <div class="text-[9px] text-gold">${tr('Modal', '众数', 'Moda')} ${model.modalScore.h}-${model.modalScore.a}</div>
+ </div>
+ <div class="flex items-center justify-end gap-2 flex-1 min-w-0 text-right">
+ <div class="min-w-0">
+ <div class="text-xs font-extrabold text-cyanai truncate">${oppEng.code} <span class="text-[9px] font-mono text-slate-400">(${oppEng.form})</span></div>
+ <div class="text-[10px] text-slate-300 truncate">${oppEng.name}</div>
+ </div>
+ ${renderClubCrestSVG(oppEng, 'w-8 h-8 shrink-0')}
+ </div>
+ </div>
+
+ <div>
+ <div class="flex justify-between font-mono text-[10px] mb-1">
+ <span class="text-emeraldai font-bold">${myEng.code} ${myWin.toFixed(1)}%</span>
+ <span class="text-slate-400">${tr('DRAW', '平局', 'PARI')} ${drawP.toFixed(1)}%</span>
+ <span class="text-cyanai font-bold">${oppEng.code} ${oppWin.toFixed(1)}%</span>
+ </div>
+ <div class="w-full h-2 rounded-full bg-slate-800 overflow-hidden flex">
+ <div class="bg-emeraldai transition-all duration-300" style="width: ${myWin.toFixed(1)}%"></div>
+ <div class="bg-slate-500 transition-all duration-300" style="width: ${drawP.toFixed(1)}%"></div>
+ <div class="bg-cyanai transition-all duration-300" style="width: ${oppWin.toFixed(1)}%"></div>
+ </div>
+ </div>
+
+ <div class="p-2 rounded-xl bg-emeraldai/10 border border-emeraldai/30 text-[10.5px] leading-snug">
+ <div class="flex items-center justify-between gap-1 mb-0.5">
+ <span class="font-extrabold text-emeraldai">🎯 ${tr('Recommended Counter', 'AI 战术克制建议', 'Contromisura Consigliata')}: ${getTacticLabel(bestCmd)}</span>
+ <button onclick="jumpToAcademyLesson('${bestMods.recLessonId}')" class="font-mono text-[9px] text-gold underline shrink-0">${tr('Lesson →', '微课 →', 'Lezione →')}</button>
+ </div>
+ <div class="text-slate-200">${state.lang === 'it' ? bestMods.noteIt : state.lang === 'cn' ? bestMods.noteCn : bestMods.noteEn}</div>
+ </div>
+ `;
+ }
+
+ function renderCoachTab() {
+ const c = state.coach;
+ const pillEl = document.getElementById('coach-studio-pill');
+ if (pillEl) pillEl.textContent = tr('COACH STUDIO', '教练工作室', 'STUDIO ALLENATORE');
+ const tagEl = document.getElementById('coach-studio-tag');
+ if (tagEl) tagEl.textContent = tr('Custom Match Lab', '自定义推演实验室', 'Laboratorio Tattico');
+ document.getElementById('coach-studio-title').textContent = tr('Coach Tactical Workbench', '教练战术备战工作台', 'Area Tattica Allenatore');
+ document.getElementById('coach-studio-sub').textContent = tr(
+ 'Input your squad & opponent metrics, formations, and styles for Dixon-Coles modeling, Monte Carlo testing & 2D pitch simulation.',
+ '自由录入本队与对手的攻防数据、阵型及战术风格，一键执行 Dixon-Coles 建模、千场蒙特卡洛验证与 2D 推演。',
+ 'Inserisci dati, moduli e stili della tua squadra e dell\'avversario per analisi Dixon-Coles, simulazioni Monte Carlo e lavagna 2D.'
+ );
+ document.getElementById('coach-presets-label').textContent = tr('Quick Scenarios:', '快速战术模板：', 'Scenari Rapidi:');
+
+ document.getElementById('coach-presets-bar').innerHTML = COACH_SCENARIO_PRESETS.map(p => `
+ <button onclick="applyCoachScenarioPreset('${p.id}')" class="px-2.5 py-1 rounded-xl bg-appbg hover:bg-cardhover border border-cyanai/35 text-[10px] font-bold text-slate-200 shrink-0 transition active:scale-95">
+ ⚡ ${pickLang(p, 'label')}
+ </button>
+ `).join('');
+
+ const subTabs = {
+ my: { el: document.getElementById('coach-subtab-my'), label: tr('🛡️ My Squad', '🛡️ 我方球队', '🛡️ Mia Squadra'), activeCls: 'bg-emeraldai text-appbg shadow' },
+ opp: { el: document.getElementById('coach-subtab-opp'), label: tr('⚔️ Opponent', '⚔️ 对手球队', '⚔️ Avversario'), activeCls: 'bg-cyanai text-appbg shadow' },
+ ctx: { el: document.getElementById('coach-subtab-ctx'), label: tr('⚙️ Engine', '⚙️ 环境参数', '⚙️ Parametri'), activeCls: 'bg-gold text-appbg shadow' }
+ };
+ Object.entries(subTabs).forEach(([k, cfg]) => {
+ if (!cfg.el) return;
+ cfg.el.textContent = cfg.label;
+ cfg.el.className = state.coachSubTab === k
+ ? `py-1.5 px-1 rounded-lg font-extrabold text-[11px] transition ${cfg.activeCls}`
+ : 'py-1.5 px-1 rounded-lg font-bold text-[11px] transition text-slate-400 hover:text-white';
+ });
+
+ const editor = document.getElementById('coach-editor-body');
+ const allFormations = Object.keys(FORMATION_TEMPLATES);
+
+ if (state.coachSubTab === 'my' || state.coachSubTab === 'opp') {
+ const teamKey = state.coachSubTab === 'my' ? 'myTeam' : 'oppTeam';
+ const tm = c[teamKey];
+ const accent = teamKey === 'myTeam' ? 'text-emeraldai' : 'text-cyanai';
+
+ editor.innerHTML = `
+ <div class="grid grid-cols-3 gap-2">
+ <div class="col-span-2">
+ <label class="block text-[10px] font-mono text-slate-400 mb-1">${tr('Team Name', '球队名称', 'Nome Squadra')}</label>
+ <input type="text" maxlength="24" value="${tm.name}" oninput="updateCoachTeamField('${teamKey}', 'name', this.value)" class="w-full px-2.5 py-1.5 rounded-xl bg-appbg border border-borderdim text-xs font-bold text-white focus:outline-none focus:border-cyanai" />
+ </div>
+ <div>
+ <label class="block text-[10px] font-mono text-slate-400 mb-1">${tr('Code', '简码', 'Sigla')}</label>
+ <input type="text" maxlength="3" value="${tm.code}" oninput="updateCoachTeamField('${teamKey}', 'code', this.value)" class="w-full px-2.5 py-1.5 rounded-xl bg-appbg border border-borderdim text-xs font-mono font-extrabold uppercase ${accent} focus:outline-none focus:border-cyanai" />
+ </div>
+ </div>
+
+ <div class="grid grid-cols-2 gap-2">
+ <div>
+ <label class="block text-[10px] font-mono text-slate-400 mb-1">${tr('Formation (2D Pitch)', '阵型（同步 2D 站位）', 'Modulo (Campo 2D)')}</label>
+ <select onchange="updateCoachTeamField('${teamKey}', 'form', this.value)" class="w-full px-2 py-1.5 rounded-xl bg-appbg border border-borderdim text-xs font-mono font-bold text-white focus:outline-none focus:border-cyanai">
+ ${allFormations.map(f => `<option value="${f}" ${tm.form === f ? 'selected' : ''}>${f}</option>`).join('')}
+ </select>
+ </div>
+ <div>
+ <label class="block text-[10px] font-mono text-slate-400 mb-1">${tr('Tactical Style', '战术风格画像', 'Stile Tattico')}</label>
+ <select onchange="updateCoachTeamField('${teamKey}', 'archetype', this.value)" class="w-full px-2 py-1.5 rounded-xl bg-appbg border border-borderdim text-[11px] font-bold text-white focus:outline-none focus:border-cyanai">
+ ${COACH_ARCHETYPE_OPTIONS.map(opt => `<option value="${opt.id}" ${tm.archetype === opt.id ? 'selected' : ''}>${state.lang === 'it' ? opt.it : state.lang === 'cn' ? opt.cn : opt.en}</option>`).join('')}
+ </select>
+ </div>
+ </div>
+
+ <div class="space-y-2 bg-appbg/80 border border-borderdim rounded-xl p-2.5">
+ <div>
+ <div class="flex justify-between text-[10px] font-mono mb-0.5">
+ <span class="text-slate-300">${tr('Attack Rate (Goals Scored / Match)', '场均进攻火力 (GF/场)', 'Media Gol Fatti (GF/Gara)')}</span>
+ <span id="coach-val-gf-${teamKey}" class="font-extrabold text-emeraldai">${tm.homeGF.toFixed(2)}</span>
+ </div>
+ <input type="range" min="0.40" max="3.40" step="0.05" value="${tm.homeGF}" oninput="document.getElementById('coach-val-gf-${teamKey}').textContent=parseFloat(this.value).toFixed(2); updateCoachTeamField('${teamKey}', 'homeGF', this.value)" class="w-full accent-emerald-400 h-1.5 bg-slate-700 rounded-lg cursor-pointer" />
+ </div>
+
+ <div>
+ <div class="flex justify-between text-[10px] font-mono mb-0.5">
+ <span class="text-slate-300">${tr('Defense Conceded (Goals Against / Match)', '场均失球数 (GA/场)', 'Media Gol Subiti (GA/Gara)')}</span>
+ <span id="coach-val-ga-${teamKey}" class="font-extrabold text-coralai">${tm.homeGA.toFixed(2)}</span>
+ </div>
+ <input type="range" min="0.40" max="3.00" step="0.05" value="${tm.homeGA}" oninput="document.getElementById('coach-val-ga-${teamKey}').textContent=parseFloat(this.value).toFixed(2); updateCoachTeamField('${teamKey}', 'homeGA', this.value)" class="w-full accent-rose-400 h-1.5 bg-slate-700 rounded-lg cursor-pointer" />
+ </div>
+
+ <div>
+ <div class="flex justify-between text-[10px] font-mono mb-0.5">
+ <span class="text-slate-300">${tr('Squad Starting Fitness / Stamina', '首发体能储备状态', 'Condizione Atletica Iniziale')}</span>
+ <span id="coach-val-st-${teamKey}" class="font-extrabold text-gold">${tm.stamina}%</span>
+ </div>
+ <input type="range" min="70" max="100" step="1" value="${tm.stamina}" oninput="document.getElementById('coach-val-st-${teamKey}').textContent=this.value+'%'; updateCoachTeamField('${teamKey}', 'stamina', this.value)" class="w-full accent-amber-400 h-1.5 bg-slate-700 rounded-lg cursor-pointer" />
+ </div>
+ </div>
+
+ <div class="flex items-center justify-between gap-2">
+ <span class="text-[10px] font-mono text-slate-400">${tr('Jersey Color:', '球衣主色：', 'Colore Maglia:')}</span>
+ <div class="flex items-center gap-1.5">
+ ${COLOR_SWATCHES.map(hex => `
+ <button onclick="updateCoachTeamField('${teamKey}', 'c1', '${hex}'); renderCoachTab()" class="w-5 h-5 rounded-full border ${tm.c1 === hex ? 'ring-2 ring-gold scale-110 border-white' : 'border-white/30'}" style="background:${hex}"></button>
+ `).join('')}
+ </div>
+ </div>
+ `;
+ } else {
+ editor.innerHTML = `
+ <div>
+ <label class="block text-[10px] font-mono text-slate-400 mb-1">${tr('Venue & Home Advantage', '主客场环境设置', 'Fattore Campo')}</label>
+ <div class="grid grid-cols-3 gap-1.5">
+ ${[
+ { id: 'home', label: tr('🏠 Home', '🏠 我方主场', '🏠 Casa') },
+ { id: 'neutral', label: tr('⚖️ Neutral', '⚖️ 中立场地', '⚖️ Neutro') },
+ { id: 'away', label: tr('✈️ Away', '✈️ 我方客场', '✈️ Trasferta') }
+ ].map(v => `
+ <button onclick="updateCoachContextField('venue', '${v.id}')" class="py-1.5 px-1 rounded-xl text-[10.5px] font-bold border transition ${
+ c.venue === v.id ? 'bg-golddim border-gold text-gold' : 'bg-appbg border-borderdim text-slate-300'
+ }">${v.label}</button>
+ `).join('')}
+ </div>
+ </div>
+
+ <div>
+ <label class="block text-[10px] font-mono text-slate-400 mb-1">${tr('Competition Goal Baseline', '赛事联赛基准进球环境', 'Media Gol Competizione')}</label>
+ <select onchange="updateCoachContextField('envPreset', this.value)" class="w-full px-2.5 py-1.5 rounded-xl bg-appbg border border-borderdim text-[11px] font-bold text-white focus:outline-none focus:border-gold">
+ ${Object.entries(COACH_ENV_PRESETS).map(([k, p]) => `<option value="${k}" ${c.envPreset === k ? 'selected' : ''}>${state.lang === 'it' ? p.it : state.lang === 'cn' ? p.cn : p.en}</option>`).join('')}
+ <option value="custom" ${c.envPreset === 'custom' ? 'selected' : ''}>${tr('Custom League Avg', '自定义均值', 'Personalizzata')}</option>
+ </select>
+ </div>
+
+ <div class="grid grid-cols-2 gap-2">
+ <div>
+ <label class="block text-[10px] font-mono text-slate-400 mb-1">${tr('League Home Avg', '联赛主场均进', 'Media Casa Lega')}</label>
+ <input type="number" step="0.02" min="0.80" max="3.00" value="${c.homeAvg}" onchange="updateCoachContextField('homeAvg', this.value)" class="w-full px-2.5 py-1.5 rounded-xl bg-appbg border border-borderdim text-xs font-mono font-bold text-emeraldai" />
+ </div>
+ <div>
+ <label class="block text-[10px] font-mono text-slate-400 mb-1">${tr('League Away Avg', '联赛客场均进', 'Media Ospiti Lega')}</label>
+ <input type="number" step="0.02" min="0.80" max="3.00" value="${c.awayAvg}" onchange="updateCoachContextField('awayAvg', this.value)" class="w-full px-2.5 py-1.5 rounded-xl bg-appbg border border-borderdim text-xs font-mono font-bold text-cyanai" />
+ </div>
+ </div>
+
+ <div class="bg-appbg/80 border border-borderdim rounded-xl p-2.5">
+ <div class="flex justify-between text-[10px] font-mono mb-0.5">
+ <span class="text-slate-300">${tr('Dixon-Coles Low-Score Correlation (ρ)', 'Dixon-Coles 低比分相关系数 (ρ)', 'Correlazione Dixon-Coles (ρ)')}</span>
+ <span class="font-extrabold text-gold">${c.rho.toFixed(2)}</span>
+ </div>
+ <input type="range" min="-0.15" max="0.00" step="0.01" value="${c.rho}" oninput="updateCoachContextField('rho', this.value)" class="w-full accent-amber-400 h-1.5 bg-slate-700 rounded-lg cursor-pointer" />
+ </div>
+
+ <div>
+ <label class="block text-[10px] font-mono text-slate-400 mb-1">${tr('Opening Tactical Instruction', '开局预设战术指令', 'Piano Tattico Iniziale')}</label>
+ <div class="grid grid-cols-2 gap-1.5">
+ ${['balanced', 'highPress', 'catenaccio', 'wingOverload'].map(tac => `
+ <button onclick="updateCoachContextField('openingTactic', '${tac}')" class="py-1.5 px-2 rounded-xl text-[10.5px] font-bold border transition ${
+ c.openingTactic === tac ? 'bg-cyanai/20 border-cyanai text-cyanai' : 'bg-appbg border-borderdim text-slate-300'
+ }">${getTacticLabel(tac)}</button>
+ `).join('')}
+ </div>
+ </div>
+ `;
+ }
+
+ document.getElementById('btn-coach-launch-sim').textContent = tr(
+ 'One-Click 2D Tactical Simulation',
+ '一键启动 2D 战术推演沙盘',
+ 'Avvia Simulazione Tattica 2D (1-Click)'
+ );
+ document.getElementById('btn-coach-mc').textContent = tr('Monte Carlo 1,000×', '1,000× 蒙特卡洛', 'Monte Carlo 1.000×');
+ document.getElementById('btn-coach-brief').textContent = tr('Pre-Match Brief', '生成战术简报', 'Report Pre-Gara');
+ document.getElementById('coach-profiles-eyebrow').textContent = tr('Scouting Repository', '对手球探档案库', 'Archivio Scouting');
+ document.getElementById('coach-profiles-heading').textContent = tr('Saved Opponent Profiles', '已保存的对手档案', 'Profili Avversari Salvati');
+ document.getElementById('btn-coach-save-profile').textContent = tr('💾 Save Profile', '💾 保存当前对手', '💾 Salva Profilo');
+
+ const profList = document.getElementById('coach-saved-profiles-list');
+ if (state.coachSavedProfiles.length === 0) {
+ profList.innerHTML = `<div class="text-[11px] text-slate-500 text-center py-2">${tr('No saved opponent profiles yet.', '暂无已保存的对手档案。', 'Nessun profilo salvato.')}</div>`;
+ } else {
+ profList.innerHTML = state.coachSavedProfiles.map(p => `
+ <div class="bg-appbg border border-borderdim rounded-xl px-2.5 py-2 flex items-center justify-between gap-2">
+ <div class="flex items-center gap-2 min-w-0">
+ ${renderClubCrestSVG(p.oppTeam, 'w-6 h-6 shrink-0')}
+ <div class="min-w-0">
+ <div class="text-[11px] font-bold text-white truncate">${p.label}</div>
+ <div class="text-[9.5px] font-mono text-slate-400">GF ${p.oppTeam.homeGF.toFixed(2)} | GA ${p.oppTeam.homeGA.toFixed(2)} • ${getArchetypeLabel(p.oppTeam.archetype)}</div>
+ </div>
+ </div>
+ <div class="flex items-center gap-1 shrink-0">
+ <button onclick="loadCoachProfile('${p.id}')" class="px-2 py-1 rounded-lg bg-cyanai/15 hover:bg-cyanai/25 border border-cyanai/40 text-cyanai font-mono text-[9.5px] font-bold">${tr('Load', '载入', 'Carica')}</button>
+ <button onclick="deleteCoachProfile('${p.id}')" class="px-1.5 py-1 rounded-lg bg-card border border-borderdim text-slate-400 hover:text-coralai text-[9.5px]">✕</button>
+ </div>
+ </div>
+ `).join('');
+ }
+
+ const footNote = document.getElementById('coach-footer-note');
+ if (footNote) {
+ footNote.innerHTML = `<span>📋 ${tr('Custom Match-Prep • Saved Locally', '自定义战术备战 • 本地自动保存', 'Preparazione Gara Personalizzata • Salvataggio Locale')}</span><span class="font-mono text-emeraldai shrink-0">Dixon-Coles</span>`;
+ }
+
+ renderCoachLiveForecast();
+ renderCoachMonteCarloResults();
+ }
+
+ // -----------------------------------------------------------------------
+ // 12. TAB 4: ACADEMY RENDERER & INTERACTIONS
  // -----------------------------------------------------------------------
  function claimDailyCheckIn() {
  if (state.checkedInToday) return;
@@ -3482,6 +4660,26 @@
  function renderClubDiyTab() {
  const t = I18N[state.lang];
 
+ const clubObj = getUserClubTeamObject();
+ const meCrest = document.getElementById('me-profile-crest');
+ if (meCrest) meCrest.innerHTML = renderClubCrestSVG(clubObj, 'w-10 h-10');
+ const meEye = document.getElementById('me-profile-eyebrow');
+ if (meEye) meEye.textContent = tr('Personal Profile • ME', '个人中心 • ME', 'Profilo Personale • ME');
+ const meLv = document.getElementById('me-profile-lv');
+ if (meLv) meLv.textContent = `Lv.${state.coachLevel}`;
+ const meName = document.getElementById('me-profile-name');
+ if (meName) meName.textContent = `${state.customClub.name} (${state.customClub.code})`;
+ const meStats = document.getElementById('me-profile-stats');
+ if (meStats) {
+ meStats.textContent = tr(
+ `${state.masteredModules.length}/${ACADEMY_MODULES.length} Academy • ${state.coachSavedProfiles.length} Scouting Profiles`,
+ `学院 ${state.masteredModules.length}/${ACADEMY_MODULES.length} • ${state.coachSavedProfiles.length} 份球探档案`,
+ `Accademia ${state.masteredModules.length}/${ACADEMY_MODULES.length} • ${state.coachSavedProfiles.length} Profili Scouting`
+ );
+ }
+ const meCoachBtn = document.getElementById('btn-me-to-coach');
+ if (meCoachBtn) meCoachBtn.textContent = tr('Coach →', '教练 →', 'Allenatore →');
+
  document.getElementById('vip-card-title').textContent = t.vipCardTitle;
  document.getElementById('vip-card-subtitle').textContent = t.vipCardSub;
  document.getElementById('vip-auto-adfree-badge').textContent = t.vipAutoAdFree;
@@ -3682,8 +4880,10 @@
  function launchSandboxWithMatch(m, chosenSide, sourceType) {
  const t = I18N[state.lang];
  const chosenTeam = chosenSide === 'H' ? m.home : m.away;
- const model = computePoissonMatchModel(m.home, m.away, m.league);
+ const oppTeam = chosenSide === 'H' ? m.away : m.home;
+ const model = computePoissonMatchModel(m.home, m.away, m.league, m.customOptions || {});
 
+ const startOpening = (m.openingTactic && m.openingTactic !== 'balanced') ? m.openingTactic : null;
  state.sim = {
  active: true,
  paused: false,
@@ -3701,13 +4901,14 @@
  probH: model.prob[0],
  probD: model.prob[1],
  probA: model.prob[2],
- staminaUser: 100,
- staminaOpp: 100,
+ staminaUser: m.initStaminaUser || 100,
+ staminaOpp: m.initStaminaOpp || 100,
  possTicksH: 50,
  possTicksA: 50,
- distinctCmds: new Set(),
- activeCommand: null,
- commandTimer: 0,
+ distinctCmds: startOpening ? new Set([startOpening]) : new Set(),
+ activeCommand: startOpening,
+ commandTimer: startOpening ? 14 : 0,
+ commandRemaining: startOpening ? 14 : 0,
  subUsed: false,
  scoutBonusClaimed: false,
  ball: { x: 0.5, y: 0.5, tx: 0.5, ty: 0.5, ownerTeam: chosenSide, flash: 0 },
@@ -3727,11 +4928,15 @@
  ? tr('FEATURED', '精选对阵', 'IN EVIDENZA')
  : sourceType === 'league'
  ? tr('MY LEAGUE', '自建联赛', 'LA MIA LEGA')
- : 'TOP LEAGUES';
+ : sourceType === 'coach'
+ ? tr('COACH', '教练模式', 'ALLENATORE')
+ : tr('TOP LEAGUES', '顶级联赛', 'GRANDI LEGHE');
 
  const lgObj = LEAGUES.find(l => l.id === m.league);
  document.getElementById('sim-league-tag').textContent = sourceType === 'league'
  ? pickLang(DIVISIONS[state.divisionIdx], 'name')
+ : sourceType === 'coach'
+ ? tr('COACH TACTICAL LAB', '教练战术推演', 'STUDIO ALLENATORE')
  : (lgObj ? pickLang(lgObj, 'name') : 'TACTICA ENGINE');
 
  document.getElementById('sim-home-crest').innerHTML = renderClubCrestSVG(m.home, "w-8 h-8");
@@ -3773,21 +4978,26 @@
  document.getElementById('pitch-event-banner').classList.add('hidden');
  document.getElementById('post-match-overlay').classList.add('hidden');
 
- document.querySelectorAll('.cmd-card').forEach(b => b.classList.remove('ring-2', 'ring-gold', 'opacity-45'));
+ document.querySelectorAll('.cmd-card').forEach(b => {
+ b.classList.remove('ring-2', 'ring-gold', 'opacity-45', 'cursor-not-allowed');
+ b.removeAttribute('aria-disabled');
+ });
 
+ const bestCounterCmd = getBestCounterCommand(oppTeam);
  const logEl = document.getElementById('sim-event-log');
  logEl.innerHTML = '';
  appendSimEvent(
  0,
- 'Poisson',
+ 'Dixon-Coles',
  tr(
- `Baseline λ_H = ${model.lambdaH.toFixed(2)}, λ_A = ${model.lambdaA.toFixed(2)}. Commanding ${chosenTeam.code} (${sideLabel})!`,
- `泊松基准期望进球 λ_H = ${model.lambdaH.toFixed(2)}, λ_A = ${model.lambdaA.toFixed(2)}。已接管 ${chosenTeam.code}（${sideLabel}）！`,
- `Parametri base λ_H = ${model.lambdaH.toFixed(2)}, λ_A = ${model.lambdaA.toFixed(2)}. Alla guida di ${chosenTeam.code} (${sideLabel})!`
+ `Baseline λ_H = ${model.lambdaH.toFixed(2)}, λ_A = ${model.lambdaA.toFixed(2)} (ρ=${model.rho.toFixed(2)}). Opp archetype: ${getArchetypeLabel(classifyTeamArchetype(oppTeam))} → Counter: ${getTacticLabel(bestCounterCmd)}.`,
+ `Dixon-Coles 双泊松基准 λ_H = ${model.lambdaH.toFixed(2)}, λ_A = ${model.lambdaA.toFixed(2)} (ρ=${model.rho.toFixed(2)})。对手风格：${getArchetypeLabel(classifyTeamArchetype(oppTeam))} → 推荐克制：${getTacticLabel(bestCounterCmd)}。`,
+ `Doppio Poisson Dixon-Coles λ_H = ${model.lambdaH.toFixed(2)}, λ_A = ${model.lambdaA.toFixed(2)} (ρ=${model.rho.toFixed(2)}). Avversario: ${getArchetypeLabel(classifyTeamArchetype(oppTeam))} → Contromisura: ${getTacticLabel(bestCounterCmd)}.`
  ),
  'text-gold'
  );
 
+ recalcLivePoissonOutcome(state.sim);
  updateSimHUD();
  openModal('modal-live-sim');
  resizePitchCanvas();
@@ -3814,9 +5024,18 @@
 
  function skipToFullTime() {
  if (!state.sim.active || state.sim.minute >= 90) return;
- while (state.sim.minute < 90) {
- state.sim.minute += 1;
- stepMatchMinute(state.sim.minute);
+ const sim = state.sim;
+ while (sim.minute < 90) {
+ if (sim.activeCommand && sim.commandRemaining > 0) {
+ sim.commandRemaining = Math.max(0, sim.commandRemaining - 1);
+ sim.commandTimer = Math.ceil(sim.commandRemaining);
+ if (sim.commandRemaining <= 0) {
+ sim.activeCommand = null;
+ sim.commandTimer = 0;
+ }
+ }
+ sim.minute += 1;
+ stepMatchMinute(sim.minute);
  }
  updateSimHUD();
  finishSimulation();
@@ -3825,7 +5044,8 @@
  function computeCurrentRates(sim, min) {
  const m = sim.match;
  const userIsHome = sim.userSide === 'H';
- const pData = sim.poissonModel || computePoissonMatchModel(m.home, m.away, m.league);
+ const oppTeam = userIsHome ? m.away : m.home;
+ const pData = sim.poissonModel || computePoissonMatchModel(m.home, m.away, m.league, m.customOptions || {});
  const userBaseLambda = userIsHome ? pData.lambdaH : pData.lambdaA;
  const oppBaseLambda = userIsHome ? pData.lambdaA : pData.lambdaH;
 
@@ -3835,10 +5055,10 @@
 
  let userBoostMult = userNormalMult;
  let oppBoostMult = oppNormalMult;
- if (sim.commandTimer > 0 && sim.activeCommand) {
- if (sim.activeCommand === 'highPress') userBoostMult *= 1.30;
- else if (sim.activeCommand === 'catenaccio') { oppBoostMult *= 0.62; userBoostMult *= 1.10; }
- else if (sim.activeCommand === 'wingOverload') userBoostMult *= 1.26;
+ if (sim.commandRemaining > 0 && sim.activeCommand) {
+ const mods = evaluateTacticalModifiers(sim.activeCommand, oppTeam);
+ userBoostMult *= mods.userMult;
+ oppBoostMult *= mods.oppMult;
  }
 
  const userNormalRate = (userBaseLambda / 90) * userNormalMult;
@@ -3857,8 +5077,8 @@
  function recalcLivePoissonOutcome(sim) {
  const rates = computeCurrentRates(sim, sim.minute);
  const remMinutes = Math.max(0, 90 - sim.minute);
- const activeRem = (sim.activeCommand && sim.commandTimer > 0)
- ? Math.min(remMinutes, sim.commandTimer)
+ const activeRem = (sim.activeCommand && sim.commandRemaining > 0)
+ ? Math.min(remMinutes, sim.commandRemaining)
  : 0;
  const normalRem = Math.max(0, remMinutes - activeRem);
 
@@ -3900,29 +5120,49 @@
  return;
  }
 
+ // Strict lock: cannot trigger or switch tactical stances while another tactic is still active
+ if (sim.activeCommand && sim.commandRemaining > 0) {
+ const remInt = Math.max(1, Math.ceil(sim.commandRemaining));
+ const activeName = getTacticLabel(sim.activeCommand);
+ if (sim.activeCommand === cmdKey) {
+ showToast(tr(
+ `${activeName} is already active (${remInt}' left).`,
+ `「${activeName}」正在生效中（剩余 ${remInt}'）。`,
+ `${activeName} è già attivo (${remInt}' rimasti).`
+ ));
+ } else {
+ showToast(tr(
+ `${activeName} is active (${remInt}' left). Wait until it finishes!`,
+ `「${activeName}」生效中（剩余 ${remInt}'），必须等当前战术结束再切换！`,
+ `${activeName} attivo (${remInt}' rimasti). Attendi la fine prima di cambiare tattica!`
+ ));
+ }
+ return;
+ }
+
  sim.activeCommand = cmdKey;
  sim.commandTimer = 14;
+ sim.commandRemaining = 14.0;
  sim.distinctCmds.add(cmdKey);
 
- document.querySelectorAll('.cmd-card').forEach(b => b.classList.remove('ring-2', 'ring-gold'));
- document.getElementById(`cmd-btn-${cmdKey}`).classList.add('ring-2', 'ring-gold');
+ const oppTeam = sim.userSide === 'H' ? sim.match.away : sim.match.home;
+ const mods = evaluateTacticalModifiers(cmdKey, oppTeam);
+ const uPct = Math.round((mods.userMult - 1) * 100);
+ const oPct = Math.round((mods.oppMult - 1) * 100);
+ const uStr = `${uPct >= 0 ? '+' : ''}${uPct}% λ`;
+ const oStr = `${oPct >= 0 ? '+' : ''}${oPct}% ${tr('Opp', '对手', 'Avv.')}`;
 
- const bannerMap = {
- highPress: tr(`${userTeam.code}: HIGH PRESS (+30% λ)`, `${userTeam.code}：高位逼抢 (+30% λ)`, `${userTeam.code}: PRESSING ALTO (+30% λ)`),
- catenaccio: tr(`${userTeam.code}: CATENACCIO (-38% OPP λ)`, `${userTeam.code}：链式防反 (-38% 对手 λ)`, `${userTeam.code}: CATENACCIO (-38% λ AVV.)`),
- wingOverload: tr(`${userTeam.code}: WING OVERLOAD (+26% λ)`, `${userTeam.code}：两翼超载 (+26% λ)`, `${userTeam.code}: SOVRACCARICO FASCE (+26% λ)`)
- };
+ const counterPrefix = mods.isCounter ? tr('⚡ TACTICAL COUNTER! ', '⚡ 战术克制生效！', '⚡ CONTROMISURA! ') : '';
+ const bannerTxt = `${counterPrefix}${userTeam.code} ${getTacticLabel(cmdKey).toUpperCase()} (${uStr} | ${oStr})`;
+ const detailNote = state.lang === 'it' ? mods.noteIt : state.lang === 'cn' ? mods.noteCn : mods.noteEn;
+
  appendSimEvent(
  sim.minute,
- 'Tactics',
- tr(
- `${bannerMap[cmdKey]} — Diversity tracker: ${sim.distinctCmds.size} unique tactics used.`,
- `${bannerMap[cmdKey]} —— 当前已使用 ${sim.distinctCmds.size} 种不同战术。`,
- `${bannerMap[cmdKey]} — Varietà tattica: ${sim.distinctCmds.size} comandi distinti usati.`
- ),
- 'text-gold'
+ mods.isCounter ? tr('COUNTER', '克制', 'CONTROMISURA') : tr('Tactics', '战术', 'Tattica'),
+ `${detailNote} (${tr('Diversity', '多样性', 'Varietà')}: ${sim.distinctCmds.size})`,
+ mods.isCounter ? 'text-emeraldai' : 'text-gold'
  );
- flashPitchBanner(bannerMap[cmdKey]);
+ flashPitchBanner(bannerTxt);
  recalcLivePoissonOutcome(sim);
  updateSimHUD();
  }
@@ -3953,13 +5193,7 @@
  const m = sim.match;
  const userIsHome = sim.userSide === 'H';
 
- if (sim.commandTimer > 0) {
- sim.commandTimer -= 1;
- if (sim.commandTimer === 0) {
- sim.activeCommand = null;
- document.querySelectorAll('.cmd-card').forEach(b => b.classList.remove('ring-2', 'ring-gold'));
- }
- }
+ // Tactical command duration is decremented smoothly at 60fps in simulationLoop()
 
  const pressDrain = sim.activeCommand === 'highPress' ? 0.16 : 0;
  sim.staminaUser = Math.max(42, sim.staminaUser - (0.28 + pressDrain));
@@ -4068,17 +5302,50 @@
  `Varietà: ${count}/2 Tattiche`
  );
 
+ updateTacticalProgressFrame();
+ }
+
+ function updateTacticalProgressFrame() {
+ const sim = state.sim;
+ const TACTIC_DURATION = 14.0;
+ const hasActiveTactic = Boolean(sim.activeCommand && sim.commandRemaining > 0);
+ const ratio = hasActiveTactic ? Math.max(0, Math.min(1, sim.commandRemaining / TACTIC_DURATION)) : 0;
+ const remCeil = hasActiveTactic ? Math.max(1, Math.ceil(sim.commandRemaining)) : 0;
+
  ['highPress', 'catenaccio', 'wingOverload'].forEach(key => {
+ const btnEl = document.getElementById(`cmd-btn-${key}`);
  const timerEl = document.getElementById(`cmd-timer-${key}`);
+ const lockEl = document.getElementById(`cmd-lock-${key}`);
  const progEl = document.getElementById(`cmd-prog-${key}`);
- const isActive = sim.activeCommand === key && sim.commandTimer > 0;
+ const fillEl = document.getElementById(`cmd-fill-${key}`);
+ const isActive = hasActiveTactic && sim.activeCommand === key;
+ const isLocked = hasActiveTactic && sim.activeCommand !== key;
+
+ if (btnEl) {
+ btnEl.classList.toggle('ring-2', isActive);
+ btnEl.classList.toggle('ring-gold', isActive);
+ btnEl.classList.toggle('opacity-45', isLocked);
+ btnEl.classList.toggle('cursor-not-allowed', isLocked);
+ if (isLocked) btnEl.setAttribute('aria-disabled', 'true');
+ else btnEl.removeAttribute('aria-disabled');
+ }
  if (timerEl) {
  timerEl.classList.toggle('hidden', !isActive);
- if (isActive) timerEl.textContent = `${sim.commandTimer}'`;
+ if (isActive) {
+ const txt = `${remCeil}'`;
+ if (timerEl.textContent !== txt) timerEl.textContent = txt;
+ }
+ }
+ if (lockEl) {
+ lockEl.classList.toggle('hidden', !isLocked);
  }
  if (progEl) {
  progEl.classList.toggle('hidden', !isActive);
- progEl.style.width = isActive ? `${Math.round((sim.commandTimer / 14) * 100)}%` : '0%';
+ if (isActive) progEl.style.transform = `scaleX(${ratio.toFixed(4)})`;
+ }
+ if (fillEl) {
+ fillEl.classList.toggle('hidden', !isActive);
+ if (isActive) fillEl.style.transform = `scaleX(${ratio.toFixed(4)})`;
  }
  });
  }
@@ -4089,6 +5356,10 @@
  if (sim.sourceType === 'league') {
  closeLiveSim();
  startVirtualLeagueMatch();
+ return;
+ }
+ if (sim.sourceType === 'coach') {
+ launchCoachSimulation();
  return;
  }
  if (sim.sourceType === 'historical') {
@@ -4320,7 +5591,7 @@
  function useAdSkipPassForBonus() {
  if (state.sim.scoutBonusClaimed) return;
  if (state.adSkipPasses <= 0) {
- showToast(tr('No Ad-Skip Passes left! Redeem in Club & DIY tab.', '免广告券不足！可前往「DIY与订阅」用 60 金币兑换。', 'Pass esauriti! Riscattali nella scheda Club & VIP.'));
+ showToast(tr('No Ad-Skip Passes left! Redeem in ME tab.', '免广告券不足！可前往「ME」页面用 60 金币兑换。', 'Pass esauriti! Riscattali nella scheda ME.'));
  return;
  }
  state.adSkipPasses -= 1;
@@ -4363,7 +5634,22 @@
 
  const sim = state.sim;
  if (!sim.paused && sim.minute < 90) {
- sim.accumulator += dt * 1.5 * sim.speed;
+ const deltaMatchMins = dt * 1.5 * sim.speed;
+ sim.accumulator += deltaMatchMins;
+
+ // Smooth 60fps countdown for active tactical command
+ if (sim.activeCommand && sim.commandRemaining > 0) {
+ sim.commandRemaining = Math.max(0, sim.commandRemaining - deltaMatchMins);
+ sim.commandTimer = Math.ceil(sim.commandRemaining);
+ if (sim.commandRemaining <= 0) {
+ sim.commandRemaining = 0;
+ sim.commandTimer = 0;
+ sim.activeCommand = null;
+ recalcLivePoissonOutcome(sim);
+ updateSimHUD();
+ }
+ }
+
  while (sim.accumulator >= 1 && sim.minute < 90) {
  sim.accumulator -= 1;
  sim.minute += 1;
@@ -4376,6 +5662,7 @@
  }
  }
 
+ updateTacticalProgressFrame();
  updatePitchKinematics(dt);
 
  const wrapper = document.getElementById('pitch-canvas-wrapper');
