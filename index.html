@@ -156,16 +156,31 @@
  </div>
 
  <div class="flex items-center gap-1.5 shrink-0">
- <!-- MIMIT / SIAE Specs Info Modal Trigger -->
- <button onclick="openModal('modal-mimit-specs')" class="px-2.5 py-1.5 rounded-xl bg-card hover:bg-cardhover border border-cyanai/35 text-[11px] font-mono font-bold text-cyanai flex items-center gap-1 transition active:scale-95">
+ <!-- MIMIT / SIAE Specs Info Modal Trigger (Compact) -->
+ <button onclick="openModal('modal-mimit-specs')" class="px-2 py-1.5 rounded-xl bg-card hover:bg-cardhover border border-cyanai/35 text-[11px] font-mono font-bold text-cyanai flex items-center gap-1 transition active:scale-95">
  <span>ⓘ</span>
- <span id="btn-mimit-label">MIMIT Specs</span>
+ <span id="btn-mimit-label">MIMIT</span>
  </button>
 
- <!-- Trilingual Toggle (EN / IT / 中文) -->
- <button id="btn-lang-toggle" onclick="toggleLanguage()" class="px-2.5 py-1.5 rounded-xl bg-card hover:bg-cardhover border border-borderdim text-[11px] font-bold text-slate-200 transition active:scale-95">
- EN / 中文
+ <!-- Globe Language Dropdown (Default IT, dropdown IT / EN / 中文) -->
+ <div class="relative" id="lang-dropdown-wrapper">
+ <button id="btn-lang-toggle" onclick="toggleLangMenu(event)" aria-haspopup="true" aria-expanded="false" class="px-2 py-1.5 rounded-xl bg-card hover:bg-cardhover border border-borderdim text-[11px] font-mono font-bold text-slate-100 flex items-center gap-1 transition active:scale-95">
+ <span>🌐</span>
+ <span id="btn-lang-current">IT</span>
+ <span class="text-[9px] text-slate-400">▾</span>
  </button>
+ <div id="lang-dropdown-menu" class="hidden absolute right-0 mt-1.5 w-32 bg-[#131A26] border border-borderdim rounded-2xl shadow-2xl py-1 z-50 animate-fade-in">
+ <button onclick="selectLangFromMenu('it')" id="lang-opt-it" class="w-full px-3 py-2 text-left text-xs font-semibold flex items-center justify-between hover:bg-cardhover transition">
+ <span>🇮🇹 Italiano</span><span class="text-[10px] font-mono text-gold">IT</span>
+ </button>
+ <button onclick="selectLangFromMenu('en')" id="lang-opt-en" class="w-full px-3 py-2 text-left text-xs font-semibold flex items-center justify-between hover:bg-cardhover transition">
+ <span>🇬🇧 English</span><span class="text-[10px] font-mono text-slate-400">EN</span>
+ </button>
+ <button onclick="selectLangFromMenu('cn')" id="lang-opt-cn" class="w-full px-3 py-2 text-left text-xs font-semibold flex items-center justify-between hover:bg-cardhover transition">
+ <span>🇨🇳 中文</span><span class="text-[10px] font-mono text-slate-400">CN</span>
+ </button>
+ </div>
+ </div>
  </div>
  </div>
 
@@ -429,8 +444,8 @@
  <table class="w-full text-left border-collapse font-mono text-[10px]">
  <thead>
  <tr class="border-b border-borderdim text-slate-400">
- <th class="py-1.5 pr-1">#</th>
- <th class="py-1.5">Club</th>
+ <th class="py-1.5 pr-1 sticky left-0 z-10 bg-card w-5">#</th>
+ <th class="py-1.5 pr-2 sticky left-5 z-10 bg-card">Club</th>
  <th class="py-1.5 text-center">P</th>
  <th class="py-1.5 text-center">W</th>
  <th class="py-1.5 text-center">D</th>
@@ -628,6 +643,13 @@
  </div>
  </div>
 
+ <!-- 5. Subtle Reset Demo Data Footer -->
+ <div class="pt-3 pb-1 text-center border-t border-borderdim/50">
+ <button id="btn-reset-demo" onclick="resetDemoState()" class="px-3 py-1.5 rounded-xl text-[11px] font-mono text-slate-500 hover:text-coralai hover:bg-coralai/10 transition active:scale-95">
+ ↺ Reset Demo Data
+ </button>
+ </div>
+
  </section>
 
  </div>
@@ -685,8 +707,9 @@
  <!-- =================================================================== -->
  <!-- MODAL 1: MIMIT, SIAE & LEGGE 193/2024 COMPLIANCE SPECS -->
  <!-- =================================================================== -->
- <div id="modal-mimit-specs" class="hidden absolute inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-end sm:items-center justify-center p-3 safe-bottom-pad">
+ <div id="modal-mimit-specs" onclick="if(event.target === this) closeModal('modal-mimit-specs')" class="hidden absolute inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-end sm:items-center justify-center p-3 safe-bottom-pad">
  <div class="w-full max-h-[88%] bg-card border border-cyanai/40 rounded-3xl p-4 overflow-y-auto overscroll-y-contain custom-scroll animate-slide-up shadow-2xl">
+ <div class="w-10 h-1 rounded-full bg-slate-600/80 mx-auto mb-3 sm:hidden"></div>
  <div class="flex items-start justify-between gap-2 pb-2.5 border-b border-borderdim">
  <div>
  <span id="mimit-modal-eyebrow" class="text-[10px] font-mono uppercase tracking-wider text-cyanai">Italia Startup Visa • D.L. 179/2012 & L. 193/2024 Compliance</span>
@@ -716,8 +739,9 @@
  <!-- =================================================================== -->
  <!-- MODAL 2: POISSON EXPECTED GOALS & SCORELINE HEATMAP INSPECTOR -->
  <!-- =================================================================== -->
- <div id="modal-poisson-matrix" class="hidden absolute inset-0 z-50 bg-black/85 backdrop-blur-sm flex items-end sm:items-center justify-center p-3 safe-bottom-pad">
+ <div id="modal-poisson-matrix" onclick="if(event.target === this) closeModal('modal-poisson-matrix')" class="hidden absolute inset-0 z-50 bg-black/85 backdrop-blur-sm flex items-end sm:items-center justify-center p-3 safe-bottom-pad">
  <div class="w-full max-h-[88%] bg-card border border-cyanai/40 rounded-3xl p-4 overflow-y-auto overscroll-y-contain custom-scroll animate-slide-up shadow-2xl space-y-3">
+ <div class="w-10 h-1 rounded-full bg-slate-600/80 mx-auto mb-1 sm:hidden"></div>
  <!-- Modal Header -->
  <div class="flex items-center justify-between pb-2.5 border-b border-borderdim">
  <div>
@@ -845,36 +869,48 @@
  <span id="sim-bonus-target-hint" class="text-[10px] font-mono text-gold truncate max-w-[165px]">Bonus: Catenaccio / Wing</span>
  </div>
  <div class="grid grid-cols-2 gap-1.5">
- <button onclick="triggerTacticalCommand('highPress')" id="cmd-btn-highPress" class="cmd-card p-2 rounded-xl bg-card hover:bg-cardhover border border-borderdim text-left transition active:scale-95 flex items-center justify-between">
- <div>
- <div id="cmd-title-highPress" class="text-xs font-bold text-emeraldai">High Press</div>
- <div id="cmd-sub-highPress" class="text-[10px] text-slate-400">+30% Poisson Attack λ</div>
+ <button onclick="triggerTacticalCommand('highPress')" id="cmd-btn-highPress" class="cmd-card relative overflow-hidden p-2 rounded-xl bg-card hover:bg-cardhover border border-borderdim text-left transition active:scale-95 flex items-center justify-between min-h-[44px]">
+ <div class="min-w-0 pr-1">
+ <div class="flex items-center gap-1">
+ <div id="cmd-title-highPress" class="text-xs font-bold text-emeraldai truncate">High Press</div>
+ <span id="cmd-timer-highPress" class="hidden px-1 py-0.2 rounded bg-emeraldai/20 text-emeraldai font-mono text-[9px] font-extrabold shrink-0">14'</span>
  </div>
- <span class="text-sm">⚡</span>
+ <div id="cmd-sub-highPress" class="text-[10px] text-slate-400 truncate">+30% Poisson Attack λ</div>
+ </div>
+ <span class="text-sm shrink-0">⚡</span>
+ <div id="cmd-prog-highPress" class="hidden absolute bottom-0 left-0 h-0.5 bg-emeraldai transition-all duration-300" style="width: 0%"></div>
  </button>
 
- <button onclick="triggerTacticalCommand('catenaccio')" id="cmd-btn-catenaccio" class="cmd-card p-2 rounded-xl bg-card hover:bg-cardhover border border-borderdim text-left transition active:scale-95 flex items-center justify-between">
- <div>
- <div id="cmd-title-catenaccio" class="text-xs font-bold text-cyanai">Catenaccio Block</div>
- <div id="cmd-sub-catenaccio" class="text-[10px] text-slate-400">-38% Opp λ + Counter</div>
+ <button onclick="triggerTacticalCommand('catenaccio')" id="cmd-btn-catenaccio" class="cmd-card relative overflow-hidden p-2 rounded-xl bg-card hover:bg-cardhover border border-borderdim text-left transition active:scale-95 flex items-center justify-between min-h-[44px]">
+ <div class="min-w-0 pr-1">
+ <div class="flex items-center gap-1">
+ <div id="cmd-title-catenaccio" class="text-xs font-bold text-cyanai truncate">Catenaccio Block</div>
+ <span id="cmd-timer-catenaccio" class="hidden px-1 py-0.2 rounded bg-cyanai/20 text-cyanai font-mono text-[9px] font-extrabold shrink-0">14'</span>
  </div>
- <span class="text-sm">🛡️</span>
+ <div id="cmd-sub-catenaccio" class="text-[10px] text-slate-400 truncate">-38% Opp λ + Counter</div>
+ </div>
+ <span class="text-sm shrink-0">🛡️</span>
+ <div id="cmd-prog-catenaccio" class="hidden absolute bottom-0 left-0 h-0.5 bg-cyanai transition-all duration-300" style="width: 0%"></div>
  </button>
 
- <button onclick="triggerTacticalCommand('wingOverload')" id="cmd-btn-wingOverload" class="cmd-card p-2 rounded-xl bg-card hover:bg-cardhover border border-borderdim text-left transition active:scale-95 flex items-center justify-between">
- <div>
- <div id="cmd-title-wingOverload" class="text-xs font-bold text-gold">Wing Overload</div>
- <div id="cmd-sub-wingOverload" class="text-[10px] text-slate-400">+26% Flank xG Rate</div>
+ <button onclick="triggerTacticalCommand('wingOverload')" id="cmd-btn-wingOverload" class="cmd-card relative overflow-hidden p-2 rounded-xl bg-card hover:bg-cardhover border border-borderdim text-left transition active:scale-95 flex items-center justify-between min-h-[44px]">
+ <div class="min-w-0 pr-1">
+ <div class="flex items-center gap-1">
+ <div id="cmd-title-wingOverload" class="text-xs font-bold text-gold truncate">Wing Overload</div>
+ <span id="cmd-timer-wingOverload" class="hidden px-1 py-0.2 rounded bg-golddim text-gold font-mono text-[9px] font-extrabold shrink-0">14'</span>
  </div>
- <span class="text-sm">🏹</span>
+ <div id="cmd-sub-wingOverload" class="text-[10px] text-slate-400 truncate">+26% Flank xG Rate</div>
+ </div>
+ <span class="text-sm shrink-0">🏹</span>
+ <div id="cmd-prog-wingOverload" class="hidden absolute bottom-0 left-0 h-0.5 bg-gold transition-all duration-300" style="width: 0%"></div>
  </button>
 
- <button onclick="triggerTacticalCommand('superSub')" id="cmd-btn-superSub" class="cmd-card p-2 rounded-xl bg-card hover:bg-cardhover border border-borderdim text-left transition active:scale-95 flex items-center justify-between">
- <div>
- <div id="cmd-title-superSub" class="text-xs font-bold text-coralai">Super Sub</div>
- <div id="cmd-sub-superSub" class="text-[10px] text-slate-400">+18% Stamina & Clutch</div>
+ <button onclick="triggerTacticalCommand('superSub')" id="cmd-btn-superSub" class="cmd-card relative overflow-hidden p-2 rounded-xl bg-card hover:bg-cardhover border border-borderdim text-left transition active:scale-95 flex items-center justify-between min-h-[44px]">
+ <div class="min-w-0 pr-1">
+ <div id="cmd-title-superSub" class="text-xs font-bold text-coralai truncate">Super Sub</div>
+ <div id="cmd-sub-superSub" class="text-[10px] text-slate-400 truncate">+18% Stamina & Clutch</div>
  </div>
- <span class="text-sm">🔄</span>
+ <span class="text-sm shrink-0">🔄</span>
  </button>
  </div>
  </div>
@@ -983,7 +1019,7 @@
  const I18N = {
  en: {
  mvpBadge: "EdTech & Poisson Sim",
- mimitSpecs: "MIMIT & L.193/24",
+ mimitSpecs: "MIMIT",
  navSim: "Match Sim",
  navLeague: "My League",
  navAcademy: "Academy",
@@ -1092,7 +1128,7 @@
  },
  it: {
  mvpBadge: "EdTech & Sim Poisson",
- mimitSpecs: "MIMIT & L.193/24",
+ mimitSpecs: "MIMIT",
  navSim: "Simulazione",
  navLeague: "La Mia Lega",
  navAcademy: "Accademia",
@@ -2006,11 +2042,123 @@
  );
  }
 
- function toggleLanguage() {
- const order = ['it', 'en', 'cn'];
- const nextIdx = (order.indexOf(state.lang) + 1) % order.length;
- setLanguage(order[nextIdx]);
+ const STORAGE_KEY = 'tactica_sim_state_v1';
+
+ function saveState() {
+ try {
+ const payload = {
+ lang: state.lang,
+ coachLevel: state.coachLevel,
+ coachXp: state.coachXp,
+ coins: state.coins,
+ adSkipPasses: state.adSkipPasses,
+ leagueStamina: state.leagueStamina,
+ isVipPro: state.isVipPro,
+ vipDailyClaimed: state.vipDailyClaimed,
+ checkedInToday: state.checkedInToday,
+ streakDays: state.streakDays,
+ masteredModules: state.masteredModules,
+ ownedSkins: state.ownedSkins,
+ equippedSkin: state.equippedSkin,
+ ownedFrames: state.ownedFrames,
+ equippedFrame: state.equippedFrame,
+ customClub: state.customClub,
+ divisionIdx: state.divisionIdx,
+ leagueMatchday: state.leagueMatchday,
+ leagueStandings: state.leagueStandings,
+ upgrades: state.upgrades,
+ replayCounts: state.replayCounts
+ };
+ localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+ } catch (e) { /* Ignore storage errors in private mode */ }
  }
+
+ function loadState() {
+ try {
+ const raw = localStorage.getItem(STORAGE_KEY);
+ if (!raw) return false;
+ const saved = JSON.parse(raw);
+ if (!saved || typeof saved !== 'object') return false;
+ if (['it', 'en', 'cn'].includes(saved.lang)) state.lang = saved.lang;
+ if (typeof saved.coachLevel === 'number') state.coachLevel = saved.coachLevel;
+ if (typeof saved.coachXp === 'number') state.coachXp = saved.coachXp;
+ if (typeof saved.coins === 'number') state.coins = saved.coins;
+ if (typeof saved.adSkipPasses === 'number') state.adSkipPasses = saved.adSkipPasses;
+ if (typeof saved.leagueStamina === 'number') state.leagueStamina = saved.leagueStamina;
+ if (typeof saved.isVipPro === 'boolean') state.isVipPro = saved.isVipPro;
+ if (typeof saved.vipDailyClaimed === 'boolean') state.vipDailyClaimed = saved.vipDailyClaimed;
+ if (typeof saved.checkedInToday === 'boolean') state.checkedInToday = saved.checkedInToday;
+ if (typeof saved.streakDays === 'number') state.streakDays = saved.streakDays;
+ if (Array.isArray(saved.masteredModules)) state.masteredModules = saved.masteredModules;
+ if (Array.isArray(saved.ownedSkins)) state.ownedSkins = saved.ownedSkins;
+ if (typeof saved.equippedSkin === 'string') state.equippedSkin = saved.equippedSkin;
+ if (Array.isArray(saved.ownedFrames)) state.ownedFrames = saved.ownedFrames;
+ if (typeof saved.equippedFrame === 'string') state.equippedFrame = saved.equippedFrame;
+ if (saved.customClub && typeof saved.customClub === 'object') state.customClub = { ...state.customClub, ...saved.customClub };
+ if (typeof saved.divisionIdx === 'number') state.divisionIdx = saved.divisionIdx;
+ if (typeof saved.leagueMatchday === 'number') state.leagueMatchday = saved.leagueMatchday;
+ if (Array.isArray(saved.leagueStandings) && saved.leagueStandings.length > 0) state.leagueStandings = saved.leagueStandings;
+ if (saved.upgrades && typeof saved.upgrades === 'object') state.upgrades = { ...state.upgrades, ...saved.upgrades };
+ if (saved.replayCounts && typeof saved.replayCounts === 'object') state.replayCounts = saved.replayCounts;
+ return true;
+ } catch (e) {
+ return false;
+ }
+ }
+
+ function resetDemoState() {
+ const msg = tr(
+ 'Reset all demo progress, coins, league standings, and settings back to default?',
+ '确定要重置所有演示数据（金币、联赛积分、皮肤和语言设置）恢复初始状态吗？',
+ 'Ripristinare tutti i dati della demo (monete, classifica, temi e lingua) ai valori iniziali?'
+ );
+ if (!confirm(msg)) return;
+ try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
+ location.reload();
+ }
+
+ function toggleLangMenu(evt) {
+ if (evt) evt.stopPropagation();
+ const menu = document.getElementById('lang-dropdown-menu');
+ const btn = document.getElementById('btn-lang-toggle');
+ if (!menu) return;
+ const isHidden = menu.classList.toggle('hidden');
+ if (btn) btn.setAttribute('aria-expanded', String(!isHidden));
+ }
+
+ function closeLangMenu() {
+ const menu = document.getElementById('lang-dropdown-menu');
+ const btn = document.getElementById('btn-lang-toggle');
+ if (menu && !menu.classList.contains('hidden')) {
+ menu.classList.add('hidden');
+ if (btn) btn.setAttribute('aria-expanded', 'false');
+ }
+ }
+
+ function selectLangFromMenu(langCode) {
+ closeLangMenu();
+ setLanguage(langCode);
+ }
+
+ document.addEventListener('click', (e) => {
+ const wrap = document.getElementById('lang-dropdown-wrapper');
+ if (wrap && !wrap.contains(e.target)) closeLangMenu();
+ });
+
+ document.addEventListener('keydown', (e) => {
+ if (e.key !== 'Escape') return;
+ closeLangMenu();
+ const mPoisson = document.getElementById('modal-poisson-matrix');
+ const mMimit = document.getElementById('modal-mimit-specs');
+ const mPost = document.getElementById('post-match-overlay');
+ if (mPoisson && !mPoisson.classList.contains('hidden')) {
+ closeModal('modal-poisson-matrix');
+ } else if (mMimit && !mMimit.classList.contains('hidden')) {
+ closeModal('modal-mimit-specs');
+ } else if (mPost && !mPost.classList.contains('hidden')) {
+ closeLiveSim();
+ }
+ });
 
  function switchMainTab(tabId) {
  state.mainTab = tabId;
@@ -2139,7 +2287,7 @@
  <table class="w-full border-collapse font-mono text-[10px] text-center">
  <thead>
  <tr class="text-slate-400 border-b border-borderdim">
- <th class="py-1.5 px-1 text-left text-[9px] text-gold">${fixture.away.code} \\ ${fixture.home.code}</th>
+ <th class="py-1.5 px-1.5 text-left text-[9px] text-gold sticky left-0 z-10 bg-appbg">${fixture.away.code} \\ ${fixture.home.code}</th>
  ${[0, 1, 2, 3, 4, 5].map(h => `<th class="py-1.5 px-1 font-extrabold text-emeraldai">${h}</th>`).join('')}
  </tr>
  </thead>
@@ -2147,7 +2295,7 @@
  `;
 
  for (let a = 0; a <= 5; a++) {
- gridHtml += `<tr><td class="py-1.5 px-1.5 text-left font-extrabold text-cyanai bg-appbg/60">${a}</td>`;
+ gridHtml += `<tr><td class="py-1.5 px-1.5 text-left font-extrabold text-cyanai sticky left-0 z-10 bg-appbg border-r border-borderdim/40">${a}</td>`;
  for (let h = 0; h <= 5; h++) {
  const p = model.matrix[h][a];
  const pct = (p * 100).toFixed(1);
@@ -2253,15 +2401,18 @@
  document.getElementById('nav-label-academy').textContent = t.navAcademy;
  document.getElementById('nav-label-club').textContent = t.navClub;
 
- const langBtn = document.getElementById('btn-lang-toggle');
- if (langBtn) {
- langBtn.innerHTML = ['it', 'en', 'cn'].map(code => {
- const label = code === 'it' ? 'IT' : code === 'en' ? 'EN' : '中文';
- return state.lang === code
- ? `<span class="text-gold font-extrabold underline underline-offset-2">${label}</span>`
- : `<span class="text-slate-400">${label}</span>`;
- }).join(' <span class="text-slate-600">/</span> ');
+ const langCur = document.getElementById('btn-lang-current');
+ if (langCur) {
+ langCur.textContent = state.lang === 'it' ? 'IT' : state.lang === 'en' ? 'EN' : '中文';
  }
+ ['it', 'en', 'cn'].forEach(code => {
+ const opt = document.getElementById(`lang-opt-${code}`);
+ if (opt) {
+ opt.className = state.lang === code
+ ? 'w-full px-3 py-2 text-left text-xs font-extrabold text-gold bg-golddim flex items-center justify-between transition'
+ : 'w-full px-3 py-2 text-left text-xs font-semibold text-slate-200 hover:bg-cardhover flex items-center justify-between transition';
+ }
+ });
 
  ['it', 'en', 'cn'].forEach(code => {
  const pill = document.getElementById(`mimit-lang-${code}`);
@@ -2301,6 +2452,7 @@
  renderMyLeagueTab();
  renderAcademyTab();
  renderClubDiyTab();
+ saveState();
  }
 
  // -----------------------------------------------------------------------
@@ -2498,13 +2650,13 @@
  </div>
 
  <div class="mt-2.5 pt-2 border-t border-borderdim/80 grid grid-cols-2 gap-2">
- <button onclick="startFixtureSimulation('${m.id}', 'H')" class="py-2 px-2 rounded-xl bg-emeraldai/15 hover:bg-emeraldai/25 border border-emeraldai/45 text-emeraldai font-extrabold text-[11px] flex items-center justify-center gap-1 transition active:scale-95">
+ <button onclick="startFixtureSimulation('${m.id}', 'H')" class="min-h-[42px] py-2 px-2 rounded-xl bg-emeraldai/15 hover:bg-emeraldai/25 border border-emeraldai/45 text-emeraldai font-extrabold text-[11px] flex items-center justify-center gap-1 transition active:scale-95">
  <span>🛡️</span>
- <span>${t.pickHomeWin} (${m.home.code})</span>
+ <span class="truncate">${t.pickHomeWin} (${m.home.code})</span>
  </button>
- <button onclick="startFixtureSimulation('${m.id}', 'A')" class="py-2 px-2 rounded-xl bg-cyanai/15 hover:bg-cyanai/25 border border-cyanai/45 text-cyanai font-extrabold text-[11px] flex items-center justify-center gap-1 transition active:scale-95">
+ <button onclick="startFixtureSimulation('${m.id}', 'A')" class="min-h-[42px] py-2 px-2 rounded-xl bg-cyanai/15 hover:bg-cyanai/25 border border-cyanai/45 text-cyanai font-extrabold text-[11px] flex items-center justify-center gap-1 transition active:scale-95">
  <span>⚔️</span>
- <span>${t.pickAwayWin} (${m.away.code})</span>
+ <span class="truncate">${t.pickAwayWin} (${m.away.code})</span>
  </button>
  </div>
  </article>
@@ -2833,8 +2985,8 @@
 
  return `
  <tr class="${row.isUser ? 'bg-golddim text-white font-bold' : isPromoZone ? 'bg-emeraldai/5 text-slate-200' : 'text-slate-300'}">
- <td class="py-1.5 pr-1 ${isPromoZone ? 'text-emeraldai font-extrabold' : ''}">${pos}</td>
- <td class="py-1.5 truncate max-w-[115px]">${info.code} <span class="text-slate-400 font-sans text-[10px]">${row.isUser ? tr('(You)', '(我)', '(Tu)') : ''}</span></td>
+ <td class="py-1.5 pr-1 sticky left-0 z-10 w-5 ${row.isUser ? 'bg-[#2A261A]' : 'bg-card'} ${isPromoZone ? 'text-emeraldai font-extrabold' : ''}">${pos}</td>
+ <td class="py-1.5 pr-2 sticky left-5 z-10 ${row.isUser ? 'bg-[#2A261A]' : 'bg-card'} truncate max-w-[115px]">${info.code} <span class="text-slate-400 font-sans text-[10px]">${row.isUser ? tr('(You)', '(我)', '(Tu)') : ''}</span></td>
  <td class="py-1.5 text-center">${row.p}</td>
  <td class="py-1.5 text-center">${row.w}</td>
  <td class="py-1.5 text-center">${row.d}</td>
@@ -3236,6 +3388,10 @@
  document.getElementById('diy-skins-sub').textContent = t.diySkinsSub;
  document.getElementById('diy-frames-heading').textContent = t.diyFramesHeading;
  document.getElementById('diy-frames-sub').textContent = t.diyFramesSub;
+ const resetBtn = document.getElementById('btn-reset-demo');
+ if (resetBtn) {
+ resetBtn.textContent = tr('↺ Reset Demo Data', '↺ 重置演示数据', '↺ Ripristina Dati Demo');
+ }
 
  document.getElementById('diy-skins-grid').innerHTML = PITCH_SKINS.map(skin => {
  const isUnlocked = state.ownedSkins.includes(skin.id) || (skin.vipFree && state.isVipPro);
@@ -3672,6 +3828,20 @@
  `多样性: ${count}/2 战术`,
  `Varietà: ${count}/2 Tattiche`
  );
+
+ ['highPress', 'catenaccio', 'wingOverload'].forEach(key => {
+ const timerEl = document.getElementById(`cmd-timer-${key}`);
+ const progEl = document.getElementById(`cmd-prog-${key}`);
+ const isActive = sim.activeCommand === key && sim.commandTimer > 0;
+ if (timerEl) {
+ timerEl.classList.toggle('hidden', !isActive);
+ if (isActive) timerEl.textContent = `${sim.commandTimer}'`;
+ }
+ if (progEl) {
+ progEl.classList.toggle('hidden', !isActive);
+ progEl.style.width = isActive ? `${Math.round((sim.commandTimer / 14) * 100)}%` : '0%';
+ }
+ });
  }
 
  function rematchCurrentFixture() {
@@ -4072,6 +4242,20 @@
  ctx.strokeRect(padX, padY + (ph - boxH) / 2, boxW, boxH);
  ctx.strokeRect(padX + pw - boxW, padY + (ph - boxH) / 2, boxW, boxH);
 
+ // Left & Right Goal Frames (with subtle net fill)
+ const goalW = 7;
+ const goalH = ph * 0.24;
+ const goalY = padY + (ph - goalH) / 2;
+ ctx.save();
+ ctx.fillStyle = 'rgba(255, 255, 255, 0.10)';
+ ctx.strokeStyle = 'rgba(255, 255, 255, 0.72)';
+ ctx.lineWidth = 1.6;
+ ctx.fillRect(padX - goalW, goalY, goalW, goalH);
+ ctx.strokeRect(padX - goalW, goalY, goalW, goalH);
+ ctx.fillRect(padX + pw, goalY, goalW, goalH);
+ ctx.strokeRect(padX + pw, goalY, goalW, goalH);
+ ctx.restore();
+
  ctx.save();
  ctx.setLineDash([3, 4]);
  ctx.strokeStyle = skin.grid;
@@ -4133,6 +4317,50 @@
  ctx.fillStyle = 'rgba(245, 184, 46, 0.35)';
  ctx.fill();
 
+ // Highlight nearest user-controlled player to ball with a subtle gold pulse ring
+ const userPlayers = sim.userSide === 'H' ? sim.playersH : sim.playersA;
+ if (userPlayers.length > 0) {
+ let nearest = userPlayers[0];
+ let bestDist = Infinity;
+ userPlayers.forEach(p => {
+ const d = Math.hypot(p.x - sim.ball.x, p.y - sim.ball.y);
+ if (d < bestDist) { bestDist = d; nearest = p; }
+ });
+ const npx = padX + nearest.x * pw;
+ const npy = padY + nearest.y * ph;
+ const pulse = 0.45 + 0.35 * Math.sin(performance.now() / 220);
+ ctx.beginPath();
+ ctx.arc(npx, npy, 9.2, 0, Math.PI * 2);
+ ctx.strokeStyle = `rgba(245, 184, 46, ${pulse.toFixed(2)})`;
+ ctx.lineWidth = 1.6;
+ ctx.stroke();
+ }
+
+ // Subtle bottom pitch overlay: User team side & attack direction indicator
+ if (m) {
+ const isHome = sim.userSide === 'H';
+ const userCode = isHome ? m.home.code : m.away.code;
+ const label = isHome ? `★ YOU (${userCode}) ➔` : `⬅ YOU (${userCode}) ★`;
+ ctx.save();
+ ctx.font = 'bold 9.5px "JetBrains Mono", monospace';
+ const textW = ctx.measureText(label).width;
+ const pillW = textW + 12;
+ const pillH = 15;
+ const pillX = isHome ? padX + 6 : padX + pw - pillW - 6;
+ const pillY = padY + ph - pillH - 4;
+ ctx.fillStyle = 'rgba(11, 15, 23, 0.72)';
+ ctx.strokeStyle = 'rgba(245, 184, 46, 0.55)';
+ ctx.lineWidth = 1;
+ ctx.beginPath();
+ ctx.roundRect(pillX, pillY, pillW, pillH, 4);
+ ctx.fill();
+ ctx.stroke();
+ ctx.fillStyle = '#F5B82E';
+ ctx.textBaseline = 'middle';
+ ctx.fillText(label, pillX + 6, pillY + pillH / 2 + 0.5);
+ ctx.restore();
+ }
+
  ctx.beginPath();
  ctx.arc(bx, by, 3.6, 0, Math.PI * 2);
  ctx.fillStyle = '#FFFFFF';
@@ -4147,6 +4375,11 @@
  // -----------------------------------------------------------------------
  window.onload = function () {
  initLeagueStandings();
+ loadState();
+ const nameIn = document.getElementById('input-club-name');
+ const codeIn = document.getElementById('input-club-code');
+ if (nameIn) nameIn.value = state.customClub.name;
+ if (codeIn) codeIn.value = state.customClub.code;
  renderAll();
  };
  </script>
