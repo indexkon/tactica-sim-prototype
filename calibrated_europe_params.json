@@ -1,0 +1,1344 @@
+{
+  "schemaVersion": "3.15-bayes-big5",
+  "engine": "TimeDecayedBayesDixonColes",
+  "dataSource": "Real Europe Big-5 Clean-Room Scorelines 2023-2026 (5256 matches, europe_big5_cleanroom_2023_2026.csv)",
+  "dateRange": {
+    "start": "2023-08-11",
+    "end": "2026-05-24"
+  },
+  "totalMatches": 5256,
+  "totalLeagues": 5,
+  "uniqueClubs": 119,
+  "hyperparameters": {
+    "xi": 0.002,
+    "priorVar": 0.25,
+    "refitStepDays": 14
+  },
+  "pooledBacktest": {
+    "evaluatedMatches": 3504,
+    "baselineRPS": 0.20783,
+    "bayesRPS": 0.20282,
+    "rpsImprovementPct": 2.41,
+    "baselineLogLoss": 1.01286,
+    "bayesLogLoss": 0.99356,
+    "logLossImprovementPct": 1.91,
+    "baselineBrier": 0.60425,
+    "bayesBrier": 0.59259,
+    "brierImprovementPct": 1.93,
+    "baselineECE": 0.02868,
+    "bayesECE": 0.0083,
+    "eceImprovementPct": 71.06
+  },
+  "ablationStudy": [
+    {
+      "step": "1. Static Poisson Baseline",
+      "key": "static_poisson",
+      "RPS": 0.20783,
+      "LogLoss": 1.01286,
+      "Brier": 0.60425,
+      "ECE": 0.02868
+    },
+    {
+      "step": "2. + Dixon-Coles MLE (rho)",
+      "key": "dc_mle",
+      "RPS": 0.20408,
+      "LogLoss": 0.99769,
+      "Brier": 0.59504,
+      "ECE": 0.01329
+    },
+    {
+      "step": "3. + Exponential Time Decay (xi=0.002)",
+      "key": "dc_time_decay",
+      "RPS": 0.20345,
+      "LogLoss": 0.99652,
+      "Brier": 0.59406,
+      "ECE": 0.01212
+    },
+    {
+      "step": "4. + Empirical Bayes L2 Shrinkage (Full)",
+      "key": "bayes_dc_full",
+      "RPS": 0.20282,
+      "LogLoss": 0.99357,
+      "Brier": 0.59259,
+      "ECE": 0.0083
+    }
+  ],
+  "leagues": {
+    "calcio": {
+      "schemaVersion": "3.15-bayes-big5",
+      "leagueId": "calcio",
+      "leagueName": "Serie A (Calcio Classic)",
+      "engine": "TimeDecayedBayesDixonColes",
+      "dataSource": "Real Europe Big-5 Clean-Room Scorelines 2023-2026 (5256 matches, europe_big5_cleanroom_2023_2026.csv)",
+      "dateRange": {
+        "start": "2023-08-19",
+        "end": "2026-05-24"
+      },
+      "totalMatches": 1140,
+      "uniqueClubs": 25,
+      "hyperparameters": {
+        "xi": 0.002,
+        "priorVar": 0.25
+      },
+      "global": {
+        "mu": 0.10859,
+        "homeAdvantage": 0.10915,
+        "rho": -0.03209,
+        "leagueHomeAvg": 1.35,
+        "leagueAwayAvg": 1.1825
+      },
+      "backtest": {
+        "evaluatedMatches": 760,
+        "baselineRPS": 0.20172,
+        "bayesRPS": 0.19729,
+        "rpsImprovementPct": 2.2,
+        "baselineLogLoss": 1.00804,
+        "bayesLogLoss": 0.98832,
+        "logLossImprovementPct": 1.96,
+        "baselineBrier": 0.60338,
+        "bayesBrier": 0.59076,
+        "brierImprovementPct": 2.09,
+        "baselineECE": 0.03196,
+        "bayesECE": 0.01836,
+        "eceImprovementPct": 42.55
+      },
+      "teams": {
+        "AMB": {
+          "alpha": 0.66187,
+          "beta": -0.33241,
+          "homeGF": 2.35,
+          "homeGA": 0.84,
+          "awayGF": 2.16,
+          "awayGA": 0.77,
+          "matches": 114
+        },
+        "BRG": {
+          "alpha": 0.33388,
+          "beta": -0.25932,
+          "homeGF": 1.81,
+          "homeGA": 0.96,
+          "awayGF": 1.72,
+          "awayGA": 1.05,
+          "matches": 114
+        },
+        "CAG": {
+          "alpha": -0.04649,
+          "beta": 0.11886,
+          "homeGF": 1.3,
+          "homeGA": 1.46,
+          "awayGF": 0.84,
+          "awayGA": 1.65,
+          "matches": 114
+        },
+        "CAP": {
+          "alpha": 0.32153,
+          "beta": -0.33714,
+          "homeGF": 1.89,
+          "homeGA": 0.77,
+          "awayGF": 1.26,
+          "awayGA": 1.19,
+          "matches": 114
+        },
+        "COM": {
+          "alpha": 0.33399,
+          "beta": -0.28331,
+          "homeGF": 1.66,
+          "homeGA": 1.08,
+          "awayGF": 1.34,
+          "awayGA": 1.05,
+          "matches": 76
+        },
+        "CRE": {
+          "alpha": -0.28333,
+          "beta": 0.15396,
+          "homeGF": 0.95,
+          "homeGA": 1.53,
+          "awayGF": 0.74,
+          "awayGA": 1.47,
+          "matches": 38
+        },
+        "EMP": {
+          "alpha": -0.26293,
+          "beta": 0.15483,
+          "homeGF": 0.66,
+          "homeGA": 1.29,
+          "awayGF": 0.97,
+          "awayGA": 1.68,
+          "matches": 76
+        },
+        "FEL": {
+          "alpha": 0.17766,
+          "beta": -0.08245,
+          "homeGF": 1.49,
+          "homeGA": 0.93,
+          "awayGF": 1.32,
+          "awayGA": 1.26,
+          "matches": 114
+        },
+        "FLR": {
+          "alpha": 0.12857,
+          "beta": -0.0542,
+          "homeGF": 1.58,
+          "homeGA": 1.07,
+          "awayGF": 1.26,
+          "awayGA": 1.33,
+          "matches": 114
+        },
+        "FRO": {
+          "alpha": -0.03338,
+          "beta": 0.2975,
+          "homeGF": 1.47,
+          "homeGA": 1.68,
+          "awayGF": 0.84,
+          "awayGA": 1.95,
+          "matches": 38
+        },
+        "GEN": {
+          "alpha": -0.05128,
+          "beta": -0.01142,
+          "homeGF": 1.23,
+          "homeGA": 1.28,
+          "awayGF": 0.93,
+          "awayGA": 1.26,
+          "matches": 114
+        },
+        "LEC": {
+          "alpha": -0.3876,
+          "beta": 0.0384,
+          "homeGF": 0.75,
+          "homeGA": 1.44,
+          "awayGF": 0.77,
+          "awayGA": 1.4,
+          "matches": 114
+        },
+        "MIL": {
+          "alpha": 0.27717,
+          "beta": -0.18466,
+          "homeGF": 1.63,
+          "homeGA": 0.95,
+          "awayGF": 1.7,
+          "awayGA": 1.28,
+          "matches": 114
+        },
+        "MON": {
+          "alpha": -0.28988,
+          "beta": 0.26373,
+          "homeGF": 0.95,
+          "homeGA": 1.5,
+          "awayGF": 0.82,
+          "awayGA": 1.66,
+          "matches": 76
+        },
+        "PAR": {
+          "alpha": -0.23652,
+          "beta": -0.01524,
+          "homeGF": 1.08,
+          "homeGA": 1.39,
+          "awayGF": 0.82,
+          "awayGA": 1.34,
+          "matches": 76
+        },
+        "PIS": {
+          "alpha": -0.45661,
+          "beta": 0.37079,
+          "homeGF": 0.47,
+          "homeGA": 1.37,
+          "awayGF": 0.89,
+          "awayGA": 2.37,
+          "matches": 38
+        },
+        "PRT": {
+          "alpha": 0.26833,
+          "beta": -0.30808,
+          "homeGF": 1.56,
+          "homeGA": 1.02,
+          "awayGF": 1.46,
+          "awayGA": 0.93,
+          "matches": 114
+        },
+        "SAL": {
+          "alpha": -0.22819,
+          "beta": 0.45117,
+          "homeGF": 0.89,
+          "homeGA": 2.0,
+          "awayGF": 0.79,
+          "awayGA": 2.26,
+          "matches": 38
+        },
+        "SAS": {
+          "alpha": 0.0446,
+          "beta": 0.10775,
+          "homeGF": 1.26,
+          "homeGA": 1.58,
+          "awayGF": 1.08,
+          "awayGA": 1.71,
+          "matches": 76
+        },
+        "TBR": {
+          "alpha": 0.0867,
+          "beta": -0.1311,
+          "homeGF": 1.46,
+          "homeGA": 1.14,
+          "awayGF": 1.19,
+          "awayGA": 1.11,
+          "matches": 114
+        },
+        "TOR": {
+          "alpha": 0.28889,
+          "beta": -0.32991,
+          "homeGF": 1.61,
+          "homeGA": 0.74,
+          "awayGF": 1.42,
+          "awayGA": 1.02,
+          "matches": 114
+        },
+        "TRG": {
+          "alpha": -0.02071,
+          "beta": 0.09081,
+          "homeGF": 1.09,
+          "homeGA": 0.98,
+          "awayGF": 1.0,
+          "awayGA": 1.54,
+          "matches": 114
+        },
+        "UDI": {
+          "alpha": -0.00639,
+          "beta": 0.01102,
+          "homeGF": 1.07,
+          "homeGA": 1.35,
+          "awayGF": 1.09,
+          "awayGA": 1.4,
+          "matches": 114
+        },
+        "VEN": {
+          "alpha": -0.24035,
+          "beta": 0.10484,
+          "homeGF": 0.89,
+          "homeGA": 1.16,
+          "awayGF": 0.79,
+          "awayGA": 1.79,
+          "matches": 38
+        },
+        "VER": {
+          "alpha": -0.37952,
+          "beta": 0.1722,
+          "homeGF": 0.88,
+          "homeGA": 1.58,
+          "awayGF": 0.82,
+          "awayGA": 1.54,
+          "matches": 114
+        }
+      }
+    },
+    "albion": {
+      "schemaVersion": "3.15-bayes-big5",
+      "leagueId": "albion",
+      "leagueName": "Premier League (Albion League)",
+      "engine": "TimeDecayedBayesDixonColes",
+      "dataSource": "Real Europe Big-5 Clean-Room Scorelines 2023-2026 (5256 matches, europe_big5_cleanroom_2023_2026.csv)",
+      "dateRange": {
+        "start": "2023-08-11",
+        "end": "2026-05-24"
+      },
+      "totalMatches": 1140,
+      "uniqueClubs": 25,
+      "hyperparameters": {
+        "xi": 0.002,
+        "priorVar": 0.25
+      },
+      "global": {
+        "mu": 0.24222,
+        "homeAdvantage": 0.16892,
+        "rho": -0.10079,
+        "leagueHomeAvg": 1.6132,
+        "leagueAwayAvg": 1.3746
+      },
+      "backtest": {
+        "evaluatedMatches": 760,
+        "baselineRPS": 0.20839,
+        "bayesRPS": 0.20465,
+        "rpsImprovementPct": 1.79,
+        "baselineLogLoss": 1.01912,
+        "bayesLogLoss": 1.0023,
+        "logLossImprovementPct": 1.65,
+        "baselineBrier": 0.60925,
+        "bayesBrier": 0.60022,
+        "brierImprovementPct": 1.48,
+        "baselineECE": 0.03872,
+        "bayesECE": 0.01664,
+        "eceImprovementPct": 57.02
+      },
+      "teams": {
+        "BDF": {
+          "alpha": 0.02653,
+          "beta": 0.35919,
+          "homeGF": 1.47,
+          "homeGA": 1.95,
+          "awayGF": 1.26,
+          "awayGA": 2.53,
+          "matches": 38
+        },
+        "DOR": {
+          "alpha": 0.13567,
+          "beta": -0.08952,
+          "homeGF": 1.39,
+          "homeGA": 1.12,
+          "awayGF": 1.6,
+          "awayGA": 1.81,
+          "matches": 114
+        },
+        "ELH": {
+          "alpha": -0.02967,
+          "beta": 0.10001,
+          "homeGF": 1.42,
+          "homeGA": 1.61,
+          "awayGF": 1.25,
+          "awayGA": 1.91,
+          "matches": 114
+        },
+        "EML": {
+          "alpha": -0.42222,
+          "beta": 0.30365,
+          "homeGF": 0.79,
+          "homeGA": 1.79,
+          "awayGF": 0.95,
+          "awayGA": 2.42,
+          "matches": 38
+        },
+        "HMP": {
+          "alpha": -0.56835,
+          "beta": 0.38298,
+          "homeGF": 0.68,
+          "homeGA": 2.47,
+          "awayGF": 0.68,
+          "awayGA": 2.05,
+          "matches": 38
+        },
+        "LAN": {
+          "alpha": -0.22985,
+          "beta": 0.24522,
+          "homeGF": 0.97,
+          "homeGA": 1.89,
+          "awayGF": 1.11,
+          "awayGA": 2.13,
+          "matches": 76
+        },
+        "MCB": {
+          "alpha": 0.42088,
+          "beta": -0.41245,
+          "homeGF": 2.44,
+          "homeGA": 0.93,
+          "awayGF": 1.86,
+          "awayGA": 1.05,
+          "matches": 114
+        },
+        "MCR": {
+          "alpha": 0.18815,
+          "beta": -0.10215,
+          "homeGF": 1.63,
+          "homeGA": 1.4,
+          "awayGF": 1.35,
+          "awayGA": 1.44,
+          "matches": 114
+        },
+        "MDL": {
+          "alpha": 0.1705,
+          "beta": -0.1038,
+          "homeGF": 2.0,
+          "homeGA": 1.23,
+          "awayGF": 1.33,
+          "awayGA": 1.6,
+          "matches": 114
+        },
+        "MRB": {
+          "alpha": -0.10442,
+          "beta": -0.17679,
+          "homeGF": 1.3,
+          "homeGA": 1.19,
+          "awayGF": 0.96,
+          "awayGA": 1.35,
+          "matches": 114
+        },
+        "MRY": {
+          "alpha": 0.35975,
+          "beta": -0.14349,
+          "homeGF": 2.19,
+          "homeGA": 0.93,
+          "awayGF": 1.93,
+          "awayGA": 1.44,
+          "matches": 114
+        },
+        "NLR": {
+          "alpha": 0.34213,
+          "beta": -0.63645,
+          "homeGF": 2.18,
+          "homeGA": 0.77,
+          "awayGF": 1.88,
+          "awayGA": 0.81,
+          "matches": 114
+        },
+        "NLW": {
+          "alpha": 0.07684,
+          "beta": 0.05907,
+          "homeGF": 1.67,
+          "homeGA": 1.63,
+          "awayGF": 1.6,
+          "awayGA": 1.58,
+          "matches": 114
+        },
+        "SHR": {
+          "alpha": 0.04117,
+          "beta": -0.11728,
+          "homeGF": 1.28,
+          "homeGA": 1.21,
+          "awayGF": 1.44,
+          "awayGA": 1.67,
+          "matches": 114
+        },
+        "SLD": {
+          "alpha": -0.05694,
+          "beta": -0.08012,
+          "homeGF": 1.4,
+          "homeGA": 1.32,
+          "awayGF": 1.21,
+          "awayGA": 1.49,
+          "matches": 114
+        },
+        "SSX": {
+          "alpha": 0.10221,
+          "beta": -0.10022,
+          "homeGF": 1.58,
+          "homeGA": 1.28,
+          "awayGF": 1.46,
+          "awayGA": 1.65,
+          "matches": 114
+        },
+        "SUF": {
+          "alpha": -0.31366,
+          "beta": 0.36007,
+          "homeGF": 0.74,
+          "homeGA": 2.32,
+          "awayGF": 1.16,
+          "awayGA": 2.0,
+          "matches": 38
+        },
+        "SYK": {
+          "alpha": -0.28376,
+          "beta": 0.52979,
+          "homeGF": 1.0,
+          "homeGA": 3.0,
+          "awayGF": 0.84,
+          "awayGA": 2.47,
+          "matches": 38
+        },
+        "THM": {
+          "alpha": 0.15037,
+          "beta": -0.04267,
+          "homeGF": 1.79,
+          "homeGA": 1.58,
+          "awayGF": 1.32,
+          "awayGA": 1.47,
+          "matches": 114
+        },
+        "TYN": {
+          "alpha": 0.21422,
+          "beta": -0.04871,
+          "homeGF": 2.19,
+          "homeGA": 1.26,
+          "awayGF": 1.42,
+          "awayGA": 1.61,
+          "matches": 114
+        },
+        "WLB": {
+          "alpha": 0.18854,
+          "beta": -0.09796,
+          "homeGF": 1.84,
+          "homeGA": 1.21,
+          "awayGF": 1.65,
+          "awayGA": 1.56,
+          "matches": 114
+        },
+        "WLF": {
+          "alpha": -0.01775,
+          "beta": -0.09291,
+          "homeGF": 1.54,
+          "homeGA": 1.3,
+          "awayGF": 1.19,
+          "awayGA": 1.61,
+          "matches": 114
+        },
+        "WMD": {
+          "alpha": -0.27332,
+          "beta": 0.12866,
+          "homeGF": 1.26,
+          "homeGA": 1.68,
+          "awayGF": 1.04,
+          "awayGA": 1.86,
+          "matches": 114
+        },
+        "WRS": {
+          "alpha": -0.13355,
+          "beta": -0.16634,
+          "homeGF": 1.32,
+          "homeGA": 1.05,
+          "awayGF": 0.89,
+          "awayGA": 1.47,
+          "matches": 38
+        },
+        "YRK": {
+          "alpha": 0.01653,
+          "beta": -0.06246,
+          "homeGF": 1.53,
+          "homeGA": 1.11,
+          "awayGF": 1.05,
+          "awayGA": 1.84,
+          "matches": 38
+        }
+      }
+    },
+    "iberia": {
+      "schemaVersion": "3.15-bayes-big5",
+      "leagueId": "iberia",
+      "leagueName": "La Liga (Iberia Cup)",
+      "engine": "TimeDecayedBayesDixonColes",
+      "dataSource": "Real Europe Big-5 Clean-Room Scorelines 2023-2026 (5256 matches, europe_big5_cleanroom_2023_2026.csv)",
+      "dateRange": {
+        "start": "2023-08-11",
+        "end": "2026-05-24"
+      },
+      "totalMatches": 1140,
+      "uniqueClubs": 26,
+      "hyperparameters": {
+        "xi": 0.002,
+        "priorVar": 0.25
+      },
+      "global": {
+        "mu": 0.07682,
+        "homeAdvantage": 0.29412,
+        "rho": 0.01249,
+        "leagueHomeAvg": 1.5035,
+        "leagueAwayAvg": 1.1491
+      },
+      "backtest": {
+        "evaluatedMatches": 760,
+        "baselineRPS": 0.20541,
+        "bayesRPS": 0.19976,
+        "rpsImprovementPct": 2.75,
+        "baselineLogLoss": 1.00145,
+        "bayesLogLoss": 0.98156,
+        "logLossImprovementPct": 1.99,
+        "baselineBrier": 0.59511,
+        "bayesBrier": 0.58299,
+        "brierImprovementPct": 2.04,
+        "baselineECE": 0.02208,
+        "bayesECE": 0.02436,
+        "eceImprovementPct": -10.33
+      },
+      "teams": {
+        "ALM": {
+          "alpha": -0.02288,
+          "beta": 0.28042,
+          "homeGF": 1.16,
+          "homeGA": 1.89,
+          "awayGF": 1.11,
+          "awayGA": 2.05,
+          "matches": 38
+        },
+        "ALV": {
+          "alpha": -0.08399,
+          "beta": -0.01614,
+          "homeGF": 1.09,
+          "homeGA": 1.07,
+          "awayGF": 0.98,
+          "awayGA": 1.56,
+          "matches": 114
+        },
+        "AND": {
+          "alpha": 0.21913,
+          "beta": -0.07715,
+          "homeGF": 1.63,
+          "homeGA": 1.04,
+          "awayGF": 1.25,
+          "awayGA": 1.47,
+          "matches": 114
+        },
+        "AST": {
+          "alpha": -0.48646,
+          "beta": 0.08814,
+          "homeGF": 0.47,
+          "homeGA": 0.95,
+          "awayGF": 0.89,
+          "awayGA": 2.21,
+          "matches": 38
+        },
+        "BAR": {
+          "alpha": -0.08726,
+          "beta": -0.0002,
+          "homeGF": 1.16,
+          "homeGA": 1.16,
+          "awayGF": 1.03,
+          "awayGA": 1.63,
+          "matches": 76
+        },
+        "BLR": {
+          "alpha": -0.08392,
+          "beta": -0.03933,
+          "homeGF": 1.19,
+          "homeGA": 1.02,
+          "awayGF": 0.82,
+          "awayGA": 1.53,
+          "matches": 114
+        },
+        "BSQ": {
+          "alpha": 0.05073,
+          "beta": -0.11214,
+          "homeGF": 1.68,
+          "homeGA": 0.91,
+          "awayGF": 1.09,
+          "awayGA": 1.26,
+          "matches": 114
+        },
+        "CAT": {
+          "alpha": 0.68743,
+          "beta": -0.29359,
+          "homeGF": 2.67,
+          "homeGA": 0.89,
+          "awayGF": 2.18,
+          "awayGA": 1.19,
+          "matches": 114
+        },
+        "CDZ": {
+          "alpha": -0.4439,
+          "beta": 0.03602,
+          "homeGF": 0.84,
+          "homeGA": 1.0,
+          "awayGF": 0.53,
+          "awayGA": 1.89,
+          "matches": 38
+        },
+        "CNR": {
+          "alpha": -0.21746,
+          "beta": 0.0672,
+          "homeGF": 1.08,
+          "homeGA": 1.29,
+          "awayGF": 0.84,
+          "awayGA": 1.55,
+          "matches": 76
+        },
+        "ELC": {
+          "alpha": 0.08392,
+          "beta": 0.07461,
+          "homeGF": 1.58,
+          "homeGA": 1.0,
+          "awayGF": 1.0,
+          "awayGA": 2.0,
+          "matches": 38
+        },
+        "GAL": {
+          "alpha": 0.16897,
+          "beta": -0.02414,
+          "homeGF": 1.44,
+          "homeGA": 1.26,
+          "awayGF": 1.33,
+          "awayGA": 1.58,
+          "matches": 114
+        },
+        "GIR": {
+          "alpha": 0.01533,
+          "beta": 0.01452,
+          "homeGF": 1.77,
+          "homeGA": 1.35,
+          "awayGF": 1.18,
+          "awayGA": 1.47,
+          "matches": 114
+        },
+        "GRN": {
+          "alpha": -0.17178,
+          "beta": 0.35313,
+          "homeGF": 1.26,
+          "homeGA": 1.68,
+          "awayGF": 0.74,
+          "awayGA": 2.47,
+          "matches": 38
+        },
+        "GTF": {
+          "alpha": -0.30256,
+          "beta": -0.27898,
+          "homeGF": 0.93,
+          "homeGA": 1.0,
+          "awayGF": 0.96,
+          "awayGA": 1.3,
+          "matches": 114
+        },
+        "LEV": {
+          "alpha": 0.43031,
+          "beta": -0.03374,
+          "homeGF": 2.23,
+          "homeGA": 1.37,
+          "awayGF": 1.42,
+          "awayGA": 1.47,
+          "matches": 114
+        },
+        "LGN": {
+          "alpha": -0.13053,
+          "beta": 0.0508,
+          "homeGF": 1.21,
+          "homeGA": 1.42,
+          "awayGF": 0.84,
+          "awayGA": 1.53,
+          "matches": 38
+        },
+        "LVT": {
+          "alpha": 0.05117,
+          "beta": 0.10836,
+          "homeGF": 1.37,
+          "homeGA": 1.47,
+          "awayGF": 1.11,
+          "awayGA": 1.74,
+          "matches": 38
+        },
+        "MAD": {
+          "alpha": 0.50795,
+          "beta": -0.37605,
+          "homeGF": 2.42,
+          "homeGA": 0.77,
+          "awayGF": 1.82,
+          "awayGA": 0.96,
+          "matches": 114
+        },
+        "MTR": {
+          "alpha": 0.32381,
+          "beta": -0.22859,
+          "homeGF": 2.16,
+          "homeGA": 0.95,
+          "awayGF": 1.35,
+          "awayGA": 1.11,
+          "matches": 114
+        },
+        "NVN": {
+          "alpha": -0.02464,
+          "beta": 0.07035,
+          "homeGF": 1.19,
+          "homeGA": 1.32,
+          "awayGF": 1.19,
+          "awayGA": 1.65,
+          "matches": 114
+        },
+        "NVR": {
+          "alpha": -0.00206,
+          "beta": -0.02767,
+          "homeGF": 1.46,
+          "homeGA": 1.28,
+          "awayGF": 0.95,
+          "awayGA": 1.49,
+          "matches": 114
+        },
+        "SNS": {
+          "alpha": 0.12347,
+          "beta": 0.03893,
+          "homeGF": 1.46,
+          "homeGA": 1.25,
+          "awayGF": 1.09,
+          "awayGA": 1.32,
+          "matches": 114
+        },
+        "TUR": {
+          "alpha": 0.00091,
+          "beta": -0.01474,
+          "homeGF": 1.28,
+          "homeGA": 1.0,
+          "awayGF": 1.0,
+          "awayGA": 1.7,
+          "matches": 114
+        },
+        "VLC": {
+          "alpha": -0.14536,
+          "beta": -0.17697,
+          "homeGF": 1.16,
+          "homeGA": 1.18,
+          "awayGF": 0.79,
+          "awayGA": 1.23,
+          "matches": 114
+        },
+        "VLD": {
+          "alpha": -0.46032,
+          "beta": 0.51306,
+          "homeGF": 0.58,
+          "homeGA": 1.68,
+          "awayGF": 0.79,
+          "awayGA": 3.05,
+          "matches": 38
+        }
+      }
+    },
+    "rheinland": {
+      "schemaVersion": "3.15-bayes-big5",
+      "leagueId": "rheinland",
+      "leagueName": "Bundesliga (Rheinland)",
+      "engine": "TimeDecayedBayesDixonColes",
+      "dataSource": "Real Europe Big-5 Clean-Room Scorelines 2023-2026 (5256 matches, europe_big5_cleanroom_2023_2026.csv)",
+      "dateRange": {
+        "start": "2023-08-18",
+        "end": "2026-05-16"
+      },
+      "totalMatches": 918,
+      "uniqueClubs": 21,
+      "hyperparameters": {
+        "xi": 0.002,
+        "priorVar": 0.25
+      },
+      "global": {
+        "mu": 0.32248,
+        "homeAdvantage": 0.17087,
+        "rho": -0.06873,
+        "leagueHomeAvg": 1.7386,
+        "leagueAwayAvg": 1.4575
+      },
+      "backtest": {
+        "evaluatedMatches": 612,
+        "baselineRPS": 0.21197,
+        "bayesRPS": 0.20498,
+        "rpsImprovementPct": 3.3,
+        "baselineLogLoss": 1.02941,
+        "bayesLogLoss": 1.00417,
+        "logLossImprovementPct": 2.45,
+        "baselineBrier": 0.61201,
+        "bayesBrier": 0.59727,
+        "brierImprovementPct": 2.41,
+        "baselineECE": 0.0458,
+        "bayesECE": 0.02391,
+        "eceImprovementPct": 47.79
+      },
+      "teams": {
+        "ALR": {
+          "alpha": -0.06554,
+          "beta": 0.10424,
+          "homeGF": 1.43,
+          "homeGA": 1.71,
+          "awayGF": 1.35,
+          "awayGA": 1.8,
+          "matches": 102
+        },
+        "AUG": {
+          "alpha": -0.14788,
+          "beta": 0.01157,
+          "homeGF": 1.35,
+          "homeGA": 1.45,
+          "awayGF": 1.2,
+          "awayGA": 1.92,
+          "matches": 102
+        },
+        "BCH": {
+          "alpha": -0.30583,
+          "beta": 0.18767,
+          "homeGF": 1.24,
+          "homeGA": 1.82,
+          "awayGF": 0.97,
+          "awayGA": 2.32,
+          "matches": 68
+        },
+        "BDR": {
+          "alpha": 0.17553,
+          "beta": 0.06345,
+          "homeGF": 1.78,
+          "homeGA": 1.73,
+          "awayGF": 1.69,
+          "awayGA": 1.92,
+          "matches": 102
+        },
+        "BLK": {
+          "alpha": 0.00138,
+          "beta": 0.00246,
+          "homeGF": 1.82,
+          "homeGA": 1.53,
+          "awayGF": 1.02,
+          "awayGA": 1.76,
+          "matches": 102
+        },
+        "DRM": {
+          "alpha": -0.44257,
+          "beta": 0.37295,
+          "homeGF": 0.88,
+          "homeGA": 2.59,
+          "awayGF": 0.88,
+          "awayGA": 2.47,
+          "matches": 34
+        },
+        "ELB": {
+          "alpha": -0.17098,
+          "beta": -0.03481,
+          "homeGF": 1.47,
+          "homeGA": 1.29,
+          "awayGF": 0.88,
+          "awayGA": 1.88,
+          "matches": 34
+        },
+        "HDH": {
+          "alpha": -0.15973,
+          "beta": 0.15886,
+          "homeGF": 1.29,
+          "homeGA": 1.88,
+          "awayGF": 1.22,
+          "awayGA": 1.86,
+          "matches": 102
+        },
+        "ISR": {
+          "alpha": 0.76893,
+          "beta": -0.32846,
+          "homeGF": 3.41,
+          "homeGA": 0.92,
+          "awayGF": 2.76,
+          "awayGA": 1.29,
+          "matches": 102
+        },
+        "KIL": {
+          "alpha": 0.00057,
+          "beta": 0.31961,
+          "homeGF": 1.41,
+          "homeGA": 2.41,
+          "awayGF": 1.47,
+          "awayGA": 2.29,
+          "matches": 34
+        },
+        "KLN": {
+          "alpha": -0.09297,
+          "beta": 0.11572,
+          "homeGF": 1.32,
+          "homeGA": 1.71,
+          "awayGF": 0.94,
+          "awayGA": 1.91,
+          "matches": 68
+        },
+        "MNE": {
+          "alpha": 0.18774,
+          "beta": 0.02922,
+          "homeGF": 1.94,
+          "homeGA": 1.37,
+          "awayGF": 1.59,
+          "awayGA": 1.78,
+          "matches": 102
+        },
+        "MNZ": {
+          "alpha": -0.05992,
+          "beta": -0.12806,
+          "homeGF": 1.33,
+          "homeGA": 1.2,
+          "awayGF": 1.37,
+          "awayGA": 1.69,
+          "matches": 102
+        },
+        "NRW": {
+          "alpha": -0.03836,
+          "beta": -0.00693,
+          "homeGF": 1.57,
+          "homeGA": 1.49,
+          "awayGF": 1.43,
+          "awayGA": 1.98,
+          "matches": 102
+        },
+        "RHR": {
+          "alpha": 0.3254,
+          "beta": -0.31438,
+          "homeGF": 2.37,
+          "homeGA": 1.12,
+          "awayGF": 1.73,
+          "awayGA": 1.39,
+          "matches": 102
+        },
+        "RHW": {
+          "alpha": 0.3401,
+          "beta": -0.24386,
+          "homeGF": 2.37,
+          "homeGA": 1.02,
+          "awayGF": 2.12,
+          "awayGA": 1.22,
+          "matches": 102
+        },
+        "SPW": {
+          "alpha": -0.20061,
+          "beta": -3e-05,
+          "homeGF": 1.29,
+          "homeGA": 1.55,
+          "awayGF": 0.9,
+          "awayGA": 1.73,
+          "matches": 102
+        },
+        "STP": {
+          "alpha": -0.53742,
+          "beta": -0.0553,
+          "homeGF": 0.79,
+          "homeGA": 1.47,
+          "awayGF": 0.88,
+          "awayGA": 1.5,
+          "matches": 68
+        },
+        "SWB": {
+          "alpha": 0.33974,
+          "beta": -0.12103,
+          "homeGF": 2.25,
+          "homeGA": 1.14,
+          "awayGF": 1.92,
+          "awayGA": 1.63,
+          "matches": 102
+        },
+        "SXY": {
+          "alpha": 0.23378,
+          "beta": -0.15056,
+          "homeGF": 2.22,
+          "homeGA": 1.08,
+          "awayGF": 1.63,
+          "awayGA": 1.55,
+          "matches": 102
+        },
+        "WSR": {
+          "alpha": -0.15135,
+          "beta": 0.01316,
+          "homeGF": 1.35,
+          "homeGA": 1.63,
+          "awayGF": 1.37,
+          "awayGA": 1.73,
+          "matches": 102
+        }
+      }
+    },
+    "gallia": {
+      "schemaVersion": "3.15-bayes-big5",
+      "leagueId": "gallia",
+      "leagueName": "Ligue 1 (Gallia Pro)",
+      "engine": "TimeDecayedBayesDixonColes",
+      "dataSource": "Real Europe Big-5 Clean-Room Scorelines 2023-2026 (5256 matches, europe_big5_cleanroom_2023_2026.csv)",
+      "dateRange": {
+        "start": "2023-08-11",
+        "end": "2026-05-17"
+      },
+      "totalMatches": 918,
+      "uniqueClubs": 22,
+      "hyperparameters": {
+        "xi": 0.002,
+        "priorVar": 0.25
+      },
+      "global": {
+        "mu": 0.19672,
+        "homeAdvantage": 0.19007,
+        "rho": -0.05064,
+        "leagueHomeAvg": 1.5458,
+        "leagueAwayAvg": 1.2865
+      },
+      "backtest": {
+        "evaluatedMatches": 612,
+        "baselineRPS": 0.2136,
+        "bayesRPS": 0.20906,
+        "rpsImprovementPct": 2.13,
+        "baselineLogLoss": 1.00868,
+        "bayesLogLoss": 0.99353,
+        "logLossImprovementPct": 1.5,
+        "baselineBrier": 0.6027,
+        "bayesBrier": 0.59263,
+        "brierImprovementPct": 1.67,
+        "baselineECE": 0.02872,
+        "bayesECE": 0.01984,
+        "eceImprovementPct": 30.92
+      },
+      "teams": {
+        "ALS": {
+          "alpha": 0.20564,
+          "beta": -0.04018,
+          "homeGF": 1.67,
+          "homeGA": 1.22,
+          "awayGF": 1.31,
+          "awayGA": 1.55,
+          "matches": 102
+        },
+        "ANJ": {
+          "alpha": -0.39052,
+          "beta": -0.01203,
+          "homeGF": 1.06,
+          "homeGA": 1.56,
+          "awayGF": 0.74,
+          "awayGA": 1.41,
+          "matches": 68
+        },
+        "ART": {
+          "alpha": 0.22885,
+          "beta": -0.26222,
+          "homeGF": 1.59,
+          "homeGA": 1.04,
+          "awayGF": 1.41,
+          "awayGA": 1.14,
+          "matches": 102
+        },
+        "AUV": {
+          "alpha": -0.40124,
+          "beta": 0.17828,
+          "homeGF": 0.82,
+          "homeGA": 1.59,
+          "awayGF": 0.71,
+          "awayGA": 1.94,
+          "matches": 34
+        },
+        "AZR": {
+          "alpha": 0.01165,
+          "beta": 0.01183,
+          "homeGF": 1.53,
+          "homeGA": 1.04,
+          "awayGF": 1.27,
+          "awayGA": 1.51,
+          "matches": 102
+        },
+        "BRT": {
+          "alpha": 0.23945,
+          "beta": 0.01349,
+          "homeGF": 1.75,
+          "homeGA": 1.18,
+          "awayGF": 1.45,
+          "awayGA": 1.69,
+          "matches": 102
+        },
+        "BRY": {
+          "alpha": -0.10601,
+          "beta": -0.09589,
+          "homeGF": 1.24,
+          "homeGA": 1.0,
+          "awayGF": 1.18,
+          "awayGA": 1.79,
+          "matches": 68
+        },
+        "CHP": {
+          "alpha": -0.26598,
+          "beta": -0.05394,
+          "homeGF": 1.06,
+          "homeGA": 1.26,
+          "awayGF": 1.15,
+          "awayGA": 1.5,
+          "matches": 68
+        },
+        "FIN": {
+          "alpha": 0.05024,
+          "beta": 0.07639,
+          "homeGF": 1.65,
+          "homeGA": 1.14,
+          "awayGF": 1.25,
+          "awayGA": 1.76,
+          "matches": 102
+        },
+        "FLN": {
+          "alpha": 0.11097,
+          "beta": -0.32084,
+          "homeGF": 1.75,
+          "homeGA": 0.96,
+          "awayGF": 1.31,
+          "awayGA": 1.14,
+          "matches": 102
+        },
+        "FOR": {
+          "alpha": -0.06783,
+          "beta": 0.41817,
+          "homeGF": 1.41,
+          "homeGA": 1.94,
+          "awayGF": 0.88,
+          "awayGA": 2.59,
+          "matches": 34
+        },
+        "GAR": {
+          "alpha": 0.01681,
+          "beta": -0.08322,
+          "homeGF": 1.29,
+          "homeGA": 1.39,
+          "awayGF": 1.31,
+          "awayGA": 1.25,
+          "matches": 102
+        },
+        "LOI": {
+          "alpha": -0.33189,
+          "beta": 0.02213,
+          "homeGF": 1.06,
+          "homeGA": 1.47,
+          "awayGF": 0.86,
+          "awayGA": 1.65,
+          "matches": 102
+        },
+        "LRN": {
+          "alpha": -0.26654,
+          "beta": 0.35371,
+          "homeGF": 0.94,
+          "homeGA": 1.74,
+          "awayGF": 1.03,
+          "awayGA": 2.21,
+          "matches": 68
+        },
+        "LUT": {
+          "alpha": 0.5468,
+          "beta": -0.39648,
+          "homeGF": 2.51,
+          "homeGA": 0.98,
+          "awayGF": 2.33,
+          "awayGA": 0.92,
+          "matches": 102
+        },
+        "MNC": {
+          "alpha": 0.32651,
+          "beta": 0.00164,
+          "homeGF": 1.98,
+          "homeGA": 1.04,
+          "awayGF": 1.76,
+          "awayGA": 1.65,
+          "matches": 102
+        },
+        "MRH": {
+          "alpha": 0.06797,
+          "beta": 0.04896,
+          "homeGF": 1.68,
+          "homeGA": 1.62,
+          "awayGF": 1.0,
+          "awayGA": 1.82,
+          "matches": 68
+        },
+        "NRM": {
+          "alpha": -0.22191,
+          "beta": 0.03069,
+          "homeGF": 1.04,
+          "homeGA": 1.53,
+          "awayGF": 1.04,
+          "awayGA": 1.61,
+          "matches": 102
+        },
+        "OCC": {
+          "alpha": -0.40148,
+          "beta": 0.30782,
+          "homeGF": 1.09,
+          "homeGA": 1.88,
+          "awayGF": 0.85,
+          "awayGA": 1.85,
+          "matches": 68
+        },
+        "PHO": {
+          "alpha": 0.33528,
+          "beta": -0.05563,
+          "homeGF": 2.22,
+          "homeGA": 1.1,
+          "awayGF": 1.49,
+          "awayGA": 1.51,
+          "matches": 102
+        },
+        "RHO": {
+          "alpha": 0.23492,
+          "beta": -0.09511,
+          "homeGF": 1.8,
+          "homeGA": 1.33,
+          "awayGF": 1.47,
+          "awayGA": 1.43,
+          "matches": 102
+        },
+        "SEN": {
+          "alpha": 0.07829,
+          "beta": -0.04477,
+          "homeGF": 1.65,
+          "homeGA": 1.59,
+          "awayGF": 1.12,
+          "awayGA": 1.35,
+          "matches": 34
+        }
+      }
+    }
+  }
+}

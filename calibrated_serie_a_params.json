@@ -1,7 +1,9 @@
 {
-  "schemaVersion": "3.12-bayes-etl",
+  "schemaVersion": "3.15-bayes-big5",
+  "leagueId": "calcio",
+  "leagueName": "Serie A (Calcio Classic)",
   "engine": "TimeDecayedBayesDixonColes",
-  "dataSource": "Real Serie A Clean-Room Scorelines 2023-2026 (1140 matches, serie_a_cleanroom_2023_2026.csv)",
+  "dataSource": "Real Europe Big-5 Clean-Room Scorelines 2023-2026 (5256 matches, europe_big5_cleanroom_2023_2026.csv)",
   "dateRange": {
     "start": "2023-08-19",
     "end": "2026-05-24"
@@ -13,9 +15,9 @@
     "priorVar": 0.25
   },
   "global": {
-    "mu": 0.10869,
-    "homeAdvantage": 0.10907,
-    "rho": -0.03205,
+    "mu": 0.10859,
+    "homeAdvantage": 0.10915,
+    "rho": -0.03209,
     "leagueHomeAvg": 1.35,
     "leagueAwayAvg": 1.1825
   },
@@ -28,13 +30,16 @@
     "bayesLogLoss": 0.98832,
     "logLossImprovementPct": 1.96,
     "baselineBrier": 0.60338,
-    "bayesBrier": 0.59075,
-    "brierImprovementPct": 2.09
+    "bayesBrier": 0.59076,
+    "brierImprovementPct": 2.09,
+    "baselineECE": 0.03196,
+    "bayesECE": 0.01836,
+    "eceImprovementPct": 42.55
   },
   "teams": {
     "AMB": {
-      "alpha": 0.66185,
-      "beta": -0.33244,
+      "alpha": 0.66187,
+      "beta": -0.33241,
       "homeGF": 2.35,
       "homeGA": 0.84,
       "awayGF": 2.16,
@@ -43,7 +48,7 @@
     },
     "BRG": {
       "alpha": 0.33388,
-      "beta": -0.25935,
+      "beta": -0.25932,
       "homeGF": 1.81,
       "homeGA": 0.96,
       "awayGF": 1.72,
@@ -51,8 +56,8 @@
       "matches": 114
     },
     "CAG": {
-      "alpha": -0.0465,
-      "beta": 0.11883,
+      "alpha": -0.04649,
+      "beta": 0.11886,
       "homeGF": 1.3,
       "homeGA": 1.46,
       "awayGF": 0.84,
@@ -61,7 +66,7 @@
     },
     "CAP": {
       "alpha": 0.32153,
-      "beta": -0.33717,
+      "beta": -0.33714,
       "homeGF": 1.89,
       "homeGA": 0.77,
       "awayGF": 1.26,
@@ -69,8 +74,8 @@
       "matches": 114
     },
     "COM": {
-      "alpha": 0.334,
-      "beta": -0.28334,
+      "alpha": 0.33399,
+      "beta": -0.28331,
       "homeGF": 1.66,
       "homeGA": 1.08,
       "awayGF": 1.34,
@@ -78,8 +83,8 @@
       "matches": 76
     },
     "CRE": {
-      "alpha": -0.28341,
-      "beta": 0.1539,
+      "alpha": -0.28333,
+      "beta": 0.15396,
       "homeGF": 0.95,
       "homeGA": 1.53,
       "awayGF": 0.74,
@@ -87,8 +92,8 @@
       "matches": 38
     },
     "EMP": {
-      "alpha": -0.26294,
-      "beta": 0.1548,
+      "alpha": -0.26293,
+      "beta": 0.15483,
       "homeGF": 0.66,
       "homeGA": 1.29,
       "awayGF": 0.97,
@@ -97,7 +102,7 @@
     },
     "FEL": {
       "alpha": 0.17766,
-      "beta": -0.08248,
+      "beta": -0.08245,
       "homeGF": 1.49,
       "homeGA": 0.93,
       "awayGF": 1.32,
@@ -105,8 +110,8 @@
       "matches": 114
     },
     "FLR": {
-      "alpha": 0.12856,
-      "beta": -0.05423,
+      "alpha": 0.12857,
+      "beta": -0.0542,
       "homeGF": 1.58,
       "homeGA": 1.07,
       "awayGF": 1.26,
@@ -114,8 +119,8 @@
       "matches": 114
     },
     "FRO": {
-      "alpha": -0.03326,
-      "beta": 0.29759,
+      "alpha": -0.03338,
+      "beta": 0.2975,
       "homeGF": 1.47,
       "homeGA": 1.68,
       "awayGF": 0.84,
@@ -123,8 +128,8 @@
       "matches": 38
     },
     "GEN": {
-      "alpha": -0.05129,
-      "beta": -0.01147,
+      "alpha": -0.05128,
+      "beta": -0.01142,
       "homeGF": 1.23,
       "homeGA": 1.28,
       "awayGF": 0.93,
@@ -132,8 +137,8 @@
       "matches": 114
     },
     "LEC": {
-      "alpha": -0.38766,
-      "beta": 0.03837,
+      "alpha": -0.3876,
+      "beta": 0.0384,
       "homeGF": 0.75,
       "homeGA": 1.44,
       "awayGF": 0.77,
@@ -141,8 +146,8 @@
       "matches": 114
     },
     "MIL": {
-      "alpha": 0.27718,
-      "beta": -0.1847,
+      "alpha": 0.27717,
+      "beta": -0.18466,
       "homeGF": 1.63,
       "homeGA": 0.95,
       "awayGF": 1.7,
@@ -151,7 +156,7 @@
     },
     "MON": {
       "alpha": -0.28988,
-      "beta": 0.26372,
+      "beta": 0.26373,
       "homeGF": 0.95,
       "homeGA": 1.5,
       "awayGF": 0.82,
@@ -159,8 +164,8 @@
       "matches": 76
     },
     "PAR": {
-      "alpha": -0.23655,
-      "beta": -0.01527,
+      "alpha": -0.23652,
+      "beta": -0.01524,
       "homeGF": 1.08,
       "homeGA": 1.39,
       "awayGF": 0.82,
@@ -168,8 +173,8 @@
       "matches": 76
     },
     "PIS": {
-      "alpha": -0.45652,
-      "beta": 0.37076,
+      "alpha": -0.45661,
+      "beta": 0.37079,
       "homeGF": 0.47,
       "homeGA": 1.37,
       "awayGF": 0.89,
@@ -178,7 +183,7 @@
     },
     "PRT": {
       "alpha": 0.26833,
-      "beta": -0.3081,
+      "beta": -0.30808,
       "homeGF": 1.56,
       "homeGA": 1.02,
       "awayGF": 1.46,
@@ -186,8 +191,8 @@
       "matches": 114
     },
     "SAL": {
-      "alpha": -0.22808,
-      "beta": 0.45124,
+      "alpha": -0.22819,
+      "beta": 0.45117,
       "homeGF": 0.89,
       "homeGA": 2.0,
       "awayGF": 0.79,
@@ -195,8 +200,8 @@
       "matches": 38
     },
     "SAS": {
-      "alpha": 0.04464,
-      "beta": 0.10772,
+      "alpha": 0.0446,
+      "beta": 0.10775,
       "homeGF": 1.26,
       "homeGA": 1.58,
       "awayGF": 1.08,
@@ -204,8 +209,8 @@
       "matches": 76
     },
     "TBR": {
-      "alpha": 0.08669,
-      "beta": -0.13114,
+      "alpha": 0.0867,
+      "beta": -0.1311,
       "homeGF": 1.46,
       "homeGA": 1.14,
       "awayGF": 1.19,
@@ -213,8 +218,8 @@
       "matches": 114
     },
     "TOR": {
-      "alpha": 0.28888,
-      "beta": -0.32994,
+      "alpha": 0.28889,
+      "beta": -0.32991,
       "homeGF": 1.61,
       "homeGA": 0.74,
       "awayGF": 1.42,
@@ -222,8 +227,8 @@
       "matches": 114
     },
     "TRG": {
-      "alpha": -0.02073,
-      "beta": 0.09078,
+      "alpha": -0.02071,
+      "beta": 0.09081,
       "homeGF": 1.09,
       "homeGA": 0.98,
       "awayGF": 1.0,
@@ -231,8 +236,8 @@
       "matches": 114
     },
     "UDI": {
-      "alpha": -0.00641,
-      "beta": 0.01097,
+      "alpha": -0.00639,
+      "beta": 0.01102,
       "homeGF": 1.07,
       "homeGA": 1.35,
       "awayGF": 1.09,
@@ -240,7 +245,7 @@
       "matches": 114
     },
     "VEN": {
-      "alpha": -0.24038,
+      "alpha": -0.24035,
       "beta": 0.10484,
       "homeGF": 0.89,
       "homeGA": 1.16,
@@ -249,8 +254,8 @@
       "matches": 38
     },
     "VER": {
-      "alpha": -0.37957,
-      "beta": 0.17216,
+      "alpha": -0.37952,
+      "beta": 0.1722,
       "homeGF": 0.88,
       "homeGA": 1.58,
       "awayGF": 0.82,
