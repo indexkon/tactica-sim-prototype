@@ -3,7 +3,7 @@
 <head>
  <meta charset="UTF-8" />
  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
- <title>TACTICA.SIM S.r.l. — Dixon-Coles Quantitative Football Simulation, EdTech & Coach Engine (v3.12 MIMIT Bayes-Calibrated)</title>
+ <title>TACTICA.SIM S.r.l. — Dixon-Coles, Empirical Bayes & 12×8 Spatial xT Engine (v3.13 MIMIT)</title>
  <!-- Load Tailwind CSS -->
  <script src="https://cdn.tailwindcss.com"></script>
  <!-- Load Inter & JetBrains Mono Fonts -->
@@ -947,6 +947,9 @@
  <span id="sim-mode-pill" class="text-slate-400 truncate">经典对决</span>
  </div>
  <div class="flex items-center gap-1 shrink-0">
+ <button id="sim-xt-btn" onclick="toggleXtHeatmap()" title="Toggle 12×8 Spatial Markov xT Heatmap" class="px-2 py-1 rounded-lg bg-emeraldai/20 border border-emeraldai/50 font-mono text-[10.5px] font-bold text-emeraldai transition">
+ xT ●
+ </button>
  <button id="sim-speed-btn" onclick="cycleSimSpeed()" class="px-2 py-1 rounded-lg bg-card/90 hover:bg-cardhover font-mono text-[11px] font-bold text-cyanai transition">
  1x
  </button>
@@ -1012,7 +1015,7 @@
  </div>
  <div class="flex justify-between items-center font-mono text-[10px] text-slate-400">
  <span><span class="text-emeraldai font-bold" id="sim-prob-h">44%</span> · <span id="lbl-user-stam">体能</span> <strong id="sim-stam-user" class="text-slate-200">100%</strong></span>
- <span class="text-slate-300">xG <strong id="sim-xg-h" class="text-white">0.00</strong> - <strong id="sim-xg-a" class="text-white">0.00</strong></span>
+ <span class="text-slate-300">xG <strong id="sim-xg-h" class="text-white">0.00</strong>-<strong id="sim-xg-a" class="text-white">0.00</strong> · <span class="text-gold">xT</span> <strong id="sim-xt-h" class="text-gold">0.00</strong>-<strong id="sim-xt-a" class="text-gold">0.00</strong></span>
  <span><span id="lbl-opp-stam">对手</span> <strong id="sim-stam-opp" class="text-slate-200">100%</strong> · <span class="text-cyanai font-bold" id="sim-prob-a">30%</span></span>
  </div>
  </div>
@@ -1140,6 +1143,11 @@
  <span id="sum-xg-h" class="font-mono font-bold text-emeraldai">1.86</span>
  <span id="lbl-sum-xg" class="text-slate-400">Expected Goals (xG)</span>
  <span id="sum-xg-a" class="font-mono font-bold text-cyanai">1.14</span>
+ </div>
+ <div class="flex justify-between items-center">
+ <span id="sum-xt-h" class="font-mono font-bold text-gold">0.94</span>
+ <span id="lbl-sum-xt" class="text-slate-400">Expected Threat (xT)</span>
+ <span id="sum-xt-a" class="font-mono font-bold text-gold">0.68</span>
  </div>
  <div class="flex justify-between items-center">
  <span id="sum-poss-h" class="font-mono font-bold text-white">56%</span>
@@ -1722,6 +1730,67 @@
  return { userMult: 1.0, oppMult: 1.0, isCounter: false, oppArch, noteEn: '', noteIt: '', noteCn: '', recLessonId: 'mod-5' };
  }
 
+ const FALLBACK_XT_MARKOV = {"schemaVersion":"3.13-xt-markov","engine":"SpatialMarkovExpectedThreat","reference":"Singh (2018) 12x8 Absorbing Markov Value Iteration","dimensions":{"nx":12,"ny":8,"states":96},"convergence":{"iterations":28,"tolerance":1e-08,"spectralRadius":0.53243,"analyticalMaxDiff":6.392e-09,"trace":[{"iter":1,"maxDelta":0.377743369,"meanXT":0.009963},{"iter":2,"maxDelta":0.034149401,"meanXT":0.016229},{"iter":3,"maxDelta":0.011018536,"meanXT":0.020254},{"iter":4,"maxDelta":0.004944769,"meanXT":0.022867},{"iter":5,"maxDelta":0.002558595,"meanXT":0.024567},{"iter":6,"maxDelta":0.001479554,"meanXT":0.025654},{"iter":7,"maxDelta":0.000907582,"meanXT":0.02633},{"iter":8,"maxDelta":0.000573574,"meanXT":0.026738},{"iter":9,"maxDelta":0.00037602,"meanXT":0.026978},{"iter":10,"maxDelta":0.000242602,"meanXT":0.027117}]},"summary":{"minXT":0.0037,"maxXT":0.39189,"meanXT":0.02729,"ownBuildUpXT":0.00408,"zone14XT":0.0376,"halfSpaceXT":0.04097,"flankDeliveryXT":0.04204,"centralBoxPeakXT":0.39189},"regimeSummaries":{"balanced":{"zone14XT":0.0376,"flankDeliveryXT":0.04135,"maxXT":0.39189},"highPress":{"zone14XT":0.04557,"flankDeliveryXT":0.04806,"maxXT":0.41324},"catenaccio":{"zone14XT":0.04299,"flankDeliveryXT":0.04462,"maxXT":0.41561},"wingOverload":{"zone14XT":0.03622,"flankDeliveryXT":0.04788,"maxXT":0.39111}},"grid":[[0.0037,0.00439,0.00541,0.00682,0.00871,0.01111,0.01396,0.01829,0.02353,0.03252,0.03816,0.04343],[0.00373,0.00445,0.0055,0.00694,0.00887,0.01127,0.01427,0.01985,0.02519,0.03727,0.04454,0.05115],[0.00372,0.00444,0.0055,0.00696,0.00892,0.01141,0.01527,0.0207,0.02684,0.03458,0.04736,0.06043],[0.00372,0.00445,0.00552,0.00699,0.00896,0.01153,0.01621,0.02131,0.02807,0.0376,0.08466,0.39189],[0.00372,0.00445,0.00552,0.00699,0.00896,0.01153,0.01621,0.02131,0.02807,0.0376,0.08466,0.39189],[0.00372,0.00444,0.0055,0.00696,0.00892,0.01141,0.01527,0.0207,0.02684,0.03458,0.04736,0.06043],[0.00373,0.00445,0.0055,0.00694,0.00887,0.01127,0.01427,0.01985,0.02519,0.03727,0.04454,0.05115],[0.0037,0.00439,0.00541,0.00682,0.00871,0.01111,0.01396,0.01829,0.02353,0.03252,0.03816,0.04343]],"regimes":{"balanced":[[0.0037,0.00439,0.00541,0.00682,0.00871,0.01111,0.01396,0.01829,0.02353,0.03252,0.03816,0.04343],[0.00373,0.00445,0.0055,0.00694,0.00887,0.01127,0.01427,0.01985,0.02519,0.03727,0.04454,0.05115],[0.00372,0.00444,0.0055,0.00696,0.00892,0.01141,0.01527,0.0207,0.02684,0.03458,0.04736,0.06043],[0.00372,0.00445,0.00552,0.00699,0.00896,0.01153,0.01621,0.02131,0.02807,0.0376,0.08466,0.39189],[0.00372,0.00445,0.00552,0.00699,0.00896,0.01153,0.01621,0.02131,0.02807,0.0376,0.08466,0.39189],[0.00372,0.00444,0.0055,0.00696,0.00892,0.01141,0.01527,0.0207,0.02684,0.03458,0.04736,0.06043],[0.00373,0.00445,0.0055,0.00694,0.00887,0.01127,0.01427,0.01985,0.02519,0.03727,0.04454,0.05115],[0.0037,0.00439,0.00541,0.00682,0.00871,0.01111,0.01396,0.01829,0.02353,0.03252,0.03816,0.04343]],"highPress":[[0.00474,0.00562,0.00692,0.00871,0.01111,0.0141,0.01746,0.02367,0.02982,0.03875,0.04482,0.05055],[0.00479,0.00569,0.00704,0.0089,0.01138,0.01436,0.01792,0.02585,0.03194,0.04366,0.05129,0.05825],[0.00477,0.00569,0.00705,0.00896,0.0115,0.01461,0.01922,0.02701,0.03409,0.04251,0.05472,0.06702],[0.00477,0.00571,0.00707,0.00902,0.01159,0.01479,0.02041,0.02781,0.03554,0.04557,0.09191,0.41324],[0.00477,0.00571,0.00707,0.00902,0.01159,0.01479,0.02041,0.02781,0.03554,0.04557,0.09191,0.41324],[0.00477,0.00569,0.00705,0.00896,0.0115,0.01461,0.01922,0.02701,0.03409,0.04251,0.05472,0.06702],[0.00479,0.00569,0.00704,0.0089,0.01138,0.01436,0.01792,0.02585,0.03194,0.04366,0.05129,0.05825],[0.00474,0.00562,0.00692,0.00871,0.01111,0.0141,0.01746,0.02367,0.02982,0.03875,0.04482,0.05055]],"catenaccio":[[0.00593,0.00686,0.00823,0.01007,0.01243,0.01521,0.01829,0.02353,0.02979,0.0376,0.04128,0.0466],[0.00604,0.00702,0.00845,0.01037,0.0128,0.01556,0.01885,0.02608,0.03221,0.04281,0.04797,0.05471],[0.00608,0.0071,0.00857,0.01054,0.01303,0.01594,0.02063,0.02743,0.03474,0.03971,0.05099,0.06445],[0.00612,0.00717,0.00865,0.01067,0.01317,0.01623,0.02225,0.02838,0.03658,0.04299,0.09024,0.41561],[0.00612,0.00717,0.00865,0.01067,0.01317,0.01623,0.02225,0.02838,0.03658,0.04299,0.09024,0.41561],[0.00608,0.0071,0.00857,0.01054,0.01303,0.01594,0.02063,0.02743,0.03474,0.03971,0.05099,0.06445],[0.00604,0.00702,0.00845,0.01037,0.0128,0.01556,0.01885,0.02608,0.03221,0.04281,0.04797,0.05471],[0.00593,0.00686,0.00823,0.01007,0.01243,0.01521,0.01829,0.02353,0.02979,0.0376,0.04128,0.0466]],"wingOverload":[[0.00405,0.00482,0.006,0.00761,0.00983,0.01257,0.01573,0.02011,0.02536,0.03828,0.04457,0.0506],[0.00408,0.00485,0.00603,0.00763,0.00982,0.01246,0.01566,0.02104,0.02628,0.04333,0.05119,0.0585],[0.00404,0.00482,0.00597,0.00754,0.00964,0.01226,0.01611,0.02123,0.02692,0.03393,0.04569,0.0579],[0.00403,0.00481,0.00593,0.0075,0.00951,0.01216,0.01671,0.02153,0.02766,0.03622,0.08295,0.39111],[0.00403,0.00481,0.00593,0.0075,0.00951,0.01216,0.01671,0.02153,0.02766,0.03622,0.08295,0.39111],[0.00404,0.00482,0.00597,0.00754,0.00964,0.01226,0.01611,0.02123,0.02692,0.03393,0.04569,0.0579],[0.00408,0.00485,0.00603,0.00763,0.00982,0.01246,0.01566,0.02104,0.02628,0.04333,0.05119,0.0585],[0.00405,0.00482,0.006,0.00761,0.00983,0.01257,0.01573,0.02011,0.02536,0.03828,0.04457,0.0506]]}};
+
+ async function loadXtMarkovGrid() {
+ state.xtMarkov = FALLBACK_XT_MARKOV;
+ state.xtSource = 'embedded';
+ try {
+ const resp = await fetch('./xt_markov_grid.json', { cache: 'no-cache' });
+ if (!resp.ok) return;
+ const liveXt = await resp.json();
+ if (liveXt && Array.isArray(liveXt.grid) && liveXt.regimes) {
+ state.xtMarkov = liveXt;
+ state.xtSource = 'json';
+ }
+ } catch (e) {
+ // Offline/file:// fallback already loaded
+ }
+ }
+
+ function getActiveXtGrid(tacticMode) {
+ const xtObj = state.xtMarkov || FALLBACK_XT_MARKOV;
+ if (tacticMode && xtObj.regimes && xtObj.regimes[tacticMode]) {
+ return xtObj.regimes[tacticMode];
+ }
+ return xtObj.grid;
+ }
+
+ function lookupCellXT(normX, normY, attackingSide, tacticMode) {
+ const grid = getActiveXtGrid(tacticMode);
+ if (!grid || grid.length !== 8) return 0;
+ let col = Math.max(0, Math.min(11, Math.floor(normX * 12)));
+ const row = Math.max(0, Math.min(7, Math.floor(normY * 8)));
+ if (attackingSide === 'A') col = 11 - col;
+ return Number(grid[row][col]) || 0;
+ }
+
+ function updateXtButtonUI() {
+ const btn = document.getElementById('sim-xt-btn');
+ if (!btn) return;
+ if (state.showXtHeatmap) {
+ btn.textContent = 'xT ●';
+ btn.className = 'px-2 py-1 rounded-lg bg-emeraldai/20 border border-emeraldai/50 font-mono text-[10.5px] font-bold text-emeraldai transition';
+ } else {
+ btn.textContent = 'xT ○';
+ btn.className = 'px-2 py-1 rounded-lg bg-card/90 border border-borderdim/60 font-mono text-[10.5px] font-semibold text-slate-400 hover:text-white transition';
+ }
+ }
+
+ function toggleXtHeatmap() {
+ state.showXtHeatmap = !state.showXtHeatmap;
+ updateXtButtonUI();
+ const wrapper = document.getElementById('pitch-canvas-wrapper');
+ if (wrapper && state.sim.active) {
+ const rect = wrapper.getBoundingClientRect();
+ drawPitchFrame(rect.width, rect.height);
+ }
+ showToast(state.showXtHeatmap
+ ? tr('12×8 Spatial Markov xT Heatmap ON', '已开启 12×8 空间马尔可夫 xT 威胁热力图', 'Mappa Termica Markov xT 12×8 ATTIVA')
+ : tr('12×8 Spatial xT Heatmap OFF', '已隐藏 12×8 空间 xT 威胁热力图', 'Mappa Termica xT 12×8 DISATTIVATA')
+ );
+ }
+
  const FALLBACK_BAYES_SERIE_A = {"schemaVersion":"3.12-bayes-etl","engine":"TimeDecayedBayesDixonColes","dataSource":"Real Serie A Clean-Room Scorelines 2023-2026 (1140 matches, serie_a_cleanroom_2023_2026.csv)","dateRange":{"start":"2023-08-19","end":"2026-05-24"},"totalMatches":1140,"uniqueClubs":25,"hyperparameters":{"xi":0.002,"priorVar":0.25},"global":{"mu":0.10869,"homeAdvantage":0.10907,"rho":-0.03205,"leagueHomeAvg":1.35,"leagueAwayAvg":1.1825},"backtest":{"evaluatedMatches":760,"baselineRPS":0.20172,"bayesRPS":0.19729,"rpsImprovementPct":2.2,"baselineLogLoss":1.00804,"bayesLogLoss":0.98832,"logLossImprovementPct":1.96,"baselineBrier":0.60338,"bayesBrier":0.59075,"brierImprovementPct":2.09},"teams":{"AMB":{"alpha":0.66185,"beta":-0.33244,"homeGF":2.35,"homeGA":0.84,"awayGF":2.16,"awayGA":0.77,"matches":114},"BRG":{"alpha":0.33388,"beta":-0.25935,"homeGF":1.81,"homeGA":0.96,"awayGF":1.72,"awayGA":1.05,"matches":114},"CAG":{"alpha":-0.0465,"beta":0.11883,"homeGF":1.3,"homeGA":1.46,"awayGF":0.84,"awayGA":1.65,"matches":114},"CAP":{"alpha":0.32153,"beta":-0.33717,"homeGF":1.89,"homeGA":0.77,"awayGF":1.26,"awayGA":1.19,"matches":114},"COM":{"alpha":0.334,"beta":-0.28334,"homeGF":1.66,"homeGA":1.08,"awayGF":1.34,"awayGA":1.05,"matches":76},"CRE":{"alpha":-0.28341,"beta":0.1539,"homeGF":0.95,"homeGA":1.53,"awayGF":0.74,"awayGA":1.47,"matches":38},"EMP":{"alpha":-0.26294,"beta":0.1548,"homeGF":0.66,"homeGA":1.29,"awayGF":0.97,"awayGA":1.68,"matches":76},"FEL":{"alpha":0.17766,"beta":-0.08248,"homeGF":1.49,"homeGA":0.93,"awayGF":1.32,"awayGA":1.26,"matches":114},"FLR":{"alpha":0.12856,"beta":-0.05423,"homeGF":1.58,"homeGA":1.07,"awayGF":1.26,"awayGA":1.33,"matches":114},"FRO":{"alpha":-0.03326,"beta":0.29759,"homeGF":1.47,"homeGA":1.68,"awayGF":0.84,"awayGA":1.95,"matches":38},"GEN":{"alpha":-0.05129,"beta":-0.01147,"homeGF":1.23,"homeGA":1.28,"awayGF":0.93,"awayGA":1.26,"matches":114},"LEC":{"alpha":-0.38766,"beta":0.03837,"homeGF":0.75,"homeGA":1.44,"awayGF":0.77,"awayGA":1.4,"matches":114},"MIL":{"alpha":0.27718,"beta":-0.1847,"homeGF":1.63,"homeGA":0.95,"awayGF":1.7,"awayGA":1.28,"matches":114},"MON":{"alpha":-0.28988,"beta":0.26372,"homeGF":0.95,"homeGA":1.5,"awayGF":0.82,"awayGA":1.66,"matches":76},"PAR":{"alpha":-0.23655,"beta":-0.01527,"homeGF":1.08,"homeGA":1.39,"awayGF":0.82,"awayGA":1.34,"matches":76},"PIS":{"alpha":-0.45652,"beta":0.37076,"homeGF":0.47,"homeGA":1.37,"awayGF":0.89,"awayGA":2.37,"matches":38},"PRT":{"alpha":0.26833,"beta":-0.3081,"homeGF":1.56,"homeGA":1.02,"awayGF":1.46,"awayGA":0.93,"matches":114},"SAL":{"alpha":-0.22808,"beta":0.45124,"homeGF":0.89,"homeGA":2.0,"awayGF":0.79,"awayGA":2.26,"matches":38},"SAS":{"alpha":0.04464,"beta":0.10772,"homeGF":1.26,"homeGA":1.58,"awayGF":1.08,"awayGA":1.71,"matches":76},"TBR":{"alpha":0.08669,"beta":-0.13114,"homeGF":1.46,"homeGA":1.14,"awayGF":1.19,"awayGA":1.11,"matches":114},"TOR":{"alpha":0.28888,"beta":-0.32994,"homeGF":1.61,"homeGA":0.74,"awayGF":1.42,"awayGA":1.02,"matches":114},"TRG":{"alpha":-0.02073,"beta":0.09078,"homeGF":1.09,"homeGA":0.98,"awayGF":1.0,"awayGA":1.54,"matches":114},"UDI":{"alpha":-0.00641,"beta":0.01097,"homeGF":1.07,"homeGA":1.35,"awayGF":1.09,"awayGA":1.4,"matches":114},"VEN":{"alpha":-0.24038,"beta":0.10484,"homeGF":0.89,"homeGA":1.16,"awayGF":0.79,"awayGA":1.79,"matches":38},"VER":{"alpha":-0.37957,"beta":0.17216,"homeGF":0.88,"homeGA":1.58,"awayGF":0.82,"awayGA":1.54,"matches":114}}};
 
  function applyBayesCalibrationToCalcio(payload, sourceLabel) {
@@ -2270,6 +2339,9 @@
  lang: 'it',
  bayesCalibrated: null,
  bayesSource: 'embedded',
+ xtMarkov: null,
+ xtSource: 'embedded',
+ showXtHeatmap: true,
  mainTab: 'sim',
  simMode: 'historical',
  activeLeague: 'calcio',
@@ -2400,6 +2472,8 @@
  scoreA: 0,
  xgH: 0,
  xgA: 0,
+ xtH: 0,
+ xtA: 0,
  probH: 42,
  probD: 26,
  probA: 32,
@@ -5014,6 +5088,8 @@ Diagnosi Tattica: ${note}`
  scoreA: 0,
  xgH: 0,
  xgA: 0,
+ xtH: 0,
+ xtA: 0,
  probH: model.prob[0],
  probD: model.prob[1],
  probA: model.prob[2],
@@ -5115,6 +5191,7 @@ Diagnosi Tattica: ${note}`
  document.getElementById('cmd-sub-superSub').textContent = t.cmdSubSub;
 
  document.getElementById('sim-speed-btn').textContent = '1x';
+ updateXtButtonUI();
  document.getElementById('sim-pause-btn').textContent = '❚❚';
  document.getElementById('pitch-event-banner').classList.add('hidden');
  document.getElementById('post-match-overlay').classList.add('hidden');
@@ -5364,6 +5441,9 @@ Diagnosi Tattica: ${note}`
  if (homeShot) {
  const shotXg = Number((0.08 + Math.random() * 0.32).toFixed(2));
  sim.xgH = Number((sim.xgH + shotXg).toFixed(2));
+ const hTac = (userIsHome && sim.activeCommand) ? sim.activeCommand : 'balanced';
+ const dXtH = lookupCellXT(0.86, 0.50, 'H', hTac) - lookupCellXT(prevBallX, prevBallY, 'H', hTac);
+ if (dXtH > 0) sim.xtH = Number((sim.xtH + dXtH).toFixed(3));
  sim.ball.passFrom = { x: prevBallX, y: prevBallY };
  sim.ball.passAlpha = 0.9;
  sim.ball.tx = 0.94;
@@ -5392,6 +5472,9 @@ Diagnosi Tattica: ${note}`
  if (awayShot) {
  const shotXg = Number((0.08 + Math.random() * 0.32).toFixed(2));
  sim.xgA = Number((sim.xgA + shotXg).toFixed(2));
+ const aTac = (!userIsHome && sim.activeCommand) ? sim.activeCommand : 'balanced';
+ const dXtA = lookupCellXT(0.14, 0.50, 'A', aTac) - lookupCellXT(prevBallX, prevBallY, 'A', aTac);
+ if (dXtA > 0) sim.xtA = Number((sim.xtA + dXtA).toFixed(3));
  sim.ball.passFrom = { x: prevBallX, y: prevBallY };
  sim.ball.passAlpha = 0.9;
  sim.ball.tx = 0.06;
@@ -5429,6 +5512,12 @@ Diagnosi Tattica: ${note}`
  sim.ball.ty = (userHasBall && sim.activeCommand === 'wingOverload')
  ? (Math.random() < 0.5 ? 0.12 + Math.random() * 0.14 : 0.74 + Math.random() * 0.14)
  : 0.18 + Math.random() * 0.64;
+ const moveTac = (userHasBall && sim.activeCommand) ? sim.activeCommand : 'balanced';
+ const deltaXt = lookupCellXT(sim.ball.tx, sim.ball.ty, sim.ball.ownerTeam, moveTac) - lookupCellXT(prevBallX, prevBallY, sim.ball.ownerTeam, moveTac);
+ if (deltaXt > 0) {
+ if (sim.ball.ownerTeam === 'H') sim.xtH = Number((sim.xtH + deltaXt).toFixed(3));
+ else sim.xtA = Number((sim.xtA + deltaXt).toFixed(3));
+ }
  }
 
  recalcLivePoissonOutcome(sim);
@@ -5448,6 +5537,10 @@ Diagnosi Tattica: ${note}`
 
  document.getElementById('sim-xg-h').textContent = sim.xgH.toFixed(2);
  document.getElementById('sim-xg-a').textContent = sim.xgA.toFixed(2);
+ const xtHEl = document.getElementById('sim-xt-h');
+ const xtAEl = document.getElementById('sim-xt-a');
+ if (xtHEl) xtHEl.textContent = (sim.xtH || 0).toFixed(2);
+ if (xtAEl) xtAEl.textContent = (sim.xtA || 0).toFixed(2);
  document.getElementById('sim-stam-user').textContent = `${Math.round(sim.staminaUser)}%`;
  document.getElementById('sim-stam-opp').textContent = `${Math.round(sim.staminaOpp)}%`;
 
@@ -5551,6 +5644,12 @@ Diagnosi Tattica: ${note}`
  document.getElementById('sum-score-a').textContent = sim.scoreA;
  document.getElementById('sum-xg-h').textContent = sim.xgH.toFixed(2);
  document.getElementById('sum-xg-a').textContent = sim.xgA.toFixed(2);
+ const sumXtH = document.getElementById('sum-xt-h');
+ const sumXtA = document.getElementById('sum-xt-a');
+ const lblSumXt = document.getElementById('lbl-sum-xt');
+ if (sumXtH) sumXtH.textContent = (sim.xtH || 0).toFixed(2);
+ if (sumXtA) sumXtA.textContent = (sim.xtA || 0).toFixed(2);
+ if (lblSumXt) lblSumXt.textContent = tr('Expected Threat (xT)', '空间预期威胁 (xT)', 'Minaccia Attesa (xT)');
 
  const totalTicks = sim.possTicksH + sim.possTicksA;
  const possH = Math.round((sim.possTicksH / totalTicks) * 100);
@@ -5947,6 +6046,88 @@ Diagnosi Tattica: ${note}`
  ctx.fillRect(padX + i * stripeW, padY, stripeW, ph);
  }
 
+ // 12x8 Spatial Markov Expected Threat (xT) Heatmap Layer (oriented to User's attacking goal)
+ if (state.showXtHeatmap) {
+ const activeRegime = (sim.activeCommand && ['highPress', 'catenaccio', 'wingOverload'].includes(sim.activeCommand))
+ ? sim.activeCommand
+ : 'balanced';
+ const xtGrid = getActiveXtGrid(activeRegime);
+ if (xtGrid && xtGrid.length === 8) {
+ const cellW = pw / 12;
+ const cellH = ph / 8;
+ const userIsHome = sim.userSide === 'H';
+ let minV = 1, maxV = 0;
+ for (let r = 0; r < 8; r++) {
+ for (let c = 0; c < 12; c++) {
+ const v = xtGrid[r][c];
+ if (v < minV) minV = v;
+ if (v > maxV) maxV = v;
+ }
+ }
+ const span = Math.max(1e-6, maxV - minV);
+ ctx.save();
+ ctx.font = '600 7px "JetBrains Mono", monospace';
+ ctx.textAlign = 'center';
+ ctx.textBaseline = 'middle';
+
+ for (let r = 0; r < 8; r++) {
+ for (let c = 0; c < 12; c++) {
+ const val = xtGrid[r][c];
+ const drawCol = userIsHome ? c : (11 - c);
+ const cx = padX + drawCol * cellW;
+ const cy = padY + r * cellH;
+ const norm = Math.pow(Math.max(0, (val - minV) / span), 0.48);
+
+ let fillRgba;
+ if (norm < 0.34) {
+ const a = 0.04 + (norm / 0.34) * 0.14;
+ fillRgba = `rgba(16, 185, 129, ${a.toFixed(3)})`;
+ } else if (norm < 0.68) {
+ const a = 0.20 + ((norm - 0.34) / 0.34) * 0.22;
+ fillRgba = `rgba(245, 158, 11, ${a.toFixed(3)})`;
+ } else {
+ const a = 0.44 + ((norm - 0.68) / 0.32) * 0.22;
+ fillRgba = `rgba(244, 63, 94, ${a.toFixed(3)})`;
+ }
+
+ ctx.fillStyle = fillRgba;
+ ctx.fillRect(cx, cy, cellW, cellH);
+
+ ctx.strokeStyle = 'rgba(255, 255, 255, 0.11)';
+ ctx.lineWidth = 0.55;
+ ctx.strokeRect(cx, cy, cellW, cellH);
+
+ // Show compact xT cell values in final-third threat zones (Zone 14, Half-spaces, Box)
+ if (c >= 9 && cellW >= 18 && cellH >= 15) {
+ ctx.fillStyle = norm >= 0.68 ? 'rgba(255, 255, 255, 0.92)' : 'rgba(255, 255, 255, 0.68)';
+ ctx.fillText(val.toFixed(2).replace(/^0/, ''), cx + cellW / 2, cy + cellH / 2);
+ }
+ }
+ }
+
+ // Top-corner Markov xT regime pill (placed on defending half so attacking box stays unobstructed)
+ const regimeLbl = `xT 12×8 · ${getTacticLabel(activeRegime)}`;
+ ctx.font = 'bold 8.5px "JetBrains Mono", monospace';
+ const tw = ctx.measureText(regimeLbl).width;
+ const bW = tw + 10;
+ const bH = 14;
+ const bX = userIsHome ? padX + 6 : padX + pw - bW - 6;
+ const bY = padY + 4;
+ ctx.fillStyle = 'rgba(11, 15, 23, 0.72)';
+ ctx.strokeStyle = 'rgba(16, 185, 129, 0.65)';
+ ctx.lineWidth = 1;
+ ctx.beginPath();
+ ctx.roundRect(bX, bY, bW, bH, 4);
+ ctx.fill();
+ ctx.stroke();
+ ctx.fillStyle = '#34D399';
+ ctx.textAlign = 'left';
+ ctx.textBaseline = 'middle';
+ ctx.fillText(regimeLbl, bX + 5, bY + bH / 2 + 0.5);
+ ctx.restore();
+ }
+ }
+
  ctx.strokeStyle = skin.lines;
  ctx.lineWidth = 1.3;
  ctx.strokeRect(padX, padY, pw, ph);
@@ -6155,6 +6336,7 @@ Diagnosi Tattica: ${note}`
  if (nameIn) nameIn.value = state.customClub.name;
  if (codeIn) codeIn.value = state.customClub.code;
  loadCalibratedSerieAParams();
+ loadXtMarkovGrid();
  renderAll();
  };
  </script>
