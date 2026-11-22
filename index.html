@@ -333,11 +333,11 @@
  <span id="pill-coach-xp">Lv.4 · 1,250 XP</span>
  </span>
  <span class="flex items-center gap-1 text-gold font-bold shrink-0">
- <span class="text-[11px] leading-none">🪙</span>
+ <span class="text-[11px] leading-none">✦</span>
  <span id="pill-coins">320</span>
  </span>
  <button onclick="switchMainTab('league')" class="flex items-center gap-1 text-emeraldai font-bold shrink-0 hover:opacity-80 transition">
- <span class="text-[11px] leading-none">⚡</span>
+ <span class="text-[11px] leading-none">◈</span>
  <span id="pill-stamina">∞</span>
  </button>
  </div>
@@ -475,8 +475,8 @@
  </h3>
  </div>
  <div class="text-right shrink-0">
- <div class="text-[10.5px] text-slate-400" id="lbl-stamina-box">体力</div>
- <div id="league-stamina-display" class="font-mono text-xs font-bold text-emeraldai">⚡ 3 / 3</div>
+ <div class="text-[10.5px] text-slate-400" id="lbl-stamina-box">每日推演额度</div>
+ <div id="league-stamina-display" class="font-mono text-xs font-bold text-emeraldai">◈ 3 / 3</div>
  </div>
  </div>
 
@@ -485,18 +485,18 @@
  </div>
 
  <button id="btn-play-league-match" onclick="startVirtualLeagueMatch()" class="w-full py-2.5 rounded-xl btn-primary-gradient font-bold text-xs shadow-sm transition active:scale-95 flex items-center justify-center gap-1.5">
- <span id="btn-play-league-text">开始本轮对决 (-1 体力)</span>
+ <span id="btn-play-league-text">启动本轮推演 (-1 额度)</span>
  </button>
 
  <!-- Minimal Stamina Refill Row -->
  <div class="pt-2.5 border-t border-borderdim/50 flex items-center justify-between gap-2">
- <span id="lbl-refill-stamina" class="text-[11px] text-slate-400">补充体力</span>
+ <span id="lbl-refill-stamina" class="text-[11px] text-slate-400">获取推演额度</span>
  <div class="flex items-center gap-2">
  <button id="btn-refill-ad" onclick="refillStaminaViaAd()" class="px-2.5 py-1 rounded-lg bg-cyanai/12 hover:bg-cyanai/20 text-cyanai font-mono text-[11px] font-semibold transition active:scale-95">
- 🎬 +2 ⚡
+ ▶ 赞助短片 (+2 ◈)
  </button>
  <button id="btn-refill-coins" onclick="refillStaminaViaCoins()" class="px-2.5 py-1 rounded-lg bg-golddim hover:bg-gold/20 text-gold font-mono text-[11px] font-semibold transition active:scale-95">
- 40 🪙 补满
+ 40 ✦ 兑换补满
  </button>
  </div>
  </div>
@@ -509,7 +509,7 @@
  <h3 id="standings-heading" class="text-sm font-bold text-white">
  联赛积分榜
  </h3>
- <p id="standings-sub" class="text-[11px] text-slate-400 mt-0.5">前 2 名晋级 (+120 🪙)</p>
+ <p id="standings-sub" class="text-[11px] text-slate-400 mt-0.5">前 2 名晋级 (+120 ✦)</p>
  </div>
  <button id="btn-promote-division" onclick="promoteToNextDivision()" class="hidden px-3 py-1 rounded-lg bg-emeraldai text-onaccent font-mono text-[11px] font-extrabold animate-bounce">
  立即晋级 ↑
@@ -723,8 +723,8 @@
  </button>
  </div>
  <div class="mt-3 pt-2.5 border-t border-borderdim/50 space-y-1.5 text-[11.5px] text-slate-300">
- <div class="flex items-center gap-2"><span class="text-emeraldai font-bold">✓</span><span id="elite-perk-1">全站免广告，赛后 +40 🪙 直接到账</span></div>
- <div class="flex items-center gap-2"><span class="text-emeraldai font-bold">✓</span><span id="elite-perk-2">无限体力 + 学院打卡双倍 (+80 🪙)</span></div>
+ <div class="flex items-center gap-2"><span class="text-emeraldai font-bold">✓</span><span id="elite-perk-1">全站免赞助短片，赛后 +40 ✦ 学院积分</span></div>
+ <div class="flex items-center gap-2"><span class="text-emeraldai font-bold">✓</span><span id="elite-perk-2">无限推演额度 + 学院打卡双倍 (+80 ✦)</span></div>
  <div class="flex items-center gap-2"><span class="text-slate-500">•</span><span id="elite-perk-3" class="text-slate-400">教练页每日限用 1 次</span></div>
  </div>
  </div>
@@ -754,7 +754,7 @@
  <!-- 2. 2D Pitch Skins -->
  <div class="space-y-2.5">
  <h3 id="diy-skins-heading" class="text-xs font-bold text-slate-300 px-0.5">
- 2D 球场皮肤
+ 2D 战术球场视图
  </h3>
  <div id="diy-skins-grid" class="grid grid-cols-2 gap-3">
  <!-- Populated via JS -->
@@ -764,7 +764,7 @@
  <!-- 3. Tactical Marker Frames -->
  <div class="space-y-2.5">
  <h3 id="diy-frames-heading" class="text-xs font-bold text-slate-300 px-0.5">
- 棋子光环边框
+ 棋子遥测光环
  </h3>
  <div id="diy-frames-list" class="space-y-2.5">
  <!-- Populated via JS -->
@@ -774,7 +774,7 @@
  <!-- 4. App UI Themes (Calcio Default + 3 League-Inspired Unlockable Themes) -->
  <div class="space-y-2.5">
  <h3 id="diy-themes-heading" class="text-xs font-bold text-slate-300 px-0.5">
- 联赛创意主题
+ 界面视觉主题
  </h3>
  <div id="diy-themes-grid" class="grid grid-cols-2 gap-3">
  <!-- Populated via JS -->
@@ -1233,8 +1233,8 @@
  leaderboardHeading: "Leaderboard",
  youLabel: "You",
 
- diySkinsHeading: "2D Pitch Skins",
- diyFramesHeading: "Player Marker Frames",
+ diySkinsHeading: "2D Tactical Pitch Views",
+ diyFramesHeading: "Telemetry Halo Overlays",
  equipped: "Equipped",
  equip: "Equip",
  vipIncluded: "Pro / Elite",
@@ -1290,7 +1290,7 @@
  <h4 class="font-bold text-coralai">5. "Three-Zero" Compliance Firewall (ADM, Clean-Room IP, GDPR)</h4>
  <span class="px-1.5 py-0.2 rounded bg-coralai/15 text-coralai font-mono text-[9px] font-bold">Zero Wagering</span>
  </div>
- <p class="text-slate-300 text-[11px] leading-relaxed"><strong>• Zero Gambling Risk (ADM):</strong> Pure educational coaching interface with star-rated tactical drills (★☆☆ / ★★☆ / ★★★ — zero odds or betting multipliers). Tactical Coins & XP are closed-loop educational tokens with zero cash-out, zero P2P trading, and zero wagering — entirely outside <em>ADM</em> gambling scope.<br><strong>• Clean-Room IP & App Store 3.1.2:</strong> 60 fictional geographic clubs (e.g., TOR - Turin Zebras), original geometric SVG crests, proprietary statistical parameters calibrated from public historical league scorelines (zero third-party commercial data dependency), and full GDPR / Apple App Store 3.1.2 compliance.</p>
+ <p class="text-slate-300 text-[11px] leading-relaxed"><strong>• Zero Gambling Risk (ADM):</strong> Pure educational coaching interface with star-rated tactical drills (★☆☆ / ★★☆ / ★★★ — zero odds or betting multipliers). Academy Credits (✦) & XP are closed-loop educational tokens with zero cash-out, zero P2P trading, and zero wagering — entirely outside <em>ADM</em> gambling scope. B2B youth academy (ASD) & minor accounts operate 100% ad-free by default.<br><strong>• Clean-Room IP & App Store 3.1.2:</strong> 60 fictional geographic clubs (e.g., TOR - Turin Zebras), original geometric SVG crests, proprietary statistical parameters calibrated from public historical league scorelines (zero third-party commercial data dependency), and full GDPR / Apple App Store 3.1.2 compliance.</p>
  </div>
  `
  },
@@ -1321,8 +1321,8 @@
  leaderboardHeading: "Classifica",
  youLabel: "Tu",
 
- diySkinsHeading: "Temi Campo 2D",
- diyFramesHeading: "Cornici Giocatori",
+ diySkinsHeading: "Viste Campo Tattico 2D",
+ diyFramesHeading: "Aureole Telemetriche",
  equipped: "In Uso",
  equip: "Usa",
  vipIncluded: "Incluso Elite/Pro",
@@ -1378,7 +1378,7 @@
  <h4 class="font-bold text-coralai">5. Firewall "Triplo Zero" (Conformità ADM, Clean-Room IP, GDPR)</h4>
  <span class="px-1.5 py-0.2 rounded bg-coralai/15 text-coralai font-mono text-[9px] font-bold">Zero Scommesse</span>
  </div>
- <p class="text-slate-300 text-[11px] leading-relaxed"><strong>• Zero Rischio Gioco d'Azzardo (ADM):</strong> Interfaccia puramente didattica con difficoltà a stelle (★☆☆ / ★★☆ / ★★★ — zero quote o moltiplicatori). Monete Tattiche e XP sono gettoni didattici a circuito chiuso senza prelievo in denaro, scambio P2P o scommesse, totalmente esclusi dal perimetro <em>ADM</em>.<br><strong>• Clean-Room IP & App Store 3.1.2:</strong> 60 club geografici fittizi (es. TOR - Torino Zebre), stemmi vettoriali originali, parametri statistici proprietari calibrati su risultati storici pubblici (zero dipendenza da licenze dati di terze parti) e piena conformità GDPR / Apple App Store 3.1.2.</p>
+ <p class="text-slate-300 text-[11px] leading-relaxed"><strong>• Zero Rischio Gioco d'Azzardo (ADM):</strong> Interfaccia puramente didattica con difficoltà a stelle (★☆☆ / ★★☆ / ★★★ — zero quote o moltiplicatori). Crediti Accademia (✦) e XP sono crediti didattici a circuito chiuso senza prelievo in denaro, scambio P2P o scommesse, totalmente esclusi dal perimetro <em>ADM</em>. Gli account B2B delle scuole calcio (ASD) e minori sono al 100% privi di annunci.<br><strong>• Clean-Room IP & App Store 3.1.2:</strong> 60 club geografici fittizi (es. TOR - Torino Zebre), stemmi vettoriali originali, parametri statistici proprietari calibrati su risultati storici pubblici (zero dipendenza da licenze dati di terze parti) e piena conformità GDPR / Apple App Store 3.1.2.</p>
  </div>
  `
  },
@@ -1409,8 +1409,8 @@
  leaderboardHeading: "战术家排行榜",
  youLabel: "我",
 
- diySkinsHeading: "2D 球场皮肤",
- diyFramesHeading: "棋子光环边框",
+ diySkinsHeading: "2D 战术球场视图",
+ diyFramesHeading: "棋子遥测光环",
  equipped: "使用中",
  equip: "装备",
  vipIncluded: "会员专属",
@@ -1466,7 +1466,7 @@
  <h4 class="font-bold text-coralai">5. “三零”合规防火墙（ADM 非博彩、净室原创 IP、GDPR）</h4>
  <span class="px-1.5 py-0.2 rounded bg-coralai/15 text-coralai font-mono text-[9px] font-bold">ADM 非博彩合规</span>
  </div>
- <p class="text-slate-300 text-[11px] leading-relaxed"><strong>• 零博彩监管风险（ADM）：</strong>全界面采用纯执教指令与教学挑战星级（★☆☆ / ★★☆ / ★★★，彻底去除赔率与倍率表达）；所有战术金币与教练经验均为封闭式虚拟教学代币，严禁法币提现、P2P 交易或现金竞猜，完全脱离意大利 <em>ADM</em> 博彩监管管辖。<br><strong>• 100% 净室原创 IP 与数据独立性：</strong>内置 60 支架空地理俱乐部（如 TOR - Turin Zebras）与原创几何矢量队徽，底层攻防参数基于公开历史比分自研校准（零第三方商业数据依赖），全面遵循欧盟 GDPR 与 Apple App Store 第 3.1.2 条订阅规范。</p>
+ <p class="text-slate-300 text-[11px] leading-relaxed"><strong>• 零博彩监管风险（ADM）：</strong>全界面采用纯执教指令与教学挑战星级（★☆☆ / ★★☆ / ★★★，彻底去除赔率与倍率表达）；所有学院积分（✦）与教练经验均为封闭式教学激励积分，严禁法币提现、P2P 交易或现金竞猜，完全脱离意大利 <em>ADM</em> 博彩监管管辖；B2B 青训学院（ASD）及未成年学员账户默认 100% 物理剥离所有赞助短片。<br><strong>• 100% 净室原创 IP 与数据独立性：</strong>内置 60 支架空地理俱乐部（如 TOR - Turin Zebras）与原创几何矢量队徽，底层攻防参数基于公开历史比分自研校准（零第三方商业数据依赖），全面遵循欧盟 GDPR 与 Apple App Store 第 3.1.2 条订阅规范。</p>
  </div>
  `
  }
@@ -2705,9 +2705,9 @@
 
  function resetDemoState() {
  const msg = tr(
- 'Reset all demo progress, coins, league standings, and settings back to default?',
- '确定要重置所有演示数据（金币、联赛积分、皮肤和语言设置）恢复初始状态吗？',
- 'Ripristinare tutti i dati della demo (monete, classifica, temi e lingua) ai valori iniziali?'
+ 'Reset all demo progress, academy credits, league standings, and settings back to default?',
+ '确定要重置所有演示数据（学院积分、联赛积分、视图主题和语言设置）恢复初始状态吗？',
+ 'Ripristinare tutti i dati della demo (crediti accademia, classifica, temi e lingua) ai valori iniziali?'
  );
  if (!confirm(msg)) return;
  try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
@@ -2754,7 +2754,7 @@
  starBadge: '★☆☆',
  multLabel: '★☆☆',
  badgeText: tr('★☆☆ Control', '★☆☆ 控场演练', '★☆☆ Controllo'),
- subHint: tr('2+ goal win: +35🪙', '净胜2球 +35🪙', 'Scarto 2+: +35🪙'),
+ subHint: tr('2+ goal win: +35✦', '净胜2球 +35✦', 'Scarto 2+: +35✦'),
  tierLabel: tr('★☆☆ Tactical Control Drill', '★☆☆ 控场演练评级', '★☆☆ Esercizio di Controllo'),
  winBaseCoins: 40,
  dominantBonusCoins: 35,
@@ -2772,7 +2772,7 @@
  starBadge: '★★★',
  multLabel: '★★★',
  badgeText: tr('★★★ Master', '★★★ 逆袭挑战', '★★★ Sfida Pro'),
- subHint: tr('Draw earns +45🪙!', '逼平亦得 +45🪙', 'Pari vale +45🪙!'),
+ subHint: tr('Draw earns +45✦!', '逼平亦得 +45✦', 'Pari vale +45✦!'),
  tierLabel: tr('★★★ Master Tactical Challenge', '★★★ 大师级逆袭挑战', '★★★ Sfida Tattica Avanzata'),
  winBaseCoins: 110,
  dominantBonusCoins: 0,
@@ -3543,9 +3543,9 @@
  if (state.leagueStamina <= 0) {
  showToast(
  tr(
- 'Out of League Stamina! Refill via Ad Video, Coins, or upgrade to Elite Player in Me.',
- '联赛体力已耗尽！可通过观看短片、消耗金币或在「我的」开通精英球员享无限体力。',
- 'Energia Lega esaurita! Ricarica tramite video, monete o passa a Giocatore Elite in Profilo.'
+ 'Daily Sim Credits exhausted! Top up via Sponsor Clip, Academy Credits, or upgrade to Elite Player in Me.',
+ '今日推演额度已用完！可通过赞助短片、兑换学院积分或在「我的」开通精英球员享无限推演额度。',
+ 'Crediti Sim giornalieri esauriti! Ricarica tramite clip sponsor, crediti accademia o passa a Giocatore Elite in Profilo.'
  )
  );
  return;
@@ -3574,40 +3574,40 @@
 
  function refillStaminaViaAd() {
  if (isPaidSubscriber()) {
- showToast(tr('Your membership already includes Unlimited Stamina!', '当前会员方案已享无限联赛体力！', 'Il tuo piano include già Energia Illimitata!'));
+ showToast(tr('Your membership already includes Unlimited Sim Credits!', '当前会员方案已享无限推演额度！', 'Il tuo piano include già Simulazioni Illimitate!'));
  return;
  }
  if (state.leagueStamina >= state.maxStamina) {
- showToast(tr('League Stamina is already full (3/3)!', '当前联赛体力已满（3/3）！', 'L\'Energia Lega è già al massimo (3/3)!'));
+ showToast(tr('Daily Sim Credits are already full (3/3)!', '当前每日推演额度已满（3/3）！', 'I Crediti Sim giornalieri sono già al massimo (3/3)!'));
  return;
  }
- showToast(tr('Playing 2s Sponsor Video...', '正在播放 2 秒能量补给短片...', 'Riproduzione video sponsor (2s)...'));
+ showToast(tr('Playing 2s Sponsor Clip...', '正在播放 2 秒赞助短片...', 'Riproduzione clip sponsor (2s)...'));
  setTimeout(() => {
  state.leagueStamina = Math.min(state.maxStamina, state.leagueStamina + 2);
  renderHeaderResources();
  renderMyLeagueTab();
- showToast(tr('Stamina Refilled (+2 ⚡)!', '联赛体力已恢复（+2 ⚡）！', 'Energia ricaricata (+2 ⚡)!'));
+ showToast(tr('Sim Credits Topped Up (+2 ◈)!', '推演额度已补充（+2 ◈）！', 'Crediti Sim ricaricati (+2 ◈)!'));
  }, 1500);
  }
 
  function refillStaminaViaCoins() {
  if (isPaidSubscriber()) {
- showToast(tr('Your membership already includes Unlimited Stamina!', '当前会员方案已享无限联赛体力！', 'Il tuo piano include già Energia Illimitata!'));
+ showToast(tr('Your membership already includes Unlimited Sim Credits!', '当前会员方案已享无限推演额度！', 'Il tuo piano include già Simulazioni Illimitate!'));
  return;
  }
  if (state.leagueStamina >= state.maxStamina) {
- showToast(tr('League Stamina is already full (3/3)!', '当前联赛体力已满（3/3）！', 'L\'Energia Lega è già al massimo (3/3)!'));
+ showToast(tr('Daily Sim Credits are already full (3/3)!', '当前每日推演额度已满（3/3）！', 'I Crediti Sim giornalieri sono già al massimo (3/3)!'));
  return;
  }
  if (state.coins < 40) {
- showToast(tr('Need 40 Coins to refill stamina.', '需要 40 金币补满体力。', 'Servono 40 Monete per ricaricare l\'energia.'));
+ showToast(tr('Need 40 Academy Credits to refill Sim Credits.', '需要 40 学院积分兑换补满推演额度。', 'Servono 40 Crediti Accademia per ricaricare i Crediti Sim.'));
  return;
  }
  state.coins -= 40;
  state.leagueStamina = state.maxStamina;
  renderHeaderResources();
  renderMyLeagueTab();
- showToast(tr('Full League Stamina Restored (3/3)!', '联赛体力已完全补满（3/3）！', 'Energia Lega completamente ripristinata (3/3)!'));
+ showToast(tr('Daily Sim Credits Restored (3/3)!', '每日推演额度已完全补满（3/3）！', 'Crediti Sim giornalieri ripristinati (3/3)!'));
  }
 
  function recordVirtualLeagueResult(userGoals, oppGoals, rivalId) {
@@ -3668,9 +3668,9 @@
  const divObj = DIVISIONS[state.divisionIdx];
  showToast(
  tr(
- `Promoted to ${divObj.nameEn}! +120 Promotion Coins!`,
- `成功晋级至「${divObj.nameCn}」！获得 +120 晋级奖金！`,
- `Promosso in ${divObj.nameIt}! Bonus +120 Monete!`
+ `Promoted to ${divObj.nameEn}! +120 ✦ Academy Credits!`,
+ `成功晋级至「${divObj.nameCn}」！获得 +120 ✦ 晋级积分！`,
+ `Promosso in ${divObj.nameIt}! Bonus +120 ✦ Crediti!`
  )
  );
  }
@@ -3728,10 +3728,10 @@
  `第 ${state.leagueMatchday} 轮`,
  `Giornata ${state.leagueMatchday}`
  );
- document.getElementById('lbl-stamina-box').textContent = tr('Stamina', '体力', 'Energia');
+ document.getElementById('lbl-stamina-box').textContent = tr('Daily Sim Credits', '每日推演额度', 'Crediti Sim');
  document.getElementById('league-stamina-display').textContent = isPaidSubscriber()
- ? tr('⚡ Unlimited', '⚡ 无限', '⚡ ∞')
- : `⚡ ${state.leagueStamina} / ${state.maxStamina}`;
+ ? tr('◈ Unlimited', '◈ 无限', '◈ ∞')
+ : `◈ ${state.leagueStamina} / ${state.maxStamina}`;
 
  document.getElementById('next-league-fixture-box').innerHTML = `
  <div class="flex items-center gap-2.5 flex-1 min-w-0">
@@ -3752,15 +3752,15 @@
  `;
 
  document.getElementById('btn-play-league-text').textContent = isPaidSubscriber()
- ? tr(`Play Match (∞ Stamina)`, `开始比赛（无限体力）`, `Gioca Partita (Energia ∞)`)
- : tr(`Play Match (-1 Stamina)`, `开始比赛（-1 体力）`, `Gioca Partita (-1 Energia)`);
- document.getElementById('lbl-refill-stamina').textContent = tr('Refill Stamina', '补充体力', 'Ricarica Energia');
+ ? tr(`Run Matchday Sim (∞ Credits)`, `启动本轮推演（无限额度）`, `Avvia Simulazione (Crediti ∞)`)
+ : tr(`Run Matchday Sim (-1 Credit)`, `启动本轮推演（-1 额度）`, `Avvia Simulazione (-1 Credito)`);
+ document.getElementById('lbl-refill-stamina').textContent = tr('Top Up Credits', '获取推演额度', 'Ricarica Crediti');
 
  document.getElementById('standings-heading').textContent = tr('Division Standings', '联赛积分榜', 'Classifica Divisione');
  document.getElementById('standings-sub').textContent = tr(
- 'Top 2 promote (+120 🪙)',
- '前 2 名晋级 (+120 🪙)',
- 'Prime 2 promosse (+120 🪙)'
+ 'Top 2 promoted (+120 ✦)',
+ '前 2 名晋级 (+120 ✦)',
+ 'Top 2 Promossi (+120 ✦)'
  );
 
  const userPosIndex = state.leagueStandings.findIndex(r => r.isUser);
@@ -3796,8 +3796,8 @@
 
  const btnRefAd = document.getElementById('btn-refill-ad');
  const btnRefCoins = document.getElementById('btn-refill-coins');
- if (btnRefAd) btnRefAd.textContent = tr('🎬 Video (+2 ⚡)', '🎬 短片 (+2 ⚡)', '🎬 Video (+2 ⚡)');
- if (btnRefCoins) btnRefCoins.textContent = tr('40 🪙 (Full)', '40 🪙 (回满)', '40 🪙 (Piena)');
+ if (btnRefAd) btnRefAd.textContent = tr('▶ Sponsor Clip (+2 ◈)', '▶ 赞助短片 (+2 ◈)', '▶ Clip Sponsor (+2 ◈)');
+ if (btnRefCoins) btnRefCoins.textContent = tr('Redeem 40 ✦', '40 ✦ 兑换补满', '40 ✦ Ricarica');
 
  const thMap = {
  'th-club': tr('Club', '俱乐部', 'Club'),
@@ -4513,9 +4513,9 @@ Diagnosi Tattica: ${note}`
  const earnedXp = addXpAndCoins(checkinCoins, 60);
  showToast(
  tr(
- `Check-In Complete! +${checkinCoins} Coins & +${earnedXp} XP`,
- `打卡成功！获得 +${checkinCoins} 金币与 +${earnedXp} 教练经验`,
- `Check-In completato! +${checkinCoins} Monete e +${earnedXp} XP`
+ `Check-In Complete! +${checkinCoins} ✦ Credits & +${earnedXp} XP`,
+ `打卡成功！获得 +${checkinCoins} ✦ 学院积分与 +${earnedXp} 教练经验`,
+ `Check-In completato! +${checkinCoins} ✦ Crediti e +${earnedXp} XP`
  )
  );
  renderAll();
@@ -4549,9 +4549,9 @@ Diagnosi Tattica: ${note}`
  const earnedXp = addXpAndCoins(35, 50);
  showToast(
  tr(
- `Correct! Module Mastered: +35 Coins & +${earnedXp} XP`,
- `回答正确！课程已掌握：获得 +35 金币与 +${earnedXp} XP`,
- `Esatto! Modulo completato: +35 Monete e +${earnedXp} XP`
+ `Correct! Module Mastered: +35 ✦ Credits & +${earnedXp} XP`,
+ `回答正确！课程已掌握：获得 +35 ✦ 学院积分与 +${earnedXp} XP`,
+ `Esatto! Modulo completato: +35 ✦ Crediti e +${earnedXp} XP`
  )
  );
  } else {
@@ -4625,7 +4625,7 @@ Diagnosi Tattica: ${note}`
  </span>
  ${isMastered
  ? `<span class="px-1.5 py-0.5 rounded bg-emeraldai/15 text-emeraldai font-mono text-[10px] font-bold">✓ ${t.masteredLabel}</span>`
- : `<span class="font-mono text-[10px] text-gold font-bold">+35 🪙 +${isPaidSubscriber() ? 100 : 50} XP</span>`
+ : `<span class="font-mono text-[10px] text-gold font-bold">+35 ✦ +${isPaidSubscriber() ? 100 : 50} XP</span>`
  }
  </div>
  <h4 class="text-xs sm:text-sm font-extrabold text-white mt-1.5 leading-snug">
@@ -4712,15 +4712,15 @@ Diagnosi Tattica: ${note}`
  }
  if (nextTier === 'pro') {
  showToast(tr(
- 'Pro Coach (€9.99/mo) Activated! Ad-Free, Unlimited Stamina & Unlimited Coach Lab.',
- '已开启「职业教练」（€9.99/月）！全站免广告、无限体力且无限使用教练页。',
- 'Allenatore Pro (€9,99/mese) Attivato! Zero spot, Energia ∞ e Area Allenatore illimitata.'
+ 'Pro Coach (€9.99/mo) Activated! Ad-Free Workspace, Unlimited Sim Credits & Unlimited Coach Lab.',
+ '已开启「职业教练」（€9.99/月）！全站免赞助短片、无限推演额度且无限使用教练页。',
+ 'Allenatore Pro (€9,99/mese) Attivato! Zero annunci, Simulazioni ∞ e Area Allenatore illimitata.'
  ));
  } else if (nextTier === 'elite') {
  showToast(tr(
- 'Elite Player (€3.99/mo) Activated! Ad-Free & Unlimited League Stamina.',
- '已开启「精英球员」（€3.99/月）！全站免广告与无限联赛体力已生效。',
- 'Giocatore Elite (€3,99/mese) Attivato! Zero spot ed Energia Lega illimitata.'
+ 'Elite Player (€3.99/mo) Activated! Ad-Free Workspace & Unlimited Sim Credits.',
+ '已开启「精英球员」（€3.99/月）！全站免赞助短片与无限推演额度已生效。',
+ 'Giocatore Elite (€3,99/mese) Attivato! Zero annunci e Simulazioni illimitate.'
  ));
  } else {
  showToast(tr(
@@ -4741,12 +4741,12 @@ Diagnosi Tattica: ${note}`
  if (isUnlocked) {
  state.equippedSkin = skinId;
  renderAll();
- showToast(tr(`Equipped ${sName}!`, `已装备「${sName}」球场皮肤！`, `Tema campo «${sName}» attivato!`));
+ showToast(tr(`Activated ${sName} pitch view!`, `已切换「${sName}」战术球场视图！`, `Vista campo «${sName}» attivata!`));
  return;
  }
 
  if (state.coins < skin.cost) {
- showToast(tr(`Need ${skin.cost} Coins to unlock.`, `需要 ${skin.cost} 金币解锁该皮肤。`, `Servono ${skin.cost} Monete per sbloccare.`));
+ showToast(tr(`Need ${skin.cost} ✦ Academy Credits to unlock.`, `需要 ${skin.cost} ✦ 学院积分解锁该球场视图。`, `Servono ${skin.cost} ✦ Crediti Accademia per sbloccare.`));
  return;
  }
 
@@ -4770,7 +4770,7 @@ Diagnosi Tattica: ${note}`
  }
 
  if (state.coins < frame.cost) {
- showToast(tr(`Need ${frame.cost} Coins to unlock.`, `需要 ${frame.cost} 金币解锁该光环。`, `Servono ${frame.cost} Monete per sbloccare.`));
+ showToast(tr(`Need ${frame.cost} ✦ Academy Credits to unlock.`, `需要 ${frame.cost} ✦ 学院积分解锁该遥测光环。`, `Servono ${frame.cost} ✦ Crediti Accademia per sbloccare.`));
  return;
  }
 
@@ -4795,7 +4795,7 @@ Diagnosi Tattica: ${note}`
  }
 
  if (state.coins < theme.cost) {
- showToast(tr(`Need ${theme.cost} Coins to unlock this theme.`, `需要 ${theme.cost} 金币解锁该主题。`, `Servono ${theme.cost} Monete per sbloccare questo tema.`));
+ showToast(tr(`Need ${theme.cost} ✦ Academy Credits to unlock this theme.`, `需要 ${theme.cost} ✦ 学院积分解锁该界面主题。`, `Servono ${theme.cost} ✦ Crediti Accademia per sbloccare questo tema.`));
  return;
  }
 
@@ -4849,14 +4849,14 @@ Diagnosi Tattica: ${note}`
  '€3,99 / mese <span class="text-[10.5px] font-normal text-slate-400">· €29,99/anno</span>'
  );
  document.getElementById('elite-perk-1').textContent = tr(
- 'Ad-free experience (+40 🪙 credited instantly)',
- '全站免广告，赛后 +40 🪙 直接到账',
- 'Zero spot (+40 🪙 post-partita immediati)'
+ 'Ad-free workspace, +40 ✦ post-match Credits',
+ '全站免赞助短片，赛后 +40 ✦ 学院积分',
+ 'Zero annunci, +40 ✦ Crediti post-gara'
  );
  document.getElementById('elite-perk-2').textContent = tr(
- 'Unlimited stamina + 2× check-in (+80 🪙 & 2× XP)',
- '无限体力 + 学院打卡双倍 (+80 🪙 & 2× XP)',
- 'Energia ∞ + Check-In 2× (+80 🪙 & 2× XP)'
+ 'Unlimited Sim Credits + 2× Academy Check-in (+80 ✦ & 2× XP)',
+ '无限推演额度 + 学院打卡双倍 (+80 ✦ & 2× XP)',
+ 'Simulazioni illimitate + Check-in 2× (+80 ✦ & 2× XP)'
  );
  document.getElementById('elite-perk-3').textContent = tr(
  'Coach tab: 1 run per day',
@@ -4908,7 +4908,7 @@ Diagnosi Tattica: ${note}`
  document.getElementById('diy-skins-heading').textContent = t.diySkinsHeading;
  document.getElementById('diy-frames-heading').textContent = t.diyFramesHeading;
  const themesHeading = document.getElementById('diy-themes-heading');
- if (themesHeading) themesHeading.textContent = tr('League UI Themes', '联赛创意主题', 'Temi Interfaccia Lega');
+ if (themesHeading) themesHeading.textContent = tr('Interface Visual Themes', '界面视觉主题', 'Temi Visivi Interfaccia');
  const resetBtn = document.getElementById('btn-reset-demo');
  if (resetBtn) {
  resetBtn.textContent = tr('↺ Reset Demo Data', '↺ 重置演示数据', '↺ Ripristina Dati Demo');
@@ -4924,7 +4924,7 @@ Diagnosi Tattica: ${note}`
  } else if (isUnlocked) {
  btnHtml = `<button onclick="handleSkinAction('${skin.id}')" class="w-full py-1.5 rounded-lg bg-appbg hover:bg-cardhover border border-borderdim text-white font-bold text-[11px] transition">${t.equip}</button>`;
  } else {
- btnHtml = `<button onclick="handleSkinAction('${skin.id}')" class="w-full py-1.5 rounded-lg bg-golddim hover:bg-gold/25 border border-gold/40 text-gold font-mono font-extrabold text-[11px] transition">${skin.cost} 🪙</button>`;
+ btnHtml = `<button onclick="handleSkinAction('${skin.id}')" class="w-full py-1.5 rounded-lg bg-golddim hover:bg-gold/25 border border-gold/40 text-gold font-mono font-extrabold text-[11px] transition">${skin.cost} ✦</button>`;
  }
 
  return `
@@ -4952,7 +4952,7 @@ Diagnosi Tattica: ${note}`
  } else if (isOwned) {
  actionBtn = `<button onclick="handleFrameAction('${frame.id}')" class="px-3 py-1.5 rounded-xl bg-appbg border border-borderdim text-white font-bold text-[11px] shrink-0">${t.equip}</button>`;
  } else {
- actionBtn = `<button onclick="handleFrameAction('${frame.id}')" class="px-3 py-1.5 rounded-xl bg-golddim border border-gold/40 text-gold font-mono font-extrabold text-[11px] shrink-0">${frame.cost} 🪙</button>`;
+ actionBtn = `<button onclick="handleFrameAction('${frame.id}')" class="px-3 py-1.5 rounded-xl bg-golddim border border-gold/40 text-gold font-mono font-extrabold text-[11px] shrink-0">${frame.cost} ✦</button>`;
  }
 
  const previewRing = frame.id === 'neon'
@@ -4989,7 +4989,7 @@ Diagnosi Tattica: ${note}`
  } else if (isOwned) {
  btnHtml = `<button onclick="handleThemeAction('${th.id}')" class="w-full py-1.5 rounded-lg bg-appbg hover:bg-cardhover border border-borderdim text-white font-bold text-[11px] transition">${t.equip}</button>`;
  } else {
- btnHtml = `<button onclick="handleThemeAction('${th.id}')" class="w-full py-1.5 rounded-lg bg-golddim hover:bg-gold/25 border border-gold/40 text-gold font-mono font-bold text-[11px] transition">${th.cost} 🪙</button>`;
+ btnHtml = `<button onclick="handleThemeAction('${th.id}')" class="w-full py-1.5 rounded-lg bg-golddim hover:bg-gold/25 border border-gold/40 text-gold font-mono font-bold text-[11px] transition">${th.cost} ✦</button>`;
  }
 
  return `
@@ -5148,15 +5148,15 @@ Diagnosi Tattica: ${note}`
  const chosenName = getTeamName(chosenTeam);
  const objText = diffProf.tier === 'favorite'
  ? tr(
- `🎯 ★☆☆ Control Drill: Win by 2+ goals with ${chosenName} (+35🪙)`,
- `🎯 ★☆☆ 控场演练：率 ${chosenName} 净胜 ≥2 球额外 +35🪙`,
- `🎯 ★☆☆ Controllo: Vinci con 2+ gol (${chosenName}) per +35🪙`
+ `🎯 ★☆☆ Control Drill: Win by 2+ goals with ${chosenName} (+35✦)`,
+ `🎯 ★☆☆ 控场演练：率 ${chosenName} 净胜 ≥2 球额外 +35✦`,
+ `🎯 ★☆☆ Controllo: Vinci con 2+ gol (${chosenName}) per +35✦`
  )
  : diffProf.tier === 'underdog'
  ? tr(
- `🎯 ★★★ Master Challenge: Outplay rival with ${chosenName} (Draw +45🪙)`,
- `🎯 ★★★ 逆袭挑战：率 ${chosenName} 以弱胜强（逼平亦得 +45🪙）`,
- `🎯 ★★★ Sfida Avanzata: Supera il rivale con ${chosenName} (Pari +45🪙)`
+ `🎯 ★★★ Master Challenge: Outplay rival with ${chosenName} (Draw +45✦)`,
+ `🎯 ★★★ 逆袭挑战：率 ${chosenName} 以弱胜强（逼平亦得 +45✦）`,
+ `🎯 ★★★ Sfida Avanzata: Supera il rivale con ${chosenName} (Pari +45✦)`
  )
  : tr(
  `🎯 ★★☆ Tactical Goal: Lead ${chosenName} (${sideLabel}) to WIN`,
@@ -5737,7 +5737,7 @@ Diagnosi Tattica: ${note}`
  const actualXp = addXpAndCoins(finalCoins, finalBaseXp);
 
  const favNoteHtml = (diff.tier === 'favorite' && userWon && goalDiff === 1)
- ? `<div class="text-[10px] text-amber-300/90 pt-0.5">ℹ️ ${tr('Won by 1 goal in ★☆☆ Control Drill (win by 2+ goals for +35 🪙 Mastery Bonus).', '在 ★☆☆ 控场演练中净胜 1 球，净胜 ≥2 球可额外解锁 +35 🪙 统治完胜奖。', 'Vittoria di misura nel livello ★☆☆ Controllo (con 2+ gol di scarto ottieni +35 🪙 extra).')}</div>`
+ ? `<div class="text-[10px] text-amber-300/90 pt-0.5">ℹ️ ${tr('Won by 1 goal in ★☆☆ Control Drill (win by 2+ goals for +35 ✦ Mastery Bonus).', '在 ★☆☆ 控场演练中净胜 1 球，净胜 ≥2 球可额外解锁 +35 ✦ 统治完胜积分。', 'Vittoria di misura nel livello ★☆☆ Controllo (con 2+ gol di scarto ottieni +35 ✦ extra).')}</div>`
  : '';
 
  dynamicBox.innerHTML = `
@@ -5748,22 +5748,22 @@ Diagnosi Tattica: ${note}`
  </div>
  <div class="flex justify-between items-center">
  <span class="text-slate-200 font-semibold">${isUnderdogDraw ? tr('★★★ Master Tactical Draw Bonus', '★★★ 逆袭逼平教学奖', '★★★ Premio Pareggio Avanzato') : tr('Tactical Drill Completion Reward', '战术演练通关奖励', 'Premio Completamento Tattico')}</span>
- <span class="font-mono font-extrabold text-emeraldai">+${baseCoins} 🪙</span>
+ <span class="font-mono font-extrabold text-emeraldai">+${baseCoins} ✦</span>
  </div>
  ${dominantCoins > 0 ? `
  <div class="flex justify-between items-center">
  <span class="text-cyanai font-semibold">${tr('Dominant Win Bonus (2+ Goal Margin)', '强队统治完胜加成（净胜 ≥2 球）', 'Bonus Dominio (Scarto 2+ Gol)')}</span>
- <span class="font-mono font-extrabold text-cyanai">+${dominantCoins} 🪙</span>
+ <span class="font-mono font-extrabold text-cyanai">+${dominantCoins} ✦</span>
  </div>
  ` : ''}
  <div class="flex justify-between items-center">
  <span class="text-gold font-semibold">${tr(`Strategy Diversity (${distinctCount} tactics)`, `策略多样性奖励（${distinctCount}种战术）`, `Bonus Varietà Tattica (${distinctCount} tattiche)`)}</span>
- <span class="font-mono font-extrabold text-gold">+${diversityCoins} 🪙</span>
+ <span class="font-mono font-extrabold text-gold">+${diversityCoins} ✦</span>
  </div>
  ${classicExtraCoins > 0 ? `
  <div class="flex justify-between items-center text-gold">
  <span class="font-extrabold">★ ${tr('Classic Duel Mastery Bonus', '经典对决教学加成', 'Bonus Didattico Sfida Classica')}</span>
- <span class="font-mono font-extrabold">+${classicExtraCoins} 🪙</span>
+ <span class="font-mono font-extrabold">+${classicExtraCoins} ✦</span>
  </div>
  ` : ''}
  ${sim.sourceType === 'league' ? `
@@ -5810,7 +5810,7 @@ Diagnosi Tattica: ${note}`
  <div class="bg-card border border-coralai/40 rounded-2xl p-3 space-y-2 text-xs">
  <div class="flex items-center justify-between gap-2">
  <span class="font-extrabold text-coralai">📋 ${tr('Post-Match Tactical Debrief', '赛后战术复盘诊断', 'Analisi Tattica Post-Partita')}</span>
- <span class="font-mono text-[10px] text-slate-300">+${finalConsCoins} 🪙 & +${consolationXp} XP${isClassicDuel ? ' ★' : ''}</span>
+ <span class="font-mono text-[10px] text-slate-300">+${finalConsCoins} ✦ & +${consolationXp} XP${isClassicDuel ? ' ★' : ''}</span>
  </div>
  <div class="text-[10px] font-mono text-slate-400">
  ${diff.tierLabel} • ${tr('Pre-Match Win%', '赛前胜率', 'Prob. Pre-Gara')}: ${preWinProb.toFixed(1)}%
@@ -5860,10 +5860,10 @@ Diagnosi Tattica: ${note}`
  box.innerHTML = `
  <div class="flex items-center justify-between gap-2">
  <div>
- <div class="text-xs font-extrabold text-gold">★ ${tierName} • ${tr('Instant Ad-Free Bonus!', '免广告金币已直接到账！', 'Bonus Zero Spot Accreditato!')}</div>
- <div class="text-[10px] text-slate-300 mt-0.5">${tr('No ads watched — +40 Coins credited automatically.', '付费会员免看广告，赛后 +40 金币已自动入账。', 'Nessuno spot — +40 Monete accreditate automaticamente.')}</div>
+ <div class="text-xs font-extrabold text-gold">★ ${tierName} • ${tr('Instant Ad-Free Credits!', '免赞助短片积分已直接到账！', 'Crediti Zero Annunci Accreditati!')}</div>
+ <div class="text-[10px] text-slate-300 mt-0.5">${tr('Ad-free workspace — +40 ✦ Academy Credits added automatically.', '付费会员免看赞助短片，赛后 +40 ✦ 学院积分已自动入账。', 'Zero annunci — +40 ✦ Crediti Accademia accreditati automaticamente.')}</div>
  </div>
- <span class="px-2.5 py-1 rounded-lg bg-gold text-onaccent font-mono text-xs font-extrabold shrink-0">+40 🪙</span>
+ <span class="px-2.5 py-1 rounded-lg bg-gold text-onaccent font-mono text-xs font-extrabold shrink-0">+40 ✦</span>
  </div>
  `;
  return;
@@ -5872,7 +5872,7 @@ Diagnosi Tattica: ${note}`
  if (sim.scoutBonusClaimed) {
  box.innerHTML = `
  <div class="text-center py-1 text-xs font-extrabold text-emeraldai">
- ✓ ${tr('+40 Bonus Coins Credited!', '已成功领取 +40 额外金币！', '+40 Monete Bonus Accreditate!')}
+ ✓ ${tr('+40 ✦ Academy Credits Credited!', '已成功领取 +40 ✦ 学院积分！', '+40 ✦ Crediti Accademia Accreditati!')}
  </div>
  `;
  return;
@@ -5880,14 +5880,14 @@ Diagnosi Tattica: ${note}`
 
  box.innerHTML = `
  <div class="text-[11px] font-bold text-cyanai mb-2">
- 📡 ${tr('Post-Match Bonus Reward (+40 Coins)', '赛后额外金币补给 (+40 金币)', 'Bonus Post-Partita (+40 Monete)')}
+ 📡 ${tr('Post-Match Academy Credits (+40 ✦)', '赛后学院积分补给 (+40 ✦)', 'Crediti Accademia Post-Gara (+40 ✦)')}
  </div>
  <div id="scout-action-btns" class="space-y-1.5">
  <button onclick="watchSimulatedScoutAd()" class="w-full py-2.5 px-3 rounded-xl bg-cyanai/15 hover:bg-cyanai/25 border border-cyanai/45 text-cyanai font-extrabold text-xs transition active:scale-95">
- 🎬 ${tr('Watch Ad Clip to Claim (+40 🪙)', '观看广告短片领取 (+40 🪙)', 'Guarda Spot Video per +40 🪙')}
+ ▶ ${tr('Watch Sponsor Clip (+40 ✦)', '观看赞助短片领取 (+40 ✦)', 'Guarda Clip Sponsor (+40 ✦)')}
  </button>
  <div class="text-[9.5px] text-slate-400 text-center">
- ${tr('Elite Player & Pro Coach members receive +40 🪙 instantly without ads.', '「精英球员」与「职业教练」会员免看广告，金币直接到账。', 'Giocatore Elite e Allenatore Pro ricevono +40 🪙 subito senza spot.')}
+ ${tr('Elite Player & Pro Coach members receive +40 ✦ instantly without sponsor clips.', '「精英球员」与「职业教练」会员免看赞助短片，学院积分直接到账。', 'Giocatore Elite e Allenatore Pro ricevono +40 ✦ subito senza annunci.')}
  </div>
  </div>
  `;
@@ -5901,7 +5901,7 @@ Diagnosi Tattica: ${note}`
  btnsEl.innerHTML = `
  <div class="py-2.5 px-3 rounded-xl bg-appbg border border-cyanai/40 text-center">
  <div class="text-[11px] font-mono text-cyanai animate-pulse">
- ${tr('Playing Rewarded Ad Clip (2s)...', '正在播放激励广告短片 (2秒)...', 'Riproduzione spot premio in corso (2s)...')}
+ ${tr('Playing Sponsor Clip (2s)...', '正在播放赞助短片 (2秒)...', 'Riproduzione clip sponsor (2s)...')}
  </div>
  </div>
  `;
@@ -5912,7 +5912,7 @@ Diagnosi Tattica: ${note}`
  state.coins += 40;
  renderHeaderResources();
  renderPostMatchScoutBox();
- showToast(tr('Ad Complete: +40 Coins Credited!', '广告播放完毕：+40 金币已入账！', 'Spot completato: +40 Monete accreditate!'));
+ showToast(tr('Sponsor Clip Complete: +40 ✦ Credits Added!', '赞助短片播放完毕：+40 ✦ 学院积分已入账！', 'Clip sponsor completata: +40 ✦ Crediti accreditati!'));
  }
  }, 1800);
  }
@@ -6370,6 +6370,15 @@ Diagnosi Tattica: ${note}`
  loadCalibratedEuropeParams();
  loadXtMarkovGrid();
  renderAll();
+ try {
+ const urlParams = new URLSearchParams(window.location.search);
+ const urlView = urlParams.get('view');
+ if (urlView && ['sim', 'league', 'coach', 'academy', 'club'].includes(urlView)) {
+ switchMainTab(urlView);
+ } else if (urlParams.get('mimit') === '1') {
+ switchMainTab('coach');
+ }
+ } catch (e) {}
  };
  </script>
 </body>
