@@ -31,5 +31,5 @@ jobs:
 
       - name: Verify CLI calibration & xT Markov scripts execute cleanly
         run: |
-          python tactica_bayes_dc_engine.py --export-json /tmp/ci_cal.json
+          python tactica_bayes_dc_engine.py --league calcio --export-json /tmp/ci_cal.json
           python tactica_xt_engine.py --export-json /tmp/ci_xt.json
